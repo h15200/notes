@@ -23,6 +23,11 @@ You can also print onto a column any string `SELECT 'HELLO SQL'`
 
 Using SELECT DINSTINC will only query unique items and skip repeats
 
+### OTHER FUNCTIONS IN SELECT - AVG(), COUNT(), MAX)(), MIN(), SUM)()
+
+`SELECT AVG(price) FROM table WHERE product_id=10`
+
+These will return ONE value, so they can't be combined with other values that return more than 1.
 
 ## FROM
 Name of table you are querying from
@@ -31,18 +36,77 @@ Name of table you are querying from
 
 Used after SELECT when you want to rename the data as something else
 
-SELECT Car 
+SELECT Car AS AwesomeCar
 FROM ToysTable
-AS AwesomeCar
+
+CAN NOT use in conjuction with other select functions like AVG() or COUNT() as they will just be named by the function name 
 
 ## WHERE
 
 Some condition like greater or less than to a number.
 Numbers can be written as is, but strings must have single quotes
 
-### Can chain with AND
+### Can chain with AND, AND NOT, OR. AND operator goes first (write in ANDs and AND NOTs in same line for clarity)
 
-`SELECT * FROM table WHERE year=4 AND type='SPORTS'
+```
+SELECT * FROM table 
+WHERE year=4 AND type='sport' AND NOT color='green'
+OR
+year=3 AND type='Academics'
+```
+
+### WHERE __ IN() more than ONE value selectors
+
+  If you want to select more than one value and it can't be expressed with a simple < , <=, value
+
+ALWAYS add parens! Add single quotes inside those parens for string values
+
+  ```
+  SELECT *
+  FROM database
+  WHERE year IN (1970, 1971, 1972)
+  ```
+
+  ### WHERE __ NOT IN()
+  Same as IN but the inverse. All rows that are NOT the following comma separated values
+
+  ### WHERE __ LIKE 'string%'
+
+    To select things that start with a string
+
+    `SELECT * FROM database WHERE name LIKE 'Bob%'`
+
+    NO PARENS
+    % for rest of string - only for STARTING WITH these strings
+    Doens't work for other data types like numbers
+
+
+  ### You can chain all of these with AND
+
+  ```
+  SELECT * 
+  FROM table
+  WHERE year=1970
+  AND subject NOT IN('History', 'Geography')
+  AND name LIKE('Patricia%')
+  ```
+
+  Select all data from the table with the year 1970 with the subject that is NOT 'History' or 'Geography' for all names that start with 'Patricia'
+
+## UNION()
+
+Adding UNION() will append another SELECT after the first SELECT. Both queries MUST have the same SELECT value (*, or comma separated row names). All query information fo the 2nd query goes inside the parens in union.
+
+```
+SELECT * 
+FROM table
+WHERE year=2 AND genre='Jazz'
+UNION(
+  SELECT * FROM table 
+  WHERE year=3 
+  AND genre='Classical'
+  )
+```
  
 ## ORDER BY, ORDER BY DESC
 name the row that you want to order by. The default is INCREASING. If you want it decreasing, add keyword DESC AFTER the row now
@@ -50,9 +114,54 @@ name the row that you want to order by. The default is INCREASING. If you want i
 ORDER BY age 
 ORDER BY age DESC
 
+### Second value separated by comma will be the backup ORDER BY in case two items have the same value as the first sort 
+
+ORBER BY level, name    
+
+if level is the same, then sort by name alphabetically 
 ## LIMIT   
 
 Takes in 2. First number is the number of total queries. Second is the offset (what index number to start from)
 
 LIMIT 1,4  
 this will query 1 thing on the 5th row
+
+## GROUP BY
+
+Group rows with the same values into a summary row. Used in confuction with SUM(), COUNT(), etc..
+
+```
+SELECT COUNT(id), shoes
+FROM clothing_inventory
+GROUP BY shoes
+```
+Return a row with the number of different types of shoes in the table
+
+## VARIABLES
+
+Use select functions to get a number, then plug into WHERE
+
+Find everything about the lowest height
+```
+SELECT *
+FROM table
+WHERE height=(
+  SELECT MIN(height) FROM table
+)
+```
+
+## Empty String VS NULL
+
+A query with an outerfunction that doesn't meet requirements will return an empty string
+A SELECT that maps OVER that empty value will return NULL
+
+ex..
+
+`SELECT 200`   will output a row with 200
+`SELECT (query that returns 200 inside parens)` is the same as SELECT 200
+<br />
+
+`SELECT blabla stuff that doesn't exist in table` output ''
+`SELECT (SELECT stuff that doesn't return anything)`  will return NULL
+
+A WHERE clause that doesn't meet requirements will also return NULL
