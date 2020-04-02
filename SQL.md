@@ -37,7 +37,12 @@ AS AwesomeCar
 
 ## WHERE
 
-Some condition like greater or less than
+Some condition like greater or less than to a number.
+Numbers can be written as is, but strings must have single quotes
+
+### Can chain with AND
+
+`SELECT * FROM table WHERE year=4 AND type='SPORTS'
  
 ## ORDER BY, ORDER BY DESC
 name the row that you want to order by. The default is INCREASING. If you want it decreasing, add keyword DESC AFTER the row now
