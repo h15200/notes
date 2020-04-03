@@ -11,6 +11,7 @@ WHERE some condition
 ORDER BY 
 LIMIT 
 
+You can acess data with Alias.data    Newrowname.price
 
 
 ## SELECT 
@@ -40,6 +41,8 @@ SELECT Car AS AwesomeCar
 FROM ToysTable
 
 CAN NOT use in conjuction with other select functions like AVG() or COUNT() as they will just be named by the function name 
+
+A good way to assign a table to a variable. You can use dot notation to access their rows.
 
 ## WHERE
 
@@ -92,6 +95,11 @@ ALWAYS add parens! Add single quotes inside those parens for string values
   ```
 
   Select all data from the table with the year 1970 with the subject that is NOT 'History' or 'Geography' for all names that start with 'Patricia'
+
+  ### WHERE ___ IS NULL 
+
+ Used if you want the field to be null. Do not use equal signs
+ Also used for JOINS. See below
 
 ## UNION()
 
@@ -150,6 +158,33 @@ WHERE height=(
 )
 ```
 
+## JOINS - Use a common key to join two tables
+
+1. INNER JOIN
+```
+SELECT * 
+FROM table_A 
+INNER JOIN table_B ON A.key=B.key
+```
+This selects all from a new table that contains all the info for rows that have the same "key" value assigned to both tables. If it only exists in one table, that info is not in the new table
+2. LEFT JOIN `SELECT * FROM table_A LEFT JOIN table_B ON A.key=B.key` 
+This will add the key info  of B to all of the info on left
+   1. LEFT JOIN WITH RIGHT NULL `SELECT * FROM table_A LEFT JOIN table_B ON A.key=B.key WHERE B.key IS NULL`
+  This will take away the section of table A that has a common key with table B. 
+3. RIGHT JOIN - Same as left join, but in reverse order
+  1. RIGHT JOIN WITH LEFT NULL
+4. FULL OUTER JOIN - Fully combines both tables
+  1. FULL OUTER JOIN WHERE A IS NULL AND B IS NULL - Excludes only the inner join part of both tables
+
+  ## DOUBLE SELECT
+
+  A common way to use variables is by SELECT(SELECT stuff)
+  This will return a number or a string based on the inner select
+  When using the variable in WHERE with an operator, make sure to use parens around the entire variable like `(SELECT(SELECT query that returns a num or str))`
+
+  A lot of flexibility if you combine this with aliases and their dot notation
+
+
 ## Empty String VS NULL
 
 A query with an outerfunction that doesn't meet requirements will return an empty string
@@ -158,10 +193,10 @@ A SELECT that maps OVER that empty value will return NULL
 ex..
 
 `SELECT 200`   will output a row with 200
-`SELECT (query that returns 200 inside parens)` is the same as SELECT 200
+`SELECT (SELECT price FROM price_list WHERE price=200)` is the same as SELECT 200
 <br />
 
-`SELECT blabla stuff that doesn't exist in table` output ''
+`SELECT blabla stuff that doesn't exist in table` output is empty string ''
 `SELECT (SELECT stuff that doesn't return anything)`  will return NULL
 
 A WHERE clause that doesn't meet requirements will also return NULL
