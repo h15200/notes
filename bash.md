@@ -105,3 +105,25 @@ done > fileName.txt
 
 ## grep  "Global Regular Expression Print"
 
+
+`grep hello journal.txt` 
+
+if 'hello' is present in journal.txt, it will print the word the number of itmes it appears. It used 3 times, output is
+
+```
+hello
+hello
+hello
+``` 
+
+grep -i      will ignore all cases
+
+## Reading txt, manipulating strings
+
+The general strengths of bash is manipulating strings from txt files.
+
+`cat file.txt` print entire file
+
+Others to check out
+
+tr, sort, uniq, awk

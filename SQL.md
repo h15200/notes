@@ -44,6 +44,10 @@ CAN NOT use in conjuction with other select functions like AVG() or COUNT() as t
 
 A good way to assign a table to a variable. You can use dot notation to access their rows.
 
+### You can use FROM (SELECT .... sub query) AS alias
+
+To query from an internal query
+
 ## WHERE
 
 Some condition like greater or less than to a number.
