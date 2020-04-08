@@ -22,7 +22,11 @@ You can also print onto a column any string `SELECT 'HELLO SQL'`
 ### (optional) DISTINCT
 
 
-Using SELECT DINSTINC will only query unique items and skip repeats
+Using SELECT DINSTINC _____     will only query unique items and skip repeats
+
+Can only be used for one selector. 
+DISTINCT * won't do anything
+
 
 ### OTHER FUNCTIONS IN SELECT - AVG(), COUNT(), MAX)(), MIN(), SUM)()
 
@@ -204,3 +208,36 @@ ex..
 `SELECT (SELECT stuff that doesn't return anything)`  will return NULL
 
 A WHERE clause that doesn't meet requirements will also return NULL
+
+## NON-SELECT COMMANDS
+
+In MYSQL, DELETE (and probably other non-SELECT commands) have a loop prevention where you can't reference the table you are deleting from.
+
+ex. This does NOT run!
+
+```
+DELETE
+FROM Person
+WHERE Id NOT IN ( 
+             SELECT Id 
+            FROM Person
+            GROUP BY Email
+            ) 
+```
+
+The solution to this problem is to assign this inner SELECT to a different name, then get the dot notation to get the data
+
+```
+DELETE
+FROM Person
+WHERE Id NOT IN ( SELECT Sub.Id FROM
+                 (
+             SELECT Id 
+            FROM Person
+            GROUP BY Email
+            ) Sub )
+```
+
+To do that, we add another pair of parens, and add the variable name AFTER the inner Select call, in this case called 'Sub' for sub-table
+
+Then in the first part, we add another SELECT Sub.____ FROM to access that data.
