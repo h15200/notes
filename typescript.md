@@ -52,3 +52,35 @@ It's fine to not define every property. If the todo Object had other properties,
 
 Now any future objects can be treated as a Todo type
 with the syntax `const a = obj as Todo;`
+
+## Type Annotation & Type Inference
+
+Type Annotation - code we write to tell Typescript what type of value a variable will refer to
+
+`const apples: number = 5;`
+// annotating apples to the type apples
+
+`const now: Date = new Date()`
+// Note how Date type must be caplitalized
+
+`const arr: string[] = ['array', 'of', 'only', 'strings']`  
+Array of strings
+
+```
+class Car {}
+
+let toyota: Car = new Car();
+```
+
+You can use classes directly as a Type.
+
+```
+let point: { x: number; y: number } = {
+  x: 10,
+  y: 20,
+};
+```
+
+// for objects, syntax is different from number[]. You put the stuff inside {} and separate with semicolons.
+
+Type Inference - Typescript tries to guess what type of value a variable will refer to
