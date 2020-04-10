@@ -241,3 +241,19 @@ If declared and initialized at the same time, inference will kick in if NO annot
 
 If annotating, do it like so
 `const arr:(Date | boolean)[] = [new Date()];` // if you want to add boolean later
+
+## Turning arrays into tuples.
+
+Tuples are an array like object that has to be ordered in a certain way. You can use typescript to tell the order of each data type.
+
+Tuples can't be made in JS, but you can in typescript.
+
+For a one time annotation:
+`const pepsiTuple: [string, boolean, number] = ['brown', true, 40];`
+
+For using it more times
+
+```
+type Drink = [string, boolean, number];
+const coke:Drink = ['brown', false, 30];
+```

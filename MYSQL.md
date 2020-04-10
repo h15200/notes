@@ -282,3 +282,27 @@ SELECT t_1.Id
 FROM Customers t_1, Customers t_2
 WHERE (now you have access to t_1 and t_2 at the same time)
 ```
+
+## Performance
+
+When comparing something like 2 rows, UNION is faster than OR
+
+OR method
+
+```
+SELECT name, population, area
+FROM World
+WHERE area > 3000000 OR population > 25000000
+```
+
+```
+SELECT name, population, area
+FROM World
+WHERE area > 3000000
+
+UNION
+
+SELECT name, population, area
+FROM World
+WHERE population > 25000000
+```

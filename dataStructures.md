@@ -77,3 +77,43 @@ setA.add([arrayX]) //WILL NOT WORK because setA will simply add one more item wh
 const combinedSet = new Set([...setA, ...arrayX])
 
 ```
+
+## Tuple
+
+A tuple is an array-like object that stores information about ONE thing. It is usually a mixed data type
+
+// Apartment - number of bathrooms, number of bedrooms, basement exists
+
+[ 2, 3, true]
+
+Tuples have a fixed order of values because the number of bathrooms must match the first element.
+
+## Map
+
+A map stores a key-value pair. In JS, maps are avilable as objects but there are certain limitations,
+the main one being the order of insertion is not specified.
+
+In ES6, maps are available as another value-pair data structure with useful methods not available to objects.
+
+Map methods. The last two are especially useful
+
+.has(key) - returns boolean
+.get(key) - returns the value associated with key
+.set(key, value) - inserts a new key value pair
+.delete(key) - removes key along with its value
+.clear() - removes all keys and values
+.entries() - returns an array of all keys in INSERTION ORDER!
+.values() - returns an array of all values in INSERTION ORDER!
+
+```
+const myMap = new Map();
+myMap.set('Patti', 'Awesome');
+```
+
+## Hash Table
+
+A tash table is an array of data where the index of the data is built in to the key.
+Ex- database of users. User's first name as ASCI values added up, then modulo by a number might return the index.
+Since it's relatively easy to get the index, it is considered constant time O(1) and very efficient.
+
+Sometimes two users might end up in the same index (collision) but you can add it as a linked list to the same index.
