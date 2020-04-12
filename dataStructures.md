@@ -117,3 +117,88 @@ Ex- database of users. User's first name as ASCI values added up, then modulo by
 Since it's relatively easy to get the index, it is considered constant time O(1) and very efficient.
 
 Sometimes two users might end up in the same index (collision) but you can add it as a linked list to the same index.
+A simpler way to implement is to add both key-value pairs.
+
+So the concept without thinking about collision is..
+
+empty array []. Let's say we want to use 100 slots
+you want to add a key value pair "color", "blue"  
+since the key is color, have a hashing algorithm like converting to ascii, adding them up, and modulo by the array length, 100
+"color" ends up being a number, that ends up being the index of the array, so array[hash of key] contains [key, value]
+
+If you need to think about collision, then you have to consider if somebody else adds the same key, "color", you'll end up with the
+same index.
+
+So it might be better if you just store an object at index [hash('color')] of the array so it's more like
+[ {}, {}, {}, {color: 'blue', anotherKey: 'hello' }]
+
+## Linked List
+
+Is a linear collection of nodes that go in one direction.
+Each node contains 2 pieces of information - its own value, and the pointer to the next linked list.
+It can hold any type of data.
+
+The next element of a node is initialized to null until it's set.
+
+The first item is called the head
+
+Implementation - to add a new node, you have to recursively look for a node where the next value is null and assign the new node to that. You can't use indexes, you must always start at the head and continue calling next until the next value is 'null', which means it's the end of the linked list
+
+to remove an element, you have to start at the head, and rather than deleting that node, you simply link the previous node to the node 2 links in front and exclude the current.
+
+```
+function LinkedList() {
+  var length = 0;
+  var head = null;
+
+  var Node = function(element){
+    this.element = element;
+    this.next = null;
+  };
+
+  this.size = function(){
+    return length;
+  };
+
+  this.head = function(){
+    return head;
+  };
+
+  this.add = function(element){
+    var node = new Node(element);
+    if(head === null){
+        head = node;
+    } else {
+        var currentNode = head;
+
+        while(currentNode.next){
+            currentNode  = currentNode.next;
+        }
+        currentNode.next = node;
+    }
+    length++;
+  };
+
+  this.remove = function(element, previous = head, current = head.next ){
+  if (element === head.element) {
+    head = head.next;
+    length--;
+  }
+  else if (element === current.element) {
+    previous.next = current.next;
+   length--;
+  }
+  else if (current.next === null) {
+    return null
+  }
+  else {
+    this.remove(element, previous = previous.next, current = current.next)
+  }
+  };
+}
+```
+
+### Doubly linked lists
+
+A Doubly Linked List has a next AND a previous element stored in each node.
+It allows both way travel but takes up more memory.

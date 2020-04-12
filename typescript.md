@@ -6,6 +6,8 @@ Type annotations are added in js to analyze code.
 
 Typescript transpiles (compiling is going from human code to machine code) to regular js. It provides no performance optimization like C.
 
+## The whole point is to reduce API surface area using class modifiers AND using reusable interfaces that interact with classes
+
 ## Setup and compiling
 
 To install typescript, `npm i -g typescript ts-node`
@@ -430,3 +432,78 @@ Using both interfaces AND classes is the basis of making good, reusable code in 
 Projects are usually structured into THINGS which are classes. Each of those classes are in separate files
 and exported to the index.ts file, which is rendered in the html through parcel.
 Convention is to use capital first letter like User.ts for classes
+
+## NPM Package imports in Typescript
+
+If you do the usual es6 syntax , import { thing } from 'npmPackageName'; ,
+TS will throw an error, `Could not find a declaration file for module 'npmPackageName'`
+
+All libraries being used in typescript needs a Type definition file which is like an adaptor to use JS libs in TS.
+In some cases, type definition files are automatically downloaded when you npm i (like Axios)
+Others, iike the faker module, does NOT include a type definition file in the install.
+
+The error above means that you need to make a type definition file.
+The majority of libraries already have type definition files available.
+The project is called
+
+            Definitely Typed
+
+         Definitely Typed Naming Scheme
+
+           Usually -   @types/{libraryName}
+           specific ex. @types/faker
+          google @types/faker npm to see if it exists and if it was made by credible source like Definitely Typed
+          if so, simply `npm i @types/faker` on the project root dir
+
+After getting the type definition files, you can command+click on the import statement to see the file itself, which serves as good documentation for the package!
+
+If there is still a problem, try typing this INCLUDING the triple slashes at the top of the file.
+
+`/// <reference types="@types/faker" />` or whatever the Definitely Typed Package was
+
+If the module was default exported, you may see `This module is declared with using 'export =', and can only be used with a default import when using the 'esModuleInterop' flag.`
+
+Simply, `import * as faker from 'faker';` to do the trick, OR just pull out the sub modules you need
+`import { name, address } from 'faker';`
+
+## import / export convention
+
+In typescript files are USUALLY as regular export, even if there is only 1. Import files need curlies.
+Note how in react, every component is usually exported with default so imports don't require curly braces.
+
+## Type definition files
+
+Make a habit of looking inside type def files as the documentation.
+
+Often helpful to use command palette "fold 2" to only show methods and props
+
+Usually, you make a new instance of a class with some args.
+Also good to search keyword "required" if something isn't working in case you are missing some args.
+
+## Hiding Functionality
+
+Using private and protected will hide functionality in the app to minimize breaking.
+
+## Why you always use interfaces
+
+If you are dealing with multiple classes, say you make a method
+
+`printProps (thing: Animal | Car):void {console.log(thing.name)};`
+
+When you use the pipe | or operater on classes, they will ONLY have access to common properties and disgard all other unique props inside those classes.
+
+If you use an interface on a function, it will FILTER out the requirements of classes.
+
+```
+interface Printable {
+  name: string
+}
+const printProps = (thing: Printable): void => console.log(thing.name);
+```
+
+It is even better to export the interface to the class declaration files and add
+
+## class IMPLEMENTS interface
+
+`class Person implements Printable {}` adding keyword 'implements' and the interface name in the class declaration will
+let ts know that the class SHOULD satisfy the interface requirements.

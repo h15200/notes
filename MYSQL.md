@@ -20,7 +20,7 @@ You can also print onto a column any string `SELECT 'HELLO SQL'`
 
 ### (optional) DISTINCT
 
-Using SELECT DINSTINC **\_** will only query unique items and skip repeats
+Using SELECT DINSTINC something will only query unique items and skip repeats
 
 Can only be used for one selector.
 DISTINCT \* won't do anything
@@ -64,7 +64,9 @@ OR
 year=3 AND type='Academics'
 ```
 
-### WHERE \_\_ IN() more than ONE value selectors
+Not equal operators can be written as `!=` or `<>`
+
+### WHERE rowName IN() more than ONE value selectors
 
 If you want to select more than one value and it can't be expressed with a simple < , <=, value
 
@@ -76,11 +78,11 @@ FROM database
 WHERE year IN (1970, 1971, 1972)
 ```
 
-### WHERE \_\_ NOT IN()
+### WHERE rowName NOT IN()
 
-Same as IN but the inverse. All rows that are NOT the following comma separated values
+Used for multiple cases of the not equal operator
 
-### WHERE \_\_ LIKE 'string%'
+### WHERE rowName LIKE 'string%'
 
     To select things that start with a string
 
@@ -306,3 +308,21 @@ SELECT name, population, area
 FROM World
 WHERE population > 25000000
 ```
+
+## HAVING
+
+Having is the same as WHERE if there is no GROUP BY call
+If HAVING is set after GROUP BY, it is a filter on to GROUP BY
+
+```
+SELECT class
+FROM courses
+GROUP BY class
+HAVING count(distinct student) >= 5
+```
+
+## A common pattern
+
+Using distinct inside count
+
+`SELECT class, COUNT(distinct row) FROM bla GROUP BY something`
