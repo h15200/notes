@@ -202,3 +202,24 @@ function LinkedList() {
 
 A Doubly Linked List has a next AND a previous element stored in each node.
 It allows both way travel but takes up more memory.
+
+## Tree
+
+Starts with a root node up top and splits into children.
+
+A subtree refers to all the descendants of a specified node.
+Branches may be referred to as edges
+Leaves are nodes that don't have children
+
+### Binary Tree (Binary Search Tree in particular)
+
+A binary tree can only have 2 branches per node
+The branches of a binary tree are ordered such that the left branch has a smaller value than the parent,
+and the right branch has a greater value than the parent node
+
+Logarithmic Time comlexity - Means at best, the time can be halved. The binary tree will be travesing based on
+the value of the current node, so it has a CHANCE of doing everything in half the time.
+
+If the tree is unbalanced, at worst, it could still take linear time.
+
+In strict computer science, an empty binary tree that has a root of null is still a valid binary tree

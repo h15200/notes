@@ -1,6 +1,4 @@
-# SQL QUERIES
-
-## Syntax - best practice to capitalize all reserved words for readability
+# Select
 
 ex.
 
@@ -12,8 +10,6 @@ ORDER BY
 LIMIT
 
 You can acess data with Alias.data Newrowname.price
-
-## SELECT
 
 Used first. must specify the name of row you are querying
 You can also print onto a column any string `SELECT 'HELLO SQL'`
@@ -326,3 +322,48 @@ HAVING count(distinct student) >= 5
 Using distinct inside count
 
 `SELECT class, COUNT(distinct row) FROM bla GROUP BY something`
+
+## CASE
+
+If, then conditional that selects a value
+in mySQL, ALL of the clause must be wrapped in parens!
+
+Syntax
+
+```
+variable = (CASE WHEN  condition THEN value
+     WHEN  condition2 THEN another value
+     END)
+```
+
+You can also use ELSE at the end
+
+```
+variable = (CASE WHEN condition THEN ifValue
+           ELSE elseValue
+           END)
+          // if the first condition is not true, then all other cases will be the elseValue
+          // having and else takes MORE computing time than having multiple WHEN THEN clauses (based on leedcode result)
+```
+
+Used inside an update to swap the nubmers 1 to 2 and 2 to 1
+
+```
+UPDATE salary
+Set num = (CASE WHEN num = 1 THEN 2
+            WHEN num = 2 THEN 1 END)
+```
+
+# UPDATE
+
+Doesn't print any values, but it updates.
+
+Basic syntax
+
+```
+UPDATE tableName
+SET rowName = 'something'
+WHERE condition
+```
+
+You can't have more than one SET statement inside one UPDATE.

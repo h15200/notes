@@ -18,7 +18,41 @@ After writing ts, remember it won't just with `node filename.js` like with regul
 
 In the terminal, you can `tsc filename.ts` to create a filename.js file in the same dir
 OR
-use `ts-node filename.ts` which compile the typescript file into js, then run it
+use `ts-node filename.ts` which skips building index.js and just runss the ts
+
+Best practice to have a src dir with the ts file (which you write)
+and a build dir with the compiled js file (which tsc biulds automatically which you don't touch)
+
+To do so, make a tsconfig.file by running on the terminal
+`tsc --init` inside the ROOT dir, not the src or build subdirs.
+
+### tsconfig file
+
+You have access to many options, including
+outDir and rootDir useful for file structure. They should be next to each other and relatively close to the top of the options
+
+uncomment and edit the rootDir to be `"./src"` and outDir to be `"./build"`
+
+(This is not the BEST way) but, now all you need to do in the root project dir is `tsc -w` and it will -w WATCh all ts files in src, and compile into build.
+
+Now you have an automatic ts complier that is running on save. Note that this does not run the newly built js file on save.
+
+### NODEMON and CONCURRENTLY
+
+The watch process is useful, but we still need a way to run the new js file.
+You COULD just open a new integrated terminal window and hit node build/index.js, but there is an even better way!
+
+npm init -y in root, then npm i nodemon concurrently
+nodemon will run a js file anytime the file is changed. This will be used on the build js file
+concurrently allows us to run multiple scripts at the same time. one for starting tsc, and one for nodemon at the same time
+
+package.json file scrypt should look something like this:
+
+```
+"start:build": "tsc -w",
+"start:run": "nodemon build/index.js",
+"start": "concurrently npm:start:*"
+```
 
 ## Running typescript on the browser the easy way with parcel
 
@@ -507,3 +541,15 @@ It is even better to export the interface to the class declaration files and add
 
 `class Person implements Printable {}` adding keyword 'implements' and the interface name in the class declaration will
 let ts know that the class SHOULD satisfy the interface requirements.
+
+## Type Guard
+
+Allows to tell typescript which data type you are dealing with at certain points of the code.
+Remember, an annotation with union | will limit syntax and method to one that's common to all data types unioned, which is bad.
+
+for strings, numbers, booleans, symbols and ALL other primitive types
+`if (typeof thing === 'string') {} // don't forget that the type check is a string. 'number', 'string', 'boolean', etc..`
+
+syntax for objects, Date, arrays, classes, anything with a constructor function
+`if (thing instanceof Array) {}`
+wrap all code that applies with curly braces
