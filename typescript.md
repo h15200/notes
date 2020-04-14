@@ -518,7 +518,7 @@ Also good to search keyword "required" if something isn't working in case you ar
 
 Using private and protected will hide functionality in the app to minimize breaking.
 
-## Why you always use interfaces
+## Why you should always use interfaces
 
 If you are dealing with multiple classes, say you make a method
 
@@ -535,9 +535,9 @@ interface Printable {
 const printProps = (thing: Printable): void => console.log(thing.name);
 ```
 
-It is even better to export the interface to the class declaration files and add
-
 ## class IMPLEMENTS interface
+
+It is even better to export the interface to the class declaration files and add
 
 `class Person implements Printable {}` adding keyword 'implements' and the interface name in the class declaration will
 let ts know that the class SHOULD satisfy the interface requirements.
@@ -553,3 +553,126 @@ for strings, numbers, booleans, symbols and ALL other primitive types
 syntax for objects, Date, arrays, classes, anything with a constructor function
 `if (thing instanceof Array) {}`
 wrap all code that applies with curly braces
+
+## Advanced work flow. ex. sorting
+
+The main issue with classes ONLY approach is that you want reusable code. You always start with a class that has methods.
+When you think about what type the class takes in the constructor, you run into problems as you want a wide range of data types, but
+using union operator | makes everything an inner join which is bad, and even use type guards makes the code very long and hard to read.
+
+The solution is to always have the generic main class take in an INTERFACE which can take in a wide range of data types as long as the minimum requirements are present.
+
+1. Usually start with a main class that contains a method with the logic only.
+   Looks almost like pseudocode
+
+Sorter.ts (capitalized for class)
+
+```
+class Sorter {
+  sort() {
+    for () // short hand for example. In reality, you would implement two for loops for a bubble sort.
+    for()
+    if (this.collection.compare()) {
+      this.collection.swap()
+    }
+  }
+}
+// sorter will not have access to numbers directly. It will only deal with NumbersCollection.
+```
+
+2. Make an interface Sortable that says, anything with a length, a sort, and a swap can be plugged in into sort.
+
+3. Make classes by data type that satisfies the interface, and does the logic for figuring out length/sort/swap for that data type.
+
+NumbersCollection.ts (just for arrays of number)
+
+```
+class NumbersCollection implements Sortable{
+  data: number[];
+  swap (i, j);
+  compare(i, j);
+  length: number
+
+}
+```
+
+4. Now you can plug in any data type into the first function as long as it satisfies the interface!
+
+## Type annotation for functions with edge cases
+
+If you want to write edge cases for functions, do not allow the function to return null.
+Instead, throw errors.
+
+For example, let's say you want to return the index
+
+```
+// bad example:
+
+at(index:number): number | null{
+  if (index < 0 ) {
+    return null
+  }
+  else return arr[index]
+}
+```
+
+```
+// better
+at(index: number); number {
+  if (index < 0 ) {
+    throw new Error('input is out of bounds')
+  }
+  else return arr[index]
+}
+```
+
+## Abstract classes
+
+In TS, classes that never get called directly to make a new object is useful.
+Abstract classes puts restrictions on a class so that it can only be a parent class (called by extends)
+
+Since it's always being extended in another class, it can contain references to "this" that may not make sense on its own, but works in the context of the child class.
+
+ex
+
+```
+class Print {
+  print(): void {
+    console.log(this.age)
+  }
+}
+// here this.age doesn't exist, and would trigger an error, but it makes sense in the next scenario.
+
+class Child extends Print {
+  constructor(public age: number) {}
+  // now this.age exists
+}
+```
+
+Above is the perfect use case for abstract classes so that typescript doesn't triggter errors.
+
+The syntax looks like this. Make sure you include the abstract promises in the body
+
+```
+abstract class Print {
+  abstract age: number;
+  print(0: void {
+    console.log(this.age)
+  }
+}
+// this abstract class PROMISES that the child class will have a property called age, which is a number, which can be accessed with this.age
+```
+
+## Interfaces vs Inheritance / Abstract Classes
+
+Interfaces
+
+1. Sets up a contract between different classes
+2. Use when you have different objects that we want to work together
+3. Loose coupling
+
+Abstract Classes / Inheritance
+
+1. Sets up a contract between different classes
+2. Use when we are trying to build up a definition of an object
+3. Strongly couples classes together
