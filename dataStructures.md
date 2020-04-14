@@ -223,3 +223,12 @@ the value of the current node, so it has a CHANCE of doing everything in half th
 If the tree is unbalanced, at worst, it could still take linear time.
 
 In strict computer science, an empty binary tree that has a root of null is still a valid binary tree
+
+### Binary Tree height (sometimes called depth)
+
+Maximum height is the largest distance between a root and a leaf
+Minimum height is the smallest distance between a root and a leaf.
+
+In a balanced tree, the max and min height will vary by only 1.
+
+The algorithm I came up with to find the height was to build an array of nodes for every height, loop through the array and send all available left and right branches to the next arr, determine if leaf or not and call the next array with the same function recursively.
