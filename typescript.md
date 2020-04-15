@@ -676,3 +676,59 @@ Abstract Classes / Inheritance
 1. Sets up a contract between different classes
 2. Use when we are trying to build up a definition of an object
 3. Strongly couples classes together
+
+## Using node apis inside typescript
+
+Just like npm packages, TS needs type definition files for fs, http, os, and other node APIs.
+You can NOT use the standard `const fs = require('fs')` as TS will not recognize the library.
+
+For regular npm libraries, we searched for @types/{packageName} for type def files.
+
+For node APIs, it is NOT the case. It is always the same file, @types/node
+`npm i @types/node`
+
+Now you can use `import fs from 'fs'`
+As typescript can use es6 moduels.
+
+You can also use the old `const fs = require('fs')` now
+
+## enum (enumeration)
+
+Also used in databases
+Enums set a parameter for accepted values.
+
+The main usage is to let the dev team know that these are the possible values for this topic.
+
+Convention to use capital leter for the enum type as well as each value
+Syntax - notice how the value of each type is assigned by an equal sign and not a semi colon.
+
+```
+enum MatchResult {
+  HomeWin = 'H',
+  AwayWin = 'A',
+  Draw = 'D'
+}
+```
+
+This also creates a type inside typescript. Values are accessible by MatchResult.HomeWin
+Syntax for calling values are the same as objects.
+
+It is possible to create an enum without assigning any values.
+
+When compiled to JS, enums are turned into JS objects.
+
+Enums should be used for a KNOWN, SMALL set of data that doesn't change over time.
+
+### enum type assertion
+
+After declaring enum, you can assert the type of 'H', 'A', or 'D' with keyword as.
+
+```
+let char = 'H';
+
+let x = char as MatchResult
+// char is still a string
+// x is type MatchResult and not a string
+```
+
+## 2 Main concepts of making reusable code

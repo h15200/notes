@@ -100,14 +100,14 @@ AND name LIKE('Patricia%')
 
 Select all data from the table with the year 1970 with the subject that is NOT 'History' or 'Geography' for all names that start with 'Patricia'
 
-### WHERE \_\_\_ IS NULL
+### WHERE row IS NULL
 
 Used if you want the field to be null. Do not use equal signs
 Also used for JOINS. See below
 
 ## UNION()
 
-Adding UNION() will append another SELECT after the first SELECT. Both queries MUST have the same SELECT value (\*, or comma separated row names). All query information fo the 2nd query goes inside the parens in union.
+Adding UNION() will append another SELECT after the first SELECT. Both queries MUST have the same SELECT value (or comma separated row names). All query information for the 2nd query goes inside the parens in union.
 
 ```
 SELECT *
@@ -352,6 +352,16 @@ Used inside an update to swap the nubmers 1 to 2 and 2 to 1
 UPDATE salary
 Set num = (CASE WHEN num = 1 THEN 2
             WHEN num = 2 THEN 1 END)
+```
+
+Depending on usage, you may need to wrap the case in a SUM() function
+
+```
+SELECT id,
+    SUM(case when color='Red' then quantity else 0 end) as red_quantity,
+    SUM(case when color='Yellow' then quantity else 0 end) as yellow_quantity,
+    SUM(case when color='Blue' then quantity else 0 end) as blue_quantity
+from test group by id
 ```
 
 # UPDATE

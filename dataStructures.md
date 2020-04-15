@@ -229,6 +229,34 @@ In strict computer science, an empty binary tree that has a root of null is stil
 Maximum height is the largest distance between a root and a leaf
 Minimum height is the smallest distance between a root and a leaf.
 
-In a balanced tree, the max and min height will vary by only 1.
+In a balanced tree, the max and min height will vary at most by 1.
 
 The algorithm I came up with to find the height was to build an array of nodes for every height, loop through the array and send all available left and right branches to the next arr, determine if leaf or not and call the next array with the same function recursively.
+
+### Tree Search Methods (Depth first, Breadth first
+
+In a depth-first search, a given subtree is explored as deeply as possible before starting a search on another subtree.
+
+Three Types of depth-first searches. All of these use recursive algorithms
+
+```
+                1
+           2         3
+        4     5          6
+```
+
+1. In-order - Begin at left subtree(2), go deeper if there is another subtree (node with more branches). Get left node, root, then right node. Back up to root (of the subtree you were on) return that, then the right subtree of that root.
+   ex from top- 4, 2, 5, 1, 3, 6
+2. Pre-order - Return values from the root and end in the leaf
+
+ex - 1, 2, 4, 5, 3, 6
+
+3. Post-order - Return values from the leaf and end in the root for each subtree
+   ex - 4, 5, 6, 2, 3, 1
+
+### Breath first search
+
+Get all the nodes in a certain depth first by having a queue that keeps track and loops through everything
+
+Left to right - for above example would be 1,2,3,4,5,6
+Right to Left - for above would be 1, 3, 2, 6, 5, 4
