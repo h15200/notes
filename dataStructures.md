@@ -260,3 +260,13 @@ Get all the nodes in a certain depth first by having a queue that keeps track an
 
 Left to right - for above example would be 1,2,3,4,5,6
 Right to Left - for above would be 1, 3, 2, 6, 5, 4
+
+### Deleting from a tree
+
+Deletion is difficult because of the links before and after.
+
+One of three things will happen.
+
+1. If deletion target is a leaf node, delete the node, and nullify parent's left or right.. wherever the target was
+2. Target has one child - Target is removed, the parent target link is relinked to the single child of the deletion.
+3. Target has two children - Target is removed, then you have to figure out how to link the two children.

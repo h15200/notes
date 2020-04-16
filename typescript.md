@@ -732,3 +732,221 @@ let x = char as MatchResult
 ```
 
 ## 2 Main concepts of making reusable code
+
+1. Inheritance - Abstract classes to make a class CREATOR through extending the template class. Add placehold generics for the exact type that the creator class reads. This is defined in the child class.
+
+Inheritance = Is a relationship. One class IS an instance of another class.
+
+2. Composition - Make an interface for the adaptor to plug into classes. Usually will involve making 2 classes that work with each other.
+
+Composition = Has a relationship. One class has a relationship with another, but it is not an intance.
+
+## Inheritance + Geneerics
+
+Like function arguments, but for types in class/function definnitions
+Allows us to define the type of a property/argument/return value at a FUTURE point
+Used heavily for reusable code.
+
+syntax:
+
+```
+class HoldNumber {
+  data: number
+}
+ const holdNum = new HoldNumber;
+holdNum.data = 5;
+
+class HoldString {
+  data: string
+}
+const holdStr = new HoldString;
+holdStr.data = 'hello!'
+
+// a better way to do both above using generics is:
+
+// much like function arguments, this promises the new key word declaration to have a TYPE generic
+class HoldAnything<TypeOfData> {
+  data: TypeOfData;
+}
+
+const holdNumber = new HoldAnything<number>(); // this created HoldNumber
+
+Now for the class instance, holdNumber, everything inside the class where it said <TypeOfData> is replaced by string!
+```
+
+Generics are even more powerful when used with abstract classes
+By convention, `<TypeOfData>` is usually abbreviated to just `<T>`
+
+```
+export abstract class CsvFileReader<T> {
+  data: T[] = []; // empty strings can be valid for a string of tuples.
+  constructor(public fileName: string) {} // assigns input to this.fileName
+  abstract mapRow(row: string[]): T;
+
+  read(): void {
+    this.data = fs
+      .readFileSync(this.fileName, {
+        encoding: 'utf-8',
+      })
+      .split('\n')
+      .map((row: string): string[] => row.split(','))
+      .map(this.mapRow); // to array of strings
+  }
+}
+
+// another file with the child class
+import { CsvFileReader } from './CsvFileReader';
+import { MatchResult } from './MatchResult';
+import { dateStringToDate } from './utils';
+
+type MatchData = [Date, string, string, number, number, MatchResult, string];
+// tuple type
+
+export class MatchReader extends CsvFileReader<MatchData> {
+  mapRow(row: string[]): MatchData {
+    return [
+      dateStringToDate(row[0]),
+      row[1],
+      row[2],
+      parseInt(row[3]),
+      parseInt(row[4]),
+      row[5] as MatchResult,
+      row[6],
+    ];
+  }
+}
+
+// with the child class MatchReader, now class CsvReader will replace <TypeOfResult> to MatchData, which is a tuple - [Data, string, string, number, number, MatchResult, string];
+// const newMatch = new MatchReader(fileName);
+```
+
+REMEMBER once T is declared in the beginning of the class <T>, the following references will just be T without <>
+
+## Composition + interface
+
+```
+export class CsvFileReader {
+  data: string[][] = []; // empty strings can be valid
+  constructor(public fileName: string) {} // assigns input to this.fileName
+  read(): void {
+    this.data = fs
+      .readFileSync(this.fileName, {
+        encoding: 'utf-8',
+      })
+      .split('\n')
+      .map((row: string): string[] => row.split(',')); // to array of strings
+  }
+}
+
+// then in another file
+
+import { dateStringToDate } from './utils';
+import { MatchResult } from './MatchResult';
+
+type MatchData = [Date, string, string, number, number, MatchResult, string];
+// tuple type
+
+interface DataReader {
+  read(): void;
+  data: string[][]; // this can initially be empty array
+}
+
+// MatchReader is constructed with a DataReader type, which contains a read() method and data
+export class MatchReader {
+  matches: MatchData[] = [];
+  constructor(public reader: DataReader) {}
+
+  load(): void {
+    this.reader.read();
+    this.matches = this.reader.data.map(
+      (row: string[]): MatchData => {
+        return [
+          dateStringToDate(row[0]),
+          row[1],
+          row[2],
+          parseInt(row[3]),
+          parseInt(row[4]),
+          row[5] as MatchResult,
+          row[6],
+        ];
+      }
+    );
+  }
+}
+```
+
+## Current trend, Misconception of composition
+
+Composition vs Inheritiance is valid discussion, but the definition of composition is mostly incorrect in the js community.
+
+Composition involves DELAGATION, which means a class has reference to another intance of a class rather than being another class.
+
+```
+const rectangular = state => {
+  return {
+    area: ()=> state.height * state.height
+}
+}
+
+const openable = state => {
+  return {
+    toggleOpen: () => { state.open = !state.open}
+  }
+}
+
+const buildRectangleWindow = state => {
+  return Object.assign(state, rectangular(state), openable(state))
+}
+
+This is just another version of INHERITANCE and NOT composition
+```
+
+## other tips
+
+As a reminder, an interface is a type for objects and instances of types that's used to feed to the constructor method when invoking a new class (usually)
+
+When using multiple compositions, you may notice that you want to call a function through the class WITHOUT creating an instance of it. Youc an use static functions that can be called by the class ITSELF (as opposed to an instance of a class). Static methods are written with the keyword static before the constructor. Remember, the constructor info is not available for static methods as those are only present in instances of that class
+
+Using static classes will make the code much less verbose, but it may not be clear to other devs what the implementation are without going inside each class declaration files
+
+## More advanced generics
+
+```
+class ArrayOfAnything<T> {
+  constructor(public collection: T[]) {}
+  get(index: number): T {
+    return this.collection[index];
+  }
+}
+
+const test = new ArrayOfAnything<boolean>([true, false, false]);
+
+// however, type inference will kick in so you don't even need to specify <> when calling an intance
+
+// this is ok
+const test = new ArrayofAnything([true,false,false])
+```
+
+This is type inference around generics for classes.
+Although it's useful, it is better to always put in <type> in the invokation to check for errors
+
+## Generics with Functions
+
+syntax for regular declarations
+
+```
+function printFirstElementOfArrOfAnything<T>(arr: T[]): void {
+  console.log(arr[0])
+}
+
+printFirstElementOfArrOfAnything<string>(['hi', 'there'])
+// again, instead of relying on type inference for generics, always best practice to specify <type>
+```
+
+For es6
+
+```
+const printFirstElementOfArrOfAnything = <T>(arr: T[]): void => {
+  console.log(arr[0]_)
+};
+```
