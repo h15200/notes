@@ -26,6 +26,8 @@ and a build dir with the compiled js file (which tsc biulds automatically which 
 To do so, make a tsconfig.file by running on the terminal
 `tsc --init` inside the ROOT dir, not the src or build subdirs.
 
+## Setting up a TS project JUST IN NODE
+
 ### tsconfig file
 
 You have access to many options, including
@@ -54,7 +56,7 @@ package.json file scrypt should look something like this:
 "start": "concurrently npm:start:*"
 ```
 
-## Running typescript on the browser the easy way with parcel
+## Running typescript ON THE BROWSER the easy way with parcel
 
 npm -g i parcel-bundler
 
