@@ -950,3 +950,40 @@ const printFirstElementOfArrOfAnything = <T>(arr: T[]): void => {
   console.log(arr[0]_)
 };
 ```
+
+## Generic Contraints in functions
+
+Sometimes, you need something specific from a generic for future use, like a method on that.
+To do that, you must put a contrainst on the generic with an interface and extending.
+
+```
+// generic constrains
+// what if it's an array of objects with print methods inside?
+
+class Car {
+  print() {
+    console.log('I am a car');
+  }
+}
+
+class House {
+  print() {
+    console.log('I am a house');
+  }
+}
+
+// returns error since TS doesn't know that T will have a prop of print without interface
+// solution is to make an interface and have T extend an interface
+
+interface Printable {
+  print(): void;
+}
+
+const printCarOrHouse = <T extends Printable>(arr: T[]): void => {
+  for (let i = 0; i < arr.length; i++) {
+    arr[i].print();
+  }
+};
+
+printCarOrHouse<Printable>([new Car(), new House()]);
+```
