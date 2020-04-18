@@ -270,3 +270,38 @@ One of three things will happen.
 1. If deletion target is a leaf node, delete the node, and nullify parent's left or right.. wherever the target was
 2. Target has one child - Target is removed, the parent target link is relinked to the single child of the deletion.
 3. Target has two children - Target is removed, then you have to figure out how to link the two children.
+
+Removing a node with two Children is the most difficult process out of the three.
+
+there are two possible methods.
+
+You can either get the lowest value in the right subtree of the target and replace with target
+Or
+Get the highest value in the left subtree of the target and replace with target
+
+Here's an example using the 1st method of finding the replacement node in the right subtree which has the lowest value
+
+            ```
+                10
+          5                 20
+                         15     30
+                   12
+                      13
+                      ```
+
+If target is value 10, the root, you must go through the entire subtree that starts with value 20.
+from there, you'll see that 12 is the lowest.
+Note that the replacement node will at MOST have 1 child. If it had two nodes, it wouldn't be the smallest value
+root 10 becomes root 12
+the new root, 12.right is still 20 as before
+We must now delete where 12 was
+12's old parent, 15 will either be null (if 12 was a leaf) or take on 12's child as it's child that used to be 12
+
+new structure is
+
+             ```
+             12
+    5                   20
+                    15         30
+                13
+                ```

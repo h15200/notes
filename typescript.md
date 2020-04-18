@@ -94,6 +94,19 @@ Colon and data type after each parameter will specity the type of data coming in
 
 ## Interface - more in depth below
 
+### Optional properties
+
+```
+interface User {
+  name?: string;
+  age?: age;
+}
+// it CAN have a name and it CAN have an age, but it doens't have to.
+// what about empty objects? YES! so implement the logic so that it doesn't become a problem.
+// for example, a setter should use something like Object.assign(thingToChange, interfaceObject) so that an empty set
+// won't make any changes.
+```
+
 Interface will define the structure of a new Type
 
 ```
@@ -216,6 +229,23 @@ Destructuring with annotation is like this:
 
 `const printObj = ( {a, b}: {a: number, b: number}): void => console.log(a, b)
 
+If you want to annotate a callback, syntax is <nameofcallback>: (argOfCallback) => {}
+
+```
+const someFunc = (number: number, callback: () => {}): number {
+  return callback(number)
+}
+```
+
+You can use a type alias to create the callback annotation outside the function as well.
+`type Callback = () => void`
+
+Note how in the function body way, it's func: () => {}  
+but in the alias, it's () => void
+they both say a function that takes in no args and returns void
+
+now `const someFunc = (number: number, callback:Callback) { return callback(number)}`
+
 ### VOID
 
 Annoting return value as void will accept undefined and null
@@ -231,21 +261,23 @@ but in most cases you'll return something so 'never' is rarely used
 ## Annotating objects with destructuring
 
 ```
+
 const profile = {
-  name: 'Patti',
-  age: 20,
-  coords: {
-    x: 30,
-    y: 60,
-  },
-  // using method shorthand
-  setAge(age: number): void {
-    this.age = age;
-  },
+name: 'Patti',
+age: 20,
+coords: {
+x: 30,
+y: 60,
+},
+// using method shorthand
+setAge(age: number): void {
+this.age = age;
+},
 };
 
 // if you want to annotate AND destructure at the same time
 const { age }: { age: number } = profile;
+
 ```
 
 To get the coords.x and coords.y with destructure WIHTOUT annotation,
@@ -253,6 +285,13 @@ To get the coords.x and coords.y with destructure WIHTOUT annotation,
 
 To do both destructuring AND annotation.. quite nasty syntax
 `const { coords: { x, y } }: { coords: { x: number; y: number }} = profile;`
+
+### Type annotation of objects where you DON'T know the name of the properties
+
+ex. {a: 1, b:2 }
+
+data: { [key: string]: number }
+// data is an object with an unknown set of properties, but the properties are all strings and the values will all be numbers
 
 ## Arrays
 
@@ -281,12 +320,14 @@ pop(), shift() , and other methods that return an item from an array will all ha
 Adding annotation in methods will solidify understanding of code
 
 ```
+
 let arr = [1, 2, 3];
 arr.forEach((item: number): void => {
-  item++;
+item++;
 });
 
 // since I'm not returning anything from the callback, return value is void
+
 ```
 
 ### Multiple Types in Arrays
@@ -294,7 +335,7 @@ arr.forEach((item: number): void => {
 It's possible to use multiple types.
 
 If declared and initialized at the same time, inference will kick in if NO annotation
-`const arr = [34, 'hello', 53];`  
+`const arr = [34, 'hello', 53];`
 // hovering over arr will say (number | string)[]
 
 If annotating, do it like so
@@ -312,8 +353,10 @@ For a one time annotation:
 For using it more times
 
 ```
+
 type Drink = [string, boolean, number];
 const coke:Drink = ['brown', false, 30];
+
 ```
 
 ## Interfaces
@@ -325,9 +368,11 @@ Inteface - Creates a new type which describes the property names and value TYPES
 Why? For working with objects (especially when calling a function with an object arg), the annotation gets quite long.
 
 ```
+
 const printVehicle = (vehicle: { name: string; year: number; broken: boolean }): void => {
-  console.log(`Name: ${vehicle.name} \n Year: ${vehicle.year} \n Broken? ${vehicle.broken}`)
+console.log(`Name: ${vehicle.name} \n Year: ${vehicle.year} \n Broken? ${vehicle.broken}`)
 }
+
 ```
 
 The argument would need to be repeated every time another function calls the vehicle object.
@@ -335,20 +380,22 @@ The argument would need to be repeated every time another function calls the veh
 To avoid this, you can set an interface to a type once, then after that simply call vehicle: Nameoftype
 
 ```
+
 interface Vehicle {
-  name: string;
-  year: number;
-  broken: boolean;
+name: string;
+year: number;
+broken: boolean;
 }
 
 const civic = {
-  name; 'honda civic';
-  year: 2000;
-  broken: true;
+name; 'honda civic';
+year: 2000;
+broken: true;
 }
 
 // now you can call the same function with this new type
 const printVehicle = (vehicle: Vehicle): void => console.log(vehicle.year)
+
 ```
 
 interface can also define the type of a return value of a method
@@ -366,15 +413,17 @@ Classes - blueprint to create an object with keys and methods to represent a "th
 Refresher for class syntax - method declaration short hand is func() {}
 
 ```
+
 class Vehicle {
-  drive(): void { console.log('chugachuga') }
+drive(): void { console.log('chugachuga') }
 }
 
 class Car extends Vehicle {
-  drive(): void { console.log('vroom') }
+drive(): void { console.log('vroom') }
 }
 const car = new Car()
 car.drive() // prints 'vroom'
+
 ```
 
 You can extend a class into a child which has the same methods. The methods can be overridden by another declaration in the child.
@@ -396,10 +445,11 @@ A child class can NOT override the MODIFIER of a method that was inherited from 
 In regular es6 if you are just setting a default prop, color
 
 ```
+
 class Vehicle {
-  color = 'red';
-  year = 2001;
-  drive() { console.log('vroom')}
+color = 'red';
+year = 2001;
+drive() { console.log('vroom')}
 }
 
 ```
@@ -407,6 +457,7 @@ class Vehicle {
 If you need to take in args (still regular es6)
 
 ```
+
 class Vehicle {
 constructor(color) {
 this.color = color;
@@ -419,26 +470,30 @@ this.color = color;
 In typescript, you need to declare the Type FIRST before the constructor AND inside the parens
 
 ```
+
 class Vehicle {
 color: string;
 constructor(color: string) {
-  this.color = color;
+this.color = color;
 }
 // methods
 }
+
 ```
 
 But there is a shorthand for the above. You can add the modifier public in the arg
 
 ```
+
 class Vehicle {
-  // omit this line now
-  constructor(public color: string) {
+// omit this line now
+constructor(public color: string) {
 // omit this too
-  }
+}
 }
 
 // This will add the field, color of type string and is the same thing as the previous code example
+
 ```
 
 You can add private or protected if you don't want direct access to Vehicle.color.
@@ -450,13 +505,15 @@ constructor of the super class automatically.
 If you want additional args for the child class, you must call the parent constructor method manually by super()
 
 ```
+
 // let's say only the child class Car asks for wheels
 
 class Car extends Vehicle {
-  constructor(public wheels: number, color: string) { // since color belongs to the parent class, do NOT add public here again
-    super(color);
-  }
+constructor(public wheels: number, color: string) { // since color belongs to the parent class, do NOT add public here again
+super(color);
 }
+}
+
 ```
 
 ## Interfaces AND Classes
@@ -531,10 +588,12 @@ When you use the pipe | or operater on classes, they will ONLY have access to co
 If you use an interface on a function, it will FILTER out the requirements of classes.
 
 ```
+
 interface Printable {
-  name: string
+name: string
 }
 const printProps = (thing: Printable): void => console.log(thing.name);
+
 ```
 
 ## class IMPLEMENTS interface
@@ -570,16 +629,18 @@ The solution is to always have the generic main class take in an INTERFACE which
 Sorter.ts (capitalized for class)
 
 ```
+
 class Sorter {
-  sort() {
-    for () // short hand for example. In reality, you would implement two for loops for a bubble sort.
-    for()
-    if (this.collection.compare()) {
-      this.collection.swap()
-    }
-  }
+sort() {
+for () // short hand for example. In reality, you would implement two for loops for a bubble sort.
+for()
+if (this.collection.compare()) {
+this.collection.swap()
+}
+}
 }
 // sorter will not have access to numbers directly. It will only deal with NumbersCollection.
+
 ```
 
 2. Make an interface Sortable that says, anything with a length, a sort, and a swap can be plugged in into sort.
@@ -589,13 +650,15 @@ class Sorter {
 NumbersCollection.ts (just for arrays of number)
 
 ```
+
 class NumbersCollection implements Sortable{
-  data: number[];
-  swap (i, j);
-  compare(i, j);
-  length: number
+data: number[];
+swap (i, j);
+compare(i, j);
+length: number
 
 }
+
 ```
 
 4. Now you can plug in any data type into the first function as long as it satisfies the interface!
@@ -608,24 +671,28 @@ Instead, throw errors.
 For example, let's say you want to return the index
 
 ```
+
 // bad example:
 
 at(index:number): number | null{
-  if (index < 0 ) {
-    return null
-  }
-  else return arr[index]
+if (index < 0 ) {
+return null
 }
+else return arr[index]
+}
+
 ```
 
 ```
+
 // better
 at(index: number); number {
-  if (index < 0 ) {
-    throw new Error('input is out of bounds')
-  }
-  else return arr[index]
+if (index < 0 ) {
+throw new Error('input is out of bounds')
 }
+else return arr[index]
+}
+
 ```
 
 ## Abstract classes
@@ -638,17 +705,19 @@ Since it's always being extended in another class, it can contain references to 
 ex
 
 ```
+
 class Print {
-  print(): void {
-    console.log(this.age)
-  }
+print(): void {
+console.log(this.age)
+}
 }
 // here this.age doesn't exist, and would trigger an error, but it makes sense in the next scenario.
 
 class Child extends Print {
-  constructor(public age: number) {}
-  // now this.age exists
+constructor(public age: number) {}
+// now this.age exists
 }
+
 ```
 
 Above is the perfect use case for abstract classes so that typescript doesn't triggter errors.
@@ -656,13 +725,15 @@ Above is the perfect use case for abstract classes so that typescript doesn't tr
 The syntax looks like this. Make sure you include the abstract promises in the body
 
 ```
+
 abstract class Print {
-  abstract age: number;
-  print(0: void {
-    console.log(this.age)
-  }
+abstract age: number;
+print(0: void {
+console.log(this.age)
+}
 }
 // this abstract class PROMISES that the child class will have a property called age, which is a number, which can be accessed with this.age
+
 ```
 
 ## Interfaces vs Inheritance / Abstract Classes
@@ -705,11 +776,13 @@ Convention to use capital leter for the enum type as well as each value
 Syntax - notice how the value of each type is assigned by an equal sign and not a semi colon.
 
 ```
+
 enum MatchResult {
-  HomeWin = 'H',
-  AwayWin = 'A',
-  Draw = 'D'
+HomeWin = 'H',
+AwayWin = 'A',
+Draw = 'D'
 }
+
 ```
 
 This also creates a type inside typescript. Values are accessible by MatchResult.HomeWin
@@ -726,11 +799,13 @@ Enums should be used for a KNOWN, SMALL set of data that doesn't change over tim
 After declaring enum, you can assert the type of 'H', 'A', or 'D' with keyword as.
 
 ```
+
 let char = 'H';
 
 let x = char as MatchResult
 // char is still a string
 // x is type MatchResult and not a string
+
 ```
 
 ## 2 Main concepts of making reusable code
@@ -752,14 +827,15 @@ Used heavily for reusable code.
 syntax:
 
 ```
+
 class HoldNumber {
-  data: number
+data: number
 }
- const holdNum = new HoldNumber;
+const holdNum = new HoldNumber;
 holdNum.data = 5;
 
 class HoldString {
-  data: string
+data: string
 }
 const holdStr = new HoldString;
 holdStr.data = 'hello!'
@@ -768,32 +844,34 @@ holdStr.data = 'hello!'
 
 // much like function arguments, this promises the new key word declaration to have a TYPE generic
 class HoldAnything<TypeOfData> {
-  data: TypeOfData;
+data: TypeOfData;
 }
 
 const holdNumber = new HoldAnything<number>(); // this created HoldNumber
 
 Now for the class instance, holdNumber, everything inside the class where it said <TypeOfData> is replaced by string!
+
 ```
 
 Generics are even more powerful when used with abstract classes
 By convention, `<TypeOfData>` is usually abbreviated to just `<T>`
 
 ```
-export abstract class CsvFileReader<T> {
-  data: T[] = []; // empty strings can be valid for a string of tuples.
-  constructor(public fileName: string) {} // assigns input to this.fileName
-  abstract mapRow(row: string[]): T;
 
-  read(): void {
-    this.data = fs
-      .readFileSync(this.fileName, {
-        encoding: 'utf-8',
-      })
-      .split('\n')
-      .map((row: string): string[] => row.split(','))
-      .map(this.mapRow); // to array of strings
-  }
+export abstract class CsvFileReader<T> {
+data: T[] = []; // empty strings can be valid for a string of tuples.
+constructor(public fileName: string) {} // assigns input to this.fileName
+abstract mapRow(row: string[]): T;
+
+read(): void {
+this.data = fs
+.readFileSync(this.fileName, {
+encoding: 'utf-8',
+})
+.split('\n')
+.map((row: string): string[] => row.split(','))
+.map(this.mapRow); // to array of strings
+}
 }
 
 // another file with the child class
@@ -805,21 +883,22 @@ type MatchData = [Date, string, string, number, number, MatchResult, string];
 // tuple type
 
 export class MatchReader extends CsvFileReader<MatchData> {
-  mapRow(row: string[]): MatchData {
-    return [
-      dateStringToDate(row[0]),
-      row[1],
-      row[2],
-      parseInt(row[3]),
-      parseInt(row[4]),
-      row[5] as MatchResult,
-      row[6],
-    ];
-  }
+mapRow(row: string[]): MatchData {
+return [
+dateStringToDate(row[0]),
+row[1],
+row[2],
+parseInt(row[3]),
+parseInt(row[4]),
+row[5] as MatchResult,
+row[6],
+];
+}
 }
 
 // with the child class MatchReader, now class CsvReader will replace <TypeOfResult> to MatchData, which is a tuple - [Data, string, string, number, number, MatchResult, string];
 // const newMatch = new MatchReader(fileName);
+
 ```
 
 REMEMBER once T is declared in the beginning of the class <T>, the following references will just be T without <>
@@ -827,17 +906,18 @@ REMEMBER once T is declared in the beginning of the class <T>, the following ref
 ## Composition + interface
 
 ```
+
 export class CsvFileReader {
-  data: string[][] = []; // empty strings can be valid
-  constructor(public fileName: string) {} // assigns input to this.fileName
-  read(): void {
-    this.data = fs
-      .readFileSync(this.fileName, {
-        encoding: 'utf-8',
-      })
-      .split('\n')
-      .map((row: string): string[] => row.split(',')); // to array of strings
-  }
+data: string[][] = []; // empty strings can be valid
+constructor(public fileName: string) {} // assigns input to this.fileName
+read(): void {
+this.data = fs
+.readFileSync(this.fileName, {
+encoding: 'utf-8',
+})
+.split('\n')
+.map((row: string): string[] => row.split(',')); // to array of strings
+}
 }
 
 // then in another file
@@ -849,32 +929,33 @@ type MatchData = [Date, string, string, number, number, MatchResult, string];
 // tuple type
 
 interface DataReader {
-  read(): void;
-  data: string[][]; // this can initially be empty array
+read(): void;
+data: string[][]; // this can initially be empty array
 }
 
 // MatchReader is constructed with a DataReader type, which contains a read() method and data
 export class MatchReader {
-  matches: MatchData[] = [];
-  constructor(public reader: DataReader) {}
+matches: MatchData[] = [];
+constructor(public reader: DataReader) {}
 
-  load(): void {
-    this.reader.read();
-    this.matches = this.reader.data.map(
-      (row: string[]): MatchData => {
-        return [
-          dateStringToDate(row[0]),
-          row[1],
-          row[2],
-          parseInt(row[3]),
-          parseInt(row[4]),
-          row[5] as MatchResult,
-          row[6],
-        ];
-      }
-    );
-  }
+load(): void {
+this.reader.read();
+this.matches = this.reader.data.map(
+(row: string[]): MatchData => {
+return [
+dateStringToDate(row[0]),
+row[1],
+row[2],
+parseInt(row[3]),
+parseInt(row[4]),
+row[5] as MatchResult,
+row[6],
+];
 }
+);
+}
+}
+
 ```
 
 ## Current trend, Misconception of composition
@@ -884,23 +965,25 @@ Composition vs Inheritiance is valid discussion, but the definition of compositi
 Composition involves DELAGATION, which means a class has reference to another intance of a class rather than being another class.
 
 ```
+
 const rectangular = state => {
-  return {
-    area: ()=> state.height * state.height
+return {
+area: ()=> state.height \* state.height
 }
 }
 
 const openable = state => {
-  return {
-    toggleOpen: () => { state.open = !state.open}
-  }
+return {
+toggleOpen: () => { state.open = !state.open}
+}
 }
 
 const buildRectangleWindow = state => {
-  return Object.assign(state, rectangular(state), openable(state))
+return Object.assign(state, rectangular(state), openable(state))
 }
 
 This is just another version of INHERITANCE and NOT composition
+
 ```
 
 ## other tips
@@ -914,11 +997,12 @@ Using static classes will make the code much less verbose, but it may not be cle
 ## More advanced generics
 
 ```
+
 class ArrayOfAnything<T> {
-  constructor(public collection: T[]) {}
-  get(index: number): T {
-    return this.collection[index];
-  }
+constructor(public collection: T[]) {}
+get(index: number): T {
+return this.collection[index];
+}
 }
 
 const test = new ArrayOfAnything<boolean>([true, false, false]);
@@ -927,6 +1011,7 @@ const test = new ArrayOfAnything<boolean>([true, false, false]);
 
 // this is ok
 const test = new ArrayofAnything([true,false,false])
+
 ```
 
 This is type inference around generics for classes.
@@ -937,20 +1022,24 @@ Although it's useful, it is better to always put in <type> in the invokation to 
 syntax for regular declarations
 
 ```
+
 function printFirstElementOfArrOfAnything<T>(arr: T[]): void {
-  console.log(arr[0])
+console.log(arr[0])
 }
 
 printFirstElementOfArrOfAnything<string>(['hi', 'there'])
 // again, instead of relying on type inference for generics, always best practice to specify <type>
+
 ```
 
 For es6
 
 ```
+
 const printFirstElementOfArrOfAnything = <T>(arr: T[]): void => {
-  console.log(arr[0]_)
+console.log(arr[0]\_)
 };
+
 ```
 
 ## Generic Contraints in functions
@@ -959,33 +1048,39 @@ Sometimes, you need something specific from a generic for future use, like a met
 To do that, you must put a contrainst on the generic with an interface and extending.
 
 ```
+
 // generic constrains
 // what if it's an array of objects with print methods inside?
 
 class Car {
-  print() {
-    console.log('I am a car');
-  }
+print() {
+console.log('I am a car');
+}
 }
 
 class House {
-  print() {
-    console.log('I am a house');
-  }
+print() {
+console.log('I am a house');
+}
 }
 
 // returns error since TS doesn't know that T will have a prop of print without interface
 // solution is to make an interface and have T extend an interface
 
 interface Printable {
-  print(): void;
+print(): void;
 }
 
 const printCarOrHouse = <T extends Printable>(arr: T[]): void => {
-  for (let i = 0; i < arr.length; i++) {
-    arr[i].print();
-  }
+for (let i = 0; i < arr.length; i++) {
+arr[i].print();
+}
 };
 
 printCarOrHouse<Printable>([new Car(), new House()]);
+
+```
+
+```
+
 ```

@@ -44,3 +44,9 @@ const html = `
 </div>
 `
 ```
+
+## Object.assign()
+
+target first, then the additional (or overwrite) props starting 2nd arg. Can be multiple.
+
+If an empty obj is the 2nd arg, nothing will change in the target
