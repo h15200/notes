@@ -1,0 +1,468 @@
+# Current Landscape
+
+2020 - vanilla CSS is growing to cover things that bootstrap and other pre-processors used to do. Bootstrap is on the way out. SCSS is still good for nesting and slightly easier variable, mixins, and functions, but CSS will probably cover these in the next few years. Stick only with SCSS (and CSS when possible) and for now don't bother with bootstrap or LESS.
+
+Reset library is no longer needed.
+Just use this at the top of every project
+
+```
+html {
+  box-style: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+*, *::before, *::after {
+  box-style: inherit;
+  margin: inherit;
+  padding: inherit;
+}
+
+```
+
+# Recent Mistakes
+
+- You can't style fragment tags in react because they don't exist on rendering!
+
+* You can NOT a z-index on things that are position:static.
+
+* Multiple background images can be added with comma separated values, but you must remember to change the opacity of the top layer to less than 1 to see the bottom images, OR use the newish background-blend-mode prop. see h2 topic later in this file
+
+* using vanilla css variables for color and changing opacity later
+
+```
+// declaration in root
+
+:root {
+  --color-primary-dark: #333;
+}
+
+// to use color primary dark with an opacity of .5,
+// wrap the var + , + opacity value all under rgba()
+
+h1 {
+  color: rgba(var(--color-primary-dark), .5);
+}
+```
+
+- tranparent is a valid color
+
+- If a keyframe animation is glitchy, backface-visibility: hidden; could be a weird fix
+
+- You CAN change the ::after element on hover of the original like this.
+  `.btn:hover::after {}`
+
+- SCSS specific. To use calc() with a variable, you need an additional #{} inside
+
+```
+.div {
+  width: calc($my_num + 3)
+}
+
+// this does NOT work!
+
+// add hash and curly braces to use scss variables along with numbers
+
+.div {
+  width: calc(#{ $my_num } + 5)
+}
+```
+
+- Setting a border-radius on background-image
+  When setting a background-image on a rounded container, the edges will overflow. Simply set `overflow: hidden` on the container to have the image rounded.
+
+# File Structure
+
+For big projects, I used 7 in 1 approach
+
+The gist is you separate all scss files into smaller files into the appropriate folders
+
+variables/ font, breakpoints, colors, etc..
+helpers/ helper functions
+layout/ any global stylings (after resets)
+components/
+base/ any universal resets
+utils.scss - not a dir, but a while with all helpers like .u_margin_bottom_small
+main.scss - hub for all of the above
+
+# CSS and CSS with React
+
+## class name convention BEM
+
+Block - Element - Modifier
+
+Sort of takes on the spirit of bootstrap. identify the location and the THING to make it reusable
+
+if a button is part of the nav
+
+class="btn nav-btn"
+
+and if it's blue
+
+class="btn nav-btn nav-btn--blue"
+
+for React, convention is slightly different, but it doesn't really matter. Do your thing as long as you can recognize it.
+
+## Variables (custom properties)
+
+Syntax is
+
+```
+
+// declaration in root
+
+:root {
+--color-primary-dark: #333;
+}
+
+// use it like so
+
+h1 {
+color: var(--color-primary-dark);
+}
+
+```
+
+## Utility Classes
+
+In the 7 in 1 approach, in the \_utils.scss, make helpful classes like:
+`.u_center_text // center whatever is a child in this div`
+`.u_bottom_margin_2 // bottom margin 2rem on this element`
+
+Bottom margins are especially helpful
+
+To use css modules make sure to use the same style class, then import the `_utilities.scss` into main,
+and the whatever.module.scss should import main
+
+## Sibling Selector + ~, Hover state selector
+
+When using `:hover` or `:active` etc.., you can change the properties of child elements under that state that you are indicating.
+
+```
+a:hover {
+}
+// when anchor is hovered, change the properties of the anchor itself
+```
+
+```
+a:hover div {
+color: green
+}
+
+// when anchor is hovered, change the properties of the CHILD div under anchor
+
+```
+
+But for a SIBLING elements, you can use:
+
+`a.hover ~ div {}`
+the tilda `~` means ANY sibling that comes AFTER the hover element that is a div. can be multiple div elements
+
+`a.hover + div {}`
+the plus `+` means ONLY the direct next sibling. ONE div element
+
+You CAN’T select a sibling BEFORE the element or any parents of the hover element.
+
+## Body
+
+Usually good to start with:
+
+background-color gray ish
+padding 2rem ish- if you want a frame around the entire site
+font-family : someVar
+font-size:
+line-height
+
+## Links
+
+Most buttons will be anchor or Links, so include class/className btn or something to reuse code
+
+links are inline by nature, so good idea to make inline-block to have access to vertical padding/ margin
+
+All anchor tags have 4 link states:
+
+:link (unclicked, initial state)
+:hover
+:visited (a link a user has already clicked)
+:active (the exact moment the link is clicked)
+
+Generally use group a:link and a:visited to style "regular" stategeneric color, border-radius, padding, transition time, etc..
+
+And a:hover and a:active for click actions
+
+## Images
+
+Are inline elements by default, so you'd want to make it a display: block in most cases.
+
+Images need to have the appropriate resolution size to optimize performance based on device.
+If you click on an image file in vs code, you can look at the right bottom corner for the pixel size
+
+2 types of images
+
+Html images - when you use img tags and add a src
+Css images - when you use background-image and use image without declaring it html
+
+## Responsive Images with HTML
+
+### Density switching
+
+HTML
+srcset attribute instead of src and use multiple images for different densities.
+
+Density switching in HTML
+`<img srcset=”img/logo-green-1x.png 1x, img/logo-green-2x.png 2x alt=”blabla” />`
+This will allow the browser to use the first 1x png file for normal screens and 2x for high resolution screens
+
+### Resolution switching
+
+`<img srcset=”img/banner-small 300w img/banner-large 1000w" sizes="(max-width: 900px) 20vw, (max-width: 600px) 30vw, 300px src="someKindOfFallback>"`
+srcset specifies that the first image is 300 pixels wide and the second is 1000 pixels wide
+notice there are no commas but just white space separated values of `file1 size1 file2 size2 etc..`
+
+sizes specifies when to use which image. The 300px in the end is the default if neither breakpoints apply.
+Src= is a fallback in case the srcset and sizes don’t work
+
+In terms of art direction, you can allow the browser to use different image files based on the device, usually based on the screen width.
+
+### Art Direction
+
+For art direction, use `<picture>` tags with `<source>` and `<img>` inside along with a media query inside the html.
+
+```
+
+<picture
+
+<source srcset=”logo1 1x, logo2 2x”
+media=”(max-width: 37.5em)”>
+<img srcset=”stuff” alt=”stuff” src=”fallback”
+
+```
+
+## Responsive Images in CSS
+
+For css images, you can use 2 different images for background images that cover the screen. The small one can be the default (mobile first) and around 1200px - 600 x 2.
+
+Then write a media query for bigger screens and better dpi
+
+```
+
+@media (min-resolution: 192dpi) and (min-width: 600px), (min-width:2000px){
+Background-image: url(theBiggerVersion)
+}
+
+```
+
+// the comma separation is the same as an OR operator
+// if the screen size is bigger than 600 AND it’s retina, OR if it’s 2000px + regardless of dpi, use the big image
+Divide px by 16 and use em instead for best practice
+
+## Multiple background-images
+
+background-image property can take comma separated images. Both linear-gradient (or whatever gradient) made up of just colors AND a url(path) can be taken to make overlays.
+
+You can either blend the two (or more bg images) using background-blend-mode (93.5% usage) or adjusting the opacity of the top layer.
+
+Since usaability is much higher than clip-path, a good alternative although a bit verbose.
+
+## Clippath
+
+Looks cool in new sections of a site
+
+Will only show a portion of the element. The polygon will make a multi path shape based on the X Y coordinates. Separate X and Y with a whitespace, and each coordinate should be comma separated. The below example will show the ENTIRE element, so the same thing as not writing any clip path. The order of coordinates are the same as padding or margin (top, right, bottom, left) No need to add a unit for ZERO, but you can use usual units (percentage or vh is probably best for responsiveness)
+
+(use both clip-path and -webkit-clip-path)
+clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%)
+
+## Skew Entire section
+
+An alternative to clip path is to skew an entire section by using transform: skewY-(6deg);
+
+And have all direct children skew back upright
+
+`.section >* { transform: skewY(6deg);`
+
+## Center horizontally and vertically
+
+2 methods
+
+```
+
+.container {
+display: flex
+align-items: center
+Justify-elements: center
+}
+
+.container-item {
+align-items: center // centers text inside the item
+}
+
+```
+
+old school without flexbox
+
+```
+
+Position absolute (position relative on parent container)
+top: 50%
+left: 50% //now top left edge is centered
+transform: translate(-50%, 50%) // go back half the element’s height and width
+text-align: center // now content is centered
+
+```
+
+## ::before and ::after
+
+::after creates a child of the element in css alone without the help of html.
+
+Nothing will display unless you have at least two properties:
+content and display
+
+`content: ''` You must still set content to an empty string even if there is no content.
+The display should be set as the "master" element
+
+## Keyframes Animation
+
+Must have at least the keyframe name AND animation duration to activate
+optional third arg like `infinite`
+
+```
+
+p {
+animation: myAnimation .4s infinite
+}
+
+```
+
+Use @keyframes rules and implement them in elements
+For performance, best to just use TWO selectors or less inside each keyframe %
+One of the 2 is usually transform to move elements and the other is opacity.
+
+Usually necessary to start with opacity 0% at 0% of animation so the element doesn’t transport at the beginning
+
+```
+
+@keyframes slideFromLeft {
+0% {
+opacity: 0;
+transform: translate(-100px);
+}
+
+80% {
+Transform: translate(20px); // goes past final position
+
+100% {
+opacity: 1;
+transform: translate(0) // snaps back to final position
+}
+}
+
+```
+
+// you can also use ‘from’ and ‘to’ instead of 0 to 100%
+// keyframes can be declared AFTER or BEFORE the element that is implementing it
+
+Other useful settings:
+animation-delay: amount of time before the action start
+animation-timing-function: the ramp up of the animation rate - built in types
+animation-iteration-count: number of cycles
+animation-direction: which way to roll the tape
+animation-fill-mode: where the css of the element should end up
+
+When using delay, probably a good idea to use fill-mode: backwards (to start with opacity 0) as the initial state is probably better hidden.
+
+If an animation is glitchy, backface-visibility: hidden; could be a weird fix
+
+## Transition
+
+You can use transitions to select different times/cubic bezier for each type of transition separated by a comma
+
+```
+.thing {
+transition: transform .2s, width .6s cubic bezier(0,1,1,0), background-color .2s;
+}
+// all transforms will take .2s, width changes will take .6s with the curve of bezier(0,1,1,1), background-color will take .2s
+```
+
+## Text color with color gradients
+
+```
+.text{
+ background-image: linear gradient(color, color);
+ background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+```
+
+## Box shadow
+
+First value is almost always 0!
+
+A good box shadow on links and buttons
+
+```
+a:visited, a:link {
+Box-shadow: 0 .6rem 1.2rem rgba($black, 0.2)
+}
+
+a:active {
+0 .3rem .6rem rgba($black, .2)
+transform: translateY(1px);
+}
+
+// change shadow so that it looks like it's moving down on click
+```
+
+## Text shadow
+
+Don't forget to set opacity around .2
+
+A typical header shadow on hover could be:
+
+```
+h1:hover {
+text-shadow: .3rem .5rem .5rem rgba($color-black, .2);
+}
+```
+
+## Outline
+
+If you want space between the margin and the border, use outline property which works exactly the same as borders
+It also has a useful prop, `outline-offset`
+
+## scroll-behavior
+
+When you click on an anchor link (or any react version of that) that has a #section jump, the scroll behavior defaults to intantaneous jump. If you want a smoother scroll as to show the user which way we are jumping to:
+
+```
+// in the html tag
+
+html {
+  scroll-behavior: smooth;
+}
+```
+
+## Horizontal Scroll bar on just one line of text
+
+in the container div,
+
+```
+overflow-x: scroll;
+Whitespace: no-wrap.
+```
+
+## <span> glitch box-decoration-break
+
+When a span element text is broken into a new line or page, it behaves differently from regular text
+`-webkit-box-decoration-break: clone;` will take on existing margin, border, padding properties in a new line
+
+## Rotating Cards Feature
+
+Set transition to .8 s or something like that on the parent
+Make two cards (one with ::after) have them stack on stop of each other with position absolute
+
+Have the back card already hidden and rotated 180 deg on rotateY
+Backface-visibility: hidden
+
+On hover, transform rotateY(180deg) the front card, and rotate the back card back to 0 deg
+Perspective: the lower it is, the more drastic the rotation transformation is

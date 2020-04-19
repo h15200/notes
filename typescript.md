@@ -1,3 +1,15 @@
+# Cheatsheet
+
+Interface - a type for objects
+Type Guard - for multiple types, remind ts by writing if type of this value is something, then this
+
+generics - `<T>` - args for classes and class methods
+can be extended from an interface by `<T extends interfaceName>`
+`<K extends keyof T>` - any of the keys of T
+
+abstract classes - classes that can only be used as a parent class. Must be extended by a child class
+class implements interfaceName - let's ts help you build a class that satisfies the interface
+
 # Typescript
 
 Use type systems to catch errors. Used during development only.
@@ -236,6 +248,8 @@ const someFunc = (number: number, callback: () => {}): number {
   return callback(number)
 }
 ```
+
+## Type Alias
 
 You can use a type alias to create the callback annotation outside the function as well.
 `type Callback = () => void`
@@ -573,6 +587,21 @@ Often helpful to use command palette "fold 2" to only show methods and props
 Usually, you make a new instance of a class with some args.
 Also good to search keyword "required" if something isn't working in case you are missing some args.
 
+## Using node apis inside typescript
+
+Just like npm packages, TS needs type definition files for fs, http, os, and other node APIs.
+You can NOT use the standard `const fs = require('fs')` as TS will not recognize the library.
+
+For regular npm libraries, we searched for @types/{packageName} for type def files.
+
+For node APIs, it is NOT the case. It is always the same file, @types/node
+`npm i @types/node`
+
+Now you can use `import fs from 'fs'`
+As typescript can use es6 moduels.
+
+You can also use the old `const fs = require('fs')` now
+
 ## Hiding Functionality
 
 Using private and protected will hide functionality in the app to minimize breaking.
@@ -583,7 +612,7 @@ If you are dealing with multiple classes, say you make a method
 
 `printProps (thing: Animal | Car):void {console.log(thing.name)};`
 
-When you use the pipe | or operater on classes, they will ONLY have access to common properties and disgard all other unique props inside those classes.
+When you take in a constructor arg and set the TYPE to with a union (pipe | ), they will ONLY have access to common properties and disgard all other unique props inside those classes. It's better to take in one THING which is of a certain interface
 
 If you use an interface on a function, it will FILTER out the requirements of classes.
 
@@ -598,7 +627,7 @@ const printProps = (thing: Printable): void => console.log(thing.name);
 
 ## class IMPLEMENTS interface
 
-It is even better to export the interface to the class declaration files and add
+if you exactly how a class instance will be used, you can use class implements interfaceName to let TS help you build the class.
 
 `class Person implements Printable {}` adding keyword 'implements' and the interface name in the class declaration will
 let ts know that the class SHOULD satisfy the interface requirements.
@@ -695,7 +724,7 @@ else return arr[index]
 
 ```
 
-## Abstract classes
+## Abstract classes (often used with inheritance)
 
 In TS, classes that never get called directly to make a new object is useful.
 Abstract classes puts restrictions on a class so that it can only be a parent class (called by extends)
@@ -750,21 +779,6 @@ Abstract Classes / Inheritance
 2. Use when we are trying to build up a definition of an object
 3. Strongly couples classes together
 
-## Using node apis inside typescript
-
-Just like npm packages, TS needs type definition files for fs, http, os, and other node APIs.
-You can NOT use the standard `const fs = require('fs')` as TS will not recognize the library.
-
-For regular npm libraries, we searched for @types/{packageName} for type def files.
-
-For node APIs, it is NOT the case. It is always the same file, @types/node
-`npm i @types/node`
-
-Now you can use `import fs from 'fs'`
-As typescript can use es6 moduels.
-
-You can also use the old `const fs = require('fs')` now
-
 ## enum (enumeration)
 
 Also used in databases
@@ -818,7 +832,7 @@ Inheritance = Is a relationship. One class IS an instance of another class.
 
 Composition = Has a relationship. One class has a relationship with another, but it is not an intance.
 
-## Inheritance + Geneerics
+## Inheritance + Abstract + Geneerics
 
 Like function arguments, but for types in class/function definnitions
 Allows us to define the type of a property/argument/return value at a FUTURE point
@@ -903,7 +917,7 @@ row[6],
 
 REMEMBER once T is declared in the beginning of the class <T>, the following references will just be T without <>
 
-## Composition + interface
+## Composition + interface + generics
 
 ```
 
@@ -1080,6 +1094,142 @@ arr[i].print();
 printCarOrHouse<Printable>([new Car(), new House()]);
 
 ```
+
+## Type Alias with strings.
+
+In TS, specific STRINGS can be their own type.
+
+So, you can set up types as such.
+
+`type TypeName = 'hello';`
+
+All object keys are strings.
+So object KEYS can also be their OWN type as well.
+
+which leads to:
+
+## Advanced Generic Contraints
+
+### <K extends keyof T>
+
+Example of situation.
+
+You made a class that has a getInfo method that takes in an object in the constructor.
+You don't want to make an interface for the arg because you want it to be a generic, universal model.
+
+So you use
+
+```
+class printAnyValue<T> {
+  constructor(public obj: T) {}
+  get (key: string): void {
+    return this.obj[key]
+  }
+}
+```
+
+But you don't know what to write in the return of the print() method because it could be ANY data type based on the incoming obj.
+
+If you use a union |, it will be hard on the invoking end because
+
+```
+const testPrint = new printAnyValue({id: 3});
+testPrint.get('id');  // this value can be anything and TS is confused
+
+```
+
+To solve this problem, extend the T object and create K, a key generic BASED on the T generic!
+
+```
+class printAnyValue<T> {
+  constructor(public obj: T) {}
+  get<K extends keyof T>(key: K): T[K] {
+    return this.obj[key];
+  }
+}
+
+// type of K must be one of the keys of T
+// Create K just efore the method arg
+// keyword 'keyof' will make a KEY of a Generic, T
+// in the arg, key is now type annotated as a K
+// the return value is the result of calling the value of T object with the key K
+
+```
+
+## Composition logic
+
+Logic work flow
+
+1. Make one mega class `class Window which has height, shape, weight`
+2. Extract logic out by category into another class `WindowWeight class, a WindowShape class, a WindowHeight class`
+3. Implement a way to connect the main class to those other classes DEPENDING ON THE PROJECT!
+   Methods to connect classes (#3 option from above)
+
+   1. You can add a contructor arg to the main class, which requires an instance of the task-class.
+
+      ```
+       // MainClass takes in TaskClass instance
+
+      class MainClass {
+        constructor (public dataToMakeMain, instanceOfTaskClass) {}
+      }
+
+       // First make an instance of TaskClass.
+       // Then pass that instanceinto the Main on top of whatever constructors.
+
+       const task = new TaskClass(dataToMakeTask)
+       const main = new Main(dataToMakeMain, task)
+
+      ```
+
+
+           This is easy to read, but can be cumbersome if there are many taskClasses that need to be instantiated, then passed on to the MainClass. This method has the most flexibility if you want a vast variety of instances of TaskClass, as you have full control when you are making a new TaskClass
+
+           This can be improved by using a default in the constructor like
+           `constructor (public dataTomakeMain, instanceOfTaskClass = new TaskClass()) {}`
+           So that an empty arg will automatically create the default new TaskClass and pass it in.
+
+
+    2. Define a static class method (a method you can call on the class itself without creating an intance) to do boilerplating of method 1 internally. The static class is used to make a new instance INSTEAD of using new MainClass()
+
+        ```
+        // Inside MainClass, change the constructor to JUST taking in the task class
+        // remember, although you can, the purpose now is to make a new instance of MainClass without calling new MainClass, but using MainClass.staticMethod(). So the constructor is there simply to be used by the static class.
+
+        class MainClass {
+        static staticMethod(dataForBothMainAndTask) {
+          do stuff with dataForMain
+          new TaskClass()
+          make new MainClass(passInNewTaskClass)
+          return the new MainClass
+        }
+        constructor (public instanceOfTaskClass) {}
+        }
+
+        Thie method is good if you are only planning to use 1 or 2 different instances of taskClass, as each would need to be a separate static method inside the main class. Saves lines of code so you don't have to write out many new classes.
+        ```
+
+    3. hard code class instances as props of main
+
+      ```
+      class Main {
+        task: new TaskClass();
+
+        constructor(public data: StuffForMain) {}
+      }
+      ```
+
+      A new Main class automatically comes with the default class as a prop. Not flexible in terms of getting a variety of
+      instances of taskClass, but if it's always the same one, the easiest to implement.
+
+## Optional Properties
+
+When using an interface with optional properties `interface { thing?: number }`, using tsc --init and creating a tsconfig.json file will change the behavior as it will start off in strict mode. Strict mode will check for number AND undefined.
+
+## Composition workflow
+
+1. Make one big mega class with all the functionality for the app
+2. Take out functions by type, and make them universal. Start using interfaces, generics, if necessary
 
 ```
 
