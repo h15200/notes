@@ -211,6 +211,8 @@ A subtree refers to all the descendants of a specified node.
 Branches may be referred to as edges
 Leaves are nodes that don't have children
 
+Types include binary trees and tries.
+
 ### Binary Tree (Binary Search Tree in particular)
 
 A binary tree can only have 2 branches per node
@@ -281,13 +283,11 @@ Get the highest value in the left subtree of the target and replace with target
 
 Here's an example using the 1st method of finding the replacement node in the right subtree which has the lowest value
 
-            ```
                 10
           5                 20
                          15     30
                    12
                       13
-                      ```
 
 If target is value 10, the root, you must go through the entire subtree that starts with value 20.
 from there, you'll see that 12 is the lowest.
@@ -299,9 +299,17 @@ We must now delete where 12 was
 
 new structure is
 
-             ```
              12
     5                   20
                     15         30
                 13
-                ```
+
+## Trie
+
+A Trie is another type of tree
+Ordered search tree commonly used to hold strings
+They are good at storing sets of data when many keys will have overlapping prefixes, like words in a dictionary.
+Unlike binary trees, nodes are not associated with values but the storage method is the PATH we take to make that string.
+
+For example, to store "patti" in a trie, you must travel to nodes p, a, t, t, and i. The path is then stored
+Each node can store many children as well as the

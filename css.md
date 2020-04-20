@@ -24,7 +24,7 @@ html {
 
 - You can't style fragment tags in react because they don't exist on rendering!
 
-* You can NOT a z-index on things that are position:static.
+* You can NOT a z-index on things that are position:static. flex, grid items are exceptions and will always work with z-index.
 
 * Multiple background images can be added with comma separated values, but you must remember to change the opacity of the top layer to less than 1 to see the bottom images, OR use the newish background-blend-mode prop. see h2 topic later in this file
 
@@ -173,7 +173,7 @@ font-family : someVar
 font-size:
 line-height
 
-## Links
+## anchor links
 
 Most buttons will be anchor or Links, so include class/className btn or something to reuse code
 
@@ -190,6 +190,65 @@ Generally use group a:link and a:visited to style "regular" stategeneric color, 
 
 And a:hover and a:active for click actions
 
+## buttons (actual)
+
+Although most clickable thing are anchors and not buttons, some things do need to be actual button elements, like a submit button.
+
+Usually, you get rid of the default border because it's ugly and add cursor pointer
+
+## form
+
+Always wrap in a container so it’s reusable later as .form-group
+
+`font-family` defaults to something else inside all form tags, so assign back to “inherit” in css if you want the font of whatever you set in `body`
+
+To style the input focus state - turn outline to none, but always replace with some other cue such as adding box shadow and a border on focus for accessibility
+
+To prevent shifting on the border, make it in the resting state as well ex.. `Border-bottom: 3px solid transparent;` then have it a different color in focus state
+
+## input and label
+
+syntax
+
+```
+<input id="name" required placeholder="enter name" />
+<label htmlFor="name">enter name</label>
+```
+
+These are not automatically inherited from the `body`, so set them to `inherit`
+Font-family
+font-size
+Color
+
+might be good to `border: none` and background-color to grey
+
+You can style the placeholder TEXT!
+
+`input::placeholder { color; blue }`
+
+You can style on valid/invalid state INSIDE the input focus state.
+`input:focus:valid` or `input:focus:invalid`
+
+Or the valid/invalid statement of the required call itself with
+`input:required:valid` and `input:required:valid`
+
+:placeholder-shown {
+Style the input when the placeholder is displaying something
+
+### RADIO
+
+For radio, wrap in an extra container AFTER .formGroup like .formRadio
+
+Then have the buttons have the same name attribute, `type=”radio”` and id along with a label element with htmlFor same as Id
+
+You can NOT style radio buttons/check boxes in css, so you’ll have to build a new one over the existing one.
+
+Solution: since radio labels can be clicked to click on the actual radio buttons, you can hide the original button and make a new one INSIDE the label element as a span
+
+Use pseudocode :checked and if the original, now hidden button is checked, make the new DOT inside the custom button appear with opacity
+
+The original radio button should be position:fixed opacity:0 to keep the tab accessibility alive
+
 ## Images
 
 Are inline elements by default, so you'd want to make it a display: block in most cases.
@@ -201,6 +260,21 @@ If you click on an image file in vs code, you can look at the right bottom corne
 
 Html images - when you use img tags and add a src
 Css images - when you use background-image and use image without declaring it html
+
+### background-image or object-fit on img tags
+
+If you want to use image to cover an entire container,
+background-image in css is the easiest way.
+
+If you need to use img tags for gatsby or other optimization, use object-fit
+
+```
+.img {
+Height: 100%;
+Width: 100%;
+object-fit: cover
+}
+```
 
 ## Responsive Images with HTML
 
@@ -311,6 +385,21 @@ text-align: center // now content is centered
 
 ```
 
+## currentColor as a color
+
+for borders, box-shadows, and anything else on an element that could change color based on state like hover,
+use currentColor as it dynamically sets the color.
+
+If color is not indicated on this div, it will cascade from a parent that does have a color indication
+
+```
+div {
+  color: red;
+  border: 5px solid currentColor;
+  box-shadow: 0 0 5px solid currentColor;
+}
+```
+
 ## ::before and ::after
 
 ::after creates a child of the element in css alone without the help of html.
@@ -384,6 +473,36 @@ transition: transform .2s, width .6s cubic bezier(0,1,1,0), background-color .2s
 // all transforms will take .2s, width changes will take .6s with the curve of bezier(0,1,1,1), background-color will take .2s
 ```
 
+### Cubic Bezier
+
+transition: cubic-bezier:
+
+Custom timing for transition. Mess around at https://easings.net/en and cubic-bezier.com
+
+## background video
+
+Do this instead of writing `src=` as an attribute inside the video tag
+
+```
+<video>
+
+	<source stuff here />
+</video>
+```
+
+Available at coverr.com
+
+## filter
+
+Super useful when you want a hack to change the color of a picture or vector
+
+You can use filter on an image to blur, change brightness, saturation, etc..
+Useful on hover.
+
+### filter and translate: scale bug
+
+When using this with translate: scale, there might be a weird line, in which case you can use overflow: hidden on the container
+
 ## Text color with color gradients
 
 ```
@@ -412,6 +531,29 @@ transform: translateY(1px);
 
 // change shadow so that it looks like it's moving down on click
 ```
+
+## Useful Glyphs
+
+Glyphs are symbols written in html.
+
+### greater than, less than
+
+`&gt;` >
+`&lt;` <
+
+for writing code inside a `<code>` element without triggering real html
+
+### space but no content
+
+TO have an html element with no content but space on a paragraph
+`&nbsp;`
+
+### Fast and easy close button
+
+An easy way to make a close button on an anchor element.
+make line-height: 1 to center the cross inside the element
+
+`&times;`
 
 ## Text shadow
 
@@ -442,6 +584,17 @@ html {
 }
 ```
 
+## zoom in / zoom out on hover
+
+To zoom in, just use transition: scale(1.4).
+To zoom out, put an initial state of scale(1.4) and go to scale(1) on hover
+
+## shape-outside (when using floats)
+
+When floating an object, you can use shape-outside to dictate how the text outside flows around this object. A common thing to do is to use clip-path (and -webkit-clip-path) to make a shape, then use that same shape on shape-outside so the text flows around the shape
+
+Both shape-outside and clip-path should be used with prefix -webkit as well
+
 ## Horizontal Scroll bar on just one line of text
 
 in the container div,
@@ -450,6 +603,19 @@ in the container div,
 overflow-x: scroll;
 Whitespace: no-wrap.
 ```
+
+## mask - like a stencil kit
+
+As of 2020, use prefixes
+
+To put a color over an image like a mask
+
+set `background-color` to whatever color you want
+
+`mask-image : <select image>`
+`mask-size : cover` // besides `cover`, other properties in background-size will work
+
+This will make a stencil of the image in the color that you wanted.
 
 ## <span> glitch box-decoration-break
 
@@ -466,3 +632,228 @@ Backface-visibility: hidden
 
 On hover, transform rotateY(180deg) the front card, and rotate the back card back to 0 deg
 Perspective: the lower it is, the more drastic the rotation transformation is
+
+## Changing highlighted / selected text color
+
+in the base folder
+
+```
+::selection {
+  background-color: $primary-color;
+  color: $color-white
+}
+```
+
+## Pure css hamburger menu
+
+Structure:
+
+If in gatsby, place this div IN between the <Layout> component in index.js
+
+ememt code
+
+```
+Div.navigation
+        Input.navigation_checkbox id=”navi” type=”checkbox”
+        Label.navigation_button htmlFor=”navi”>   span stuff
+        Div.navigation_background  // the button that goes over the hidden input/label
+        Nav.navigation_nav  // the component that pops up
+           Ul.navigation_list
+               Li.navigation_item  a.navigation_link   x 4
+```
+
+The background will expand by 80x to cover the entire screen.
+For the new button, use one line for the span and use ::before and ::after to add 2 lines. Then on click, the middle one will hide and the before and after will form a cross.
+
+The div itself is one line, not any content inside the div, so make sure you use the height value
+
+Style the background (the actual hamburger menu) as a circle button. Position fixed
+
+The background expands on :checked to transform: scale(80) and covers the entire viewport
+
+Make sure z-index for background, button, and nav is set such that it’s (from high to low) button, nav, background
+
+On .button, <span> is just a 3px height with a background dark. Then in css add ::before and ::after and have them positioned with absolute. Have before top: -1px or something and after top:1px.
+
+On \_checkbox:checked, have the span element background-color: transparent, and the before and ::before ::after should rotate 45 degrees or -45 degrees (or even better, add an extra 180 or 360 to make the animation more dramatic) and set top to 0.
+
+Also on checked, have the nav elements appear. Keep them opacity 0 and click-event: none when not checked
+
+## Pure css popups / modals
+
+Make a component
+
+```
+div.popup id=”popup”
+   Div.popup_content
+```
+
+fixed position
+100vh
+width 100%
+dark background
+opacity 0
+visibility: hidden
+
+Using #popup in an anchor href, jump to that section
+
+Then .popup:target {
+Opacity 1
+Visibility: visible
+}
+
+### :target
+
+Will select the elemnt that has an id that is equal to the current position displayed in the url.
+For example, if you are in `myhomepage.com/about#jazzSection`
+Then it will style the element with an id of jazzSection ONLY when it is indicated in the url bar
+
+## media queries, breakpoints, mobile vs desktop first
+
+Unless the particular field is desktop majority, do mobile first. It strips down the site to its bare essentials
+
+Find break points based on content and when the layout starts breaking, not some pre made pixels
+
+Best practice to use ems for media break points
+
+syntax is
+
+for very small screen
+
+```
+@media only screen and (max-width: 25em) {
+  h1 {
+
+  }
+}
+```
+
+### advanced media query stuff
+
+Use mixins to write media queries inside the mobile version in SASS for big projects
+
+### @content
+
+allows rulesets inside the mixin when declared
+
+Use both min and max width for the middle children break points! Otherwise, you’ll have to think about the order
+
+### query by device type
+
+The way css can figure out the device type is detection of a hover type. You can add multiple media queries with a comma, which as as an OR operator
+
+```
+// either a device with a certain max width OR a device that has a mouse
+@media only screen and (max-width: whatever),
+only screen and (hover: hover) {
+  h1 {
+    color: blue
+  }
+}
+```
+
+For NON mouse devices, use `only screen and (hover: none);`
+
+### Units
+
+Use relative units when possible
+
+html {
+font-size: 100%;
+
+@include media (big-desktop) {
+font-size: 110%;
+}
+
+@include media (tab-land) {
+font-size: 85%;
+}
+@include media (tab-port) {
+font-size: 70%;
+}
+@include media (phone) {
+font-size: 65%;
+}
+
+When going through media queries, go from big to small:
+
+Base and typography
+Overall html sizing
+H1 letter spacing, size
+H2
+General layout and grid
+Page layout
+Individual components
+
+When the media query requires a new build all together, copy and paste the entire section first and then delete the ones that don’t need changes via process of elimination
+
+## @suports, caniuse.com, graceful degradation
+
+Always check to see if features are supported on most browsers
+
+For example, let’s say you want to use backdrop-filter which is supported 70% ish right now and you need a backup plan.
+
+In css, you can do this with `@supports`
+does your browser support stuff inside parens? if so, use the first line. if not, use the second line
+
+```
+@supports (backdrop-filter: blur(10px) {
+	backdrop-filter: blue(10px);
+	background-color: whateverColor;
+}
+
+// important to write out the FULL prop AND value inside the parens. it's weird, but
+you have to write the css twice for the prefered method, once in parens, and once in first line.
+
+```
+
+## sliding color highlight on hover
+
+by using ::before and ::after on hover, you can make some cool things
+like a sliding hover highlight.
+
+You make an item, and an item::before, which is the high lighted version of item.
+
+You can access the ::before item on hover over the original item with
+
+```
+item:hover::before {
+
+}
+```
+
+Making a hovering highlight example:
+
+reminder: z-index does not work on position: static!! Change to relative.
+
+```
+&_item::before {
+content: "";
+display: block;
+position: absolute;
+top: 0;
+left: 0;
+background-color: \$color-primary;
+width: 3px;
+transition: transform .2s, width .4s cubic-bezier(1,0,0,1);
+height: 100%;
+transform: scaleY(0);
+}
+
+&_item:hover::before {
+transform: scaleY(1);
+width: 100%;
+}
+
+&_link:link,
+&_link:visited {
+display: flex;
+align-items: center;
+text-decoration: none;
+text-transform: uppercase;
+color: \$color-grey-light-1;
+padding: 1rem 1.5rem;
+position: relative;
+z-index: 10;
+}
+```

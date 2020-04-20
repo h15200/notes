@@ -1230,7 +1230,73 @@ When using an interface with optional properties `interface { thing?: number }`,
 
 1. Make one big mega class with all the functionality for the app
 2. Take out functions by type, and make them universal. Start using interfaces, generics, if necessary
+3. In this last step, it may actually make sense to use inheritance to mix and match methods
+
+## Pass through methods, shorthand
+
+In composition, it's useful to make getters return the delegation function directly so you can call `user.get('id') instead of something like user.attributes.get('id')`
+
+You can do that by having a getter inside user that returns user.attributes.get.
+
+Usually it looks like this
 
 ```
+get on() {
+  return this.events.on;
+}
+```
+
+But it can be shortened to
+`on = this.events.on`
+
+Notice how there is no parens, and no return keyword.
+For getters, you don't even need to use () as it can NOT have an arg anyway
+
+## Watch out when using shorthand getters
+
+In TS (and maybe also in JS?) shorthand getters get compiled BEFORE constructor args.
+If you are accessing delagate methods that uses the constructor
 
 ```
+constructor(something:string) {
+  this.something = something }
+```
+
+Or even just initializing a property. This also comes AFTER the getter
+
+```
+class Animal {
+  shape = new Mammal()
+}
+```
+
+,references to this WILL NOT WORK as the getter code will be set BEOFORE the constructor code.
+
+However, if you sed the shorthand constructor method like
+`constructor(public something: string) {}`
+
+Then the constructor will run first!!
+
+So code order is:
+
+1. constructor shorthand
+2. getter shorthand
+3. constructor long hand, any other initialization
+4. getter long hand
+
+## Interfaces can be generics too
+
+Just classes, interfaces can be generics too
+Useful when making an inheritance model as well
+
+## Multiple Generic Types
+
+You can pass in more than one type
+
+```
+class Something<T, K> {
+
+}
+```
+
+Second one is usually labeled `<K>`

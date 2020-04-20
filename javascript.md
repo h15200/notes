@@ -50,3 +50,26 @@ const html = `
 target first, then the additional (or overwrite) props starting 2nd arg. Can be multiple.
 
 If an empty obj is the 2nd arg, nothing will change in the target
+
+## Class method syntax and 'this' binding reminder
+
+```
+class Person {
+  name: 'Patti';
+
+  greet() {
+    console.log(this.name)
+  // this is a function declaration es5 style, but short hand
+  }
+
+  greet2 = () => {
+    console.log(this.name)
+// this is es6 arrow function
+  }
+}
+
+// remember, 'this' is bound to the call site   whatever.greet().  The whatever is 'this' in the first example.
+// in the arrow function version, this is bound to the Person class no matter where the call site was
+```
+
+For this reason, you should always choose to write arrow functions methods ALL THE TIME even though it's slightly more verbose than the shorthand function declaration.
