@@ -313,3 +313,57 @@ Unlike binary trees, nodes are not associated with values but the storage method
 
 For example, to store "patti" in a trie, you must travel to nodes p, a, t, t, and i. The path is then stored
 Each node can store many children as well as the
+
+## Binary Heap
+
+A binary heap is a type of tree.
+Partially ordered
+Satisfies the heap property
+The heap property - Specifies a relationship between a parent and child node
+Max heap = all parent nodes are greater than OR equal to their child nodes
+Min heap = all parent nodes are less than OR equal to their child nodes
+
+The left and right children don't have to relate to each other in any way, as long as they satisfy the value relatiopnship with the parent node.
+
+Although it's a tree and can be represented like this
+ex of Binary Min Heap Tree
+
+```
+            10
+      20        25
+  29     37     40      29
+```
+
+It is much better to represent nodes as an array
+`[10, 20, 25, 29, 37, 40, 29]`
+
+This is because you can always figure out the index of each node and the parent.
+since index 0 is the root, index 1 is always the left child of the root. index 2 is the right child of the root.
+
+More generally, if you refactor the math,
+
+indexOfParent _ 2 + 1 = left child
+indexOfParent _ 2 + 2 = right child
+
+And you can reverse the math to get a parent from the child with:
+`Math.floor(indexOfChild / 2)`
+
+We can make the math work even easier if you add a null item in the array
+`[null, 10, 20, 25, 29, 37, 40, 29]`
+
+NOW, an element's left child is always `i * 2`
+and right child is `i * 2 + 1`
+
+An element's parent is `Math.floor(i / 2)`
+
+This array with the null in the top BEFORE the root is often how a max heap or min heap is represented!
+
+### Inserting into a max heap
+
+During insertion, it is important to always maintain the heap property. For a max heap this means the root element should always have the greatest value in the tree and all parent nodes should be greater than their children. For an array implementation of a heap, this is typically accomplished in three steps:
+
+Add the new element to the end of the array.
+
+If the element is larger than its parents, switch them.
+
+Continue switching until the new element is either smaller than its parent or you reach the root of the tree.
