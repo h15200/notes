@@ -1300,3 +1300,7 @@ class Something<T, K> {
 ```
 
 Second one is usually labeled `<K>`
+
+## reminder type annotation for objects where you don't know the key
+
+`{ [key: string] : number }` // an object where the keys are a string (obviously) and the values are numbers
