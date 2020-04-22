@@ -1,3 +1,36 @@
+# Node
+
+Node is javascript that runs on your computer rather than on the browser.
+You don't have access to document or window, but you have access to process and the ability to create files, make changes to your system, and listen to network traffic.
+
+## Module
+
+modules are used to share information between files.
+
+By default, module.exports is an OBJECT.
+
+When you write code to import a file, `const stuff = require('someJsFile');`
+We are assigning the module.exports object of the someJsFile to the variable, stuff.
+
+If someJsFile is empty, it will be an empty object
+
+In the exporting file, you can refer to the exporting object with the full name, `module.exports`
+OR the shorthand, `exports`
+
+## Overriding module.exports
+
+Though it is an object, you can ovveride the object by making it a function
+
+`module.exports = function() { console.log('module.exports is now this function!)}`
+
+Now if you require this file, `const stuff = require('pathToFile');`
+you can just call with `stuff()`
+Some libraries have this pattern, some keep module.exports as an object.
+
+## npm - node package manager
+
+npm uses the same module technology to share files from libraries. installing a package makes a node_modules folder in your system, and importing it in a file does not require the path like with files you made yourself.
+
 ## FS - path
 
 File System api's usually ask for the direct path from the ROOT dir of the project. Don't use relative path './'
@@ -9,4 +42,23 @@ Pass in an options object with encoding: 'utf-8'
 fs.readFileSync('project.csv', {
   encoding: 'utf-8'
 })
+```
+
+## Server
+
+Using the built in http library, a server can be set up in node
+
+```
+const http = require('http');
+
+const server = http.createServer((request, response) => {
+  console.log('got a request!')
+  response.write('hello');
+});
+
+const PORT = 3000;
+
+server.listen(PORT, () => {
+  console.log('server is listening on port ${PORT})
+});
 ```

@@ -1,10 +1,28 @@
-Proper way to write json is single quotes around everything and double quotes around the keys
+# JSON
 
-`let someJson = '{"key": value, "key2": value2}'`
+Java Script Object Notation - a string notation for all js objects
 
-how you can call JSON.parse(someJson) to make a JS object out of the JSON
+When going for JS to JSON, you just put single quotes around everything.
+If it already has quotes like in a string, you put SINGLE quotes around the whole thing and double quotes for inner ones.
+Object keys will also now have double quotes around them.
 
-You can also JSON.parse numbers, quots around numbers (both returns the num) booleans, and quotes around booleans (both return booleans) but not strings even if they are single, then double quoted
+SO
+
+Convert js type number into type string
+JSON.stringify(5) // '5'
+
+Convert js type string into JSON string
+JSON.stringify('hello') // '"hello"'
+
+Array to JSON string
+[1,2,3, 'hi'] // '[1,2,3, "hi"]'
+
+Objects to JSON string
+{ a: 3, b:5 } // '{"a":3,"b":5}'
+
+Although we call them JSON string, they are treated as JS strings with prototype string methods
+
+To go from JSON string to JS object, you use JSON.parse()
 
 Also as a reminder, keys are all strings in js objects.
 const obj = { 2: 2 } works, but it really means "2": 2

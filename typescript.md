@@ -1222,9 +1222,16 @@ Logic work flow
       A new Main class automatically comes with the default class as a prop. Not flexible in terms of getting a variety of
       instances of taskClass, but if it's always the same one, the easiest to implement.
 
-## Optional Properties
+## Strict Mode - Optional Properties
 
-When using an interface with optional properties `interface { thing?: number }`, using tsc --init and creating a tsconfig.json file will change the behavior as it will start off in strict mode. Strict mode will check for number AND undefined.
+When using an interface with optional properties `interface { thing?: number }`, using tsc --init and creating a tsconfig.json file will change the behavior as it will turn ON strict mode. Strict mode will check for number AND undefined.
+
+Firstly, change target.
+Defaults to ES5 syntax - set target in TSCONFIG to `es6`
+
+Strict mode is usually a good thing, but you might need some additional type guards with things like
+
+HTML elements - with false mode, accepts null OR element. If true, then you have to specify after each query
 
 ## Composition workflow
 
@@ -1304,3 +1311,19 @@ Second one is usually labeled `<K>`
 ## reminder type annotation for objects where you don't know the key
 
 `{ [key: string] : number }` // an object where the keys are a string (obviously) and the values are numbers
+
+## Syntax for nested generic classes
+
+`export abstract class View<T extends Model<K>, K> {}`
+
+Model is also an abstract class, so it needs an arg. The arg for model is K, which can be declared AFTER being used
+
+## Typescript And Express
+
+Because Classes were built in es6 in 2015, a lot of frameworks that existed before then don't work well with typescript.
+
+TS and JS libs can be navigated in three ways
+
+1. Use the lib normally, adding in basic annotation where possible. Avoid classes.
+2. Use a TS adaptor that has helpers for your lib and use classes
+3. Twist your lib to work with TS classes.

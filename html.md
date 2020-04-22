@@ -12,7 +12,7 @@ So
 const templateElement = document.createElement('template');
     templateElement.innerHTML = `
     <div>
-      <h1>Hi</h1>
+      <h1 class="header-primary">Hi</h1>
     </div>
     `;
 
