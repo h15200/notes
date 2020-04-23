@@ -72,3 +72,13 @@ Express is very bare bones and only adds a few things to node, but those are ess
 Express manipulates the request (info coming into the serrver) and response (info going to the browser) such that middlewares can be run. When all (if any) maddlewares are done parsing through those, then they finally go to what we wrote in inside the route.
 
 node can't use middlewares
+
+## Sessions and Cookies cookie-session
+
+Web app servers are generally stateless. Each HTTP request is independent and a server can't tell if 2 requests came from the same browser. Servers can't persist information unless it is coded to store in memory, on disk, or on a database.
+
+The workaround to this is when a request comes in to the server for the first time, the server responds with a cookie, which is just a name-value pair. How every time the same browser makes a req to the server, the server can implement SESSIONS, which means it understands that it's the same user from before via the cookie
+
+A common way to set this up in express is using the npm pacakge, cookie-session as a middleware
+
+If you add cookie-session as a middleware, the request now has res.session attached which is an object that you can pass back and forth.

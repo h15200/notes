@@ -1332,6 +1332,8 @@ TS and JS libs can be navigated in three ways
 
 ## Express with Typescript
 
+We will skip method one - use the lib normally, adding in basic annotation as it is self explanatory. In the case of Express, it barely helps because what you need the most help with TS is req and res data. With method one, you can't type check anything inside those.
+
 Set up with nodemon, concurrently and tsc -w (see above)
 
 `npm i express @types/express` // don't forget typedef file
@@ -1361,9 +1363,21 @@ Override the property that you want to modify.
 
 You may have to use type guards after you have modified.
 
-ex with express and body-parser example would be
+example with express and body-parser example would be
 
 ```
 interface RequestWithBody extends Request {
   body: { [key: string]: string | undefined };
 ```
+
+## Method two - use ts adaptor with classes and decorators
+
+First, determine if it's worth it. Does this significantly enhance the development process? Do you get much better type safety as a result?
+
+If you think yes...
+
+## What are typescript decorators?
+
+### Refresher: vanilla JS constructors and prototypes
+
+
