@@ -24,3 +24,7 @@ class Animal {
   }
 }
 ```
+
+Weird JS specific stuff
+
+When a prototype is changed on a function (or a class), the instance of that function that was ALREADY instantiated before the additional protype will also have access to that method now!
