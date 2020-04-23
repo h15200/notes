@@ -244,3 +244,28 @@ Workaround.. Just make a new line in the command. This might make extra lines, b
 
 `echo -e '\neslintrc.js' >> .gitignore`
 the -e flag allows you to use \n inside the echo
+
+## nodemon and local ports lsof
+
+In the typescript tutorial, I set up ndoemon and concurrently to run tsc -w on a ts file and to nodemon the build js file at the same time. The ts file used an express server to liston to port 3000.
+
+When I didn't shut down the session with control c and exited VS code, the port stayed OPEN!
+
+This is a weird bug with nodemon or ts or the combination of the two, but the workaround is.
+
+### How to list port activity
+
+Check for activity on localhost:3000
+`lsof -i tcp:3000`
+
+If any output, the port is in use.
+If no outoput, the port is open and available to use.
+
+From that output, look at the PID number of each.
+To Kill that node,
+
+`kill -9 SpecificPIDnum`
+
+That third arg should be a number that was listed from the lsof command.
+
+Now the port is open and avilable to use!

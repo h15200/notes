@@ -1349,3 +1349,21 @@ Then express will call next() to the next middleware, or if there are none, to w
 For example, if you are using the body-parser middleware, the req object will now have a req.body property. This will NOT exist if you didn't use body-parser.
 
 req.body should show an error in typescript if it wasn't accounting for ANY middleware. However, in the express typedef file, a body property IS defined, assuming that the user WILL use body-parser.
+
+## Making tweaks to express typedef file
+
+BAD IDEA! Never change the typedef file, even if it's not a great one!
+
+A better if to define an interface at the top of your own file.
+The interface should extend whatever object you want to improve with types.
+
+Override the property that you want to modify.
+
+You may have to use type guards after you have modified.
+
+ex with express and body-parser example would be
+
+```
+interface RequestWithBody extends Request {
+  body: { [key: string]: string | undefined };
+```
