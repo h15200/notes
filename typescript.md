@@ -53,6 +53,8 @@ Now you have an automatic ts complier that is running on save. Note that this do
 
 ### NODEMON and CONCURRENTLY
 
+make sure there is an index.ts inside src
+
 The watch process is useful, but we still need a way to run the new js file.
 You COULD just open a new integrated terminal window and hit node build/index.js, but there is an even better way!
 
@@ -1327,3 +1329,23 @@ TS and JS libs can be navigated in three ways
 1. Use the lib normally, adding in basic annotation where possible. Avoid classes.
 2. Use a TS adaptor that has helpers for your lib and use classes
 3. Twist your lib to work with TS classes.
+
+## Express with Typescript
+
+Set up with nodemon, concurrently and tsc -w (see above)
+
+`npm i express @types/express` // don't forget typedef file
+import {Reponse, Request} // interfaces built in type def
+
+Why is typescript hard to implement with express?
+
+Express is used on top of node to use middlewares to change the request/response data.
+Then express will call next() to the next middleware, or if there are none, to what we wrote.
+
+1. Typescript has no way of knowing what or how the middleware manipulated the req/res objects.
+
+2. The typedef file will sometimes give the WRONG information.
+
+For example, if you are using the body-parser middleware, the req object will now have a req.body property. This will NOT exist if you didn't use body-parser.
+
+req.body should show an error in typescript if it wasn't accounting for ANY middleware. However, in the express typedef file, a body property IS defined, assuming that the user WILL use body-parser.

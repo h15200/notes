@@ -7,13 +7,13 @@ Just use this at the top of every project
 
 ```
 html {
-  box-style: border-box;
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 *, *::before, *::after {
-  box-style: inherit;
+  box-sizing: inherit;
   margin: inherit;
   padding: inherit;
 }
@@ -205,6 +205,9 @@ Always wrap in a container so it’s reusable later as .form-group
 To style the input focus state - turn outline to none, but always replace with some other cue such as adding box shadow and a border on focus for accessibility
 
 To prevent shifting on the border, make it in the resting state as well ex.. `Border-bottom: 3px solid transparent;` then have it a different color in focus state
+
+action attribute will take you to the html file that the form submit will trigger
+method defaults to "get"
 
 ## input and label
 
@@ -521,7 +524,7 @@ A good box shadow on links and buttons
 
 ```
 a:visited, a:link {
-Box-shadow: 0 .6rem 1.2rem rgba($black, 0.2)
+box-shadow: 0 .6rem 1.2rem rgba($black, 0.2)
 }
 
 a:active {

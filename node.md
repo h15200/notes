@@ -62,3 +62,13 @@ server.listen(PORT, () => {
   console.log('server is listening on port ${PORT})
 });
 ```
+
+## Node vs Express
+
+What's the difference between vanilla node and express?
+
+Express is very bare bones and only adds a few things to node, but those are essential.
+
+Express manipulates the request (info coming into the serrver) and response (info going to the browser) such that middlewares can be run. When all (if any) maddlewares are done parsing through those, then they finally go to what we wrote in inside the route.
+
+node can't use middlewares

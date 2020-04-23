@@ -367,3 +367,14 @@ Add the new element to the end of the array.
 If the element is larger than its parents, switch them.
 
 Continue switching until the new element is either smaller than its parent or you reach the root of the tree.
+
+### Removing from a max heap
+
+Very similar logic to inserting into a max heap
+
+To remove from a max heap, you usually remove the greatest value, which is the root.
+
+1. Remove the root
+2. The last element in the heap becomes the root
+3. check the root against its children. If child is greater, swap biggest child with root.
+4. check the children of that swapped child. Repeat same process
