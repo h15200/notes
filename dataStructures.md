@@ -378,3 +378,108 @@ To remove from a max heap, you usually remove the greatest value, which is the r
 2. The last element in the heap becomes the root
 3. check the root against its children. If child is greater, swap biggest child with root.
 4. check the children of that swapped child. Repeat same process
+
+### Heap Sort
+
+A heap sort uses a min heap, which means the root is always the smallest number.
+
+Heap sort takes an unsorted array, adding each item in the array into a min heap, then extracting every item out of the min heap into another array. The min heap structure will insure that the new array is in least to greatest value, and is O(nlog(n)), making it one of the most efficient sorting algorithms.
+
+Note; What's interesting is that the array version of a min heap is NOT in least to greatest order
+
+[null, 2, 4, 34, 10 ] is a valid min heap because in tree form,
+
+```
+        2
+   4          34
+10
+```
+
+Every child is bigger than the parent.
+
+It is the REMOVE method of the min heap that allows for all items coming OUT of the heap to be in exact order from least to greatest.
+
+## Graph
+
+A graph is usually used to show a network.
+
+Consists of nodes and edges. Nodes connect to other nodes via edges.
+
+## Adjacency List
+
+One way to represent a graph.
+A bulleted list where the left represents the current node and the right is all the connected nodes
+
+```
+Node1: Node2, Node3
+Node2: Node1
+Node3: Node1
+```
+
+This, in js, can be represented as an object
+
+```
+const graph = {
+  Node1: ["Node2", "Node3"],
+  Node2: ["Node1"],
+  Node3: ["Node1"]
+}
+```
+
+That is sometimes shortened to an array with an assumed index if there are no key string values
+
+```
+// index 0 is node0, index 1 is node1
+const graph = [
+  [1,2],
+  [0],
+  [0]
+]
+```
+
+Notice how the above nodes are connected to each other on both ends.
+1 to 2, 2 to 1
+1 to 3, 3 to 1
+
+This makes that particular adjency list an `undirected graph`
+
+A `directed graph` will have a directional edge that only goes one way
+
+### Adjencency Matrix
+
+Another way to represent a graph in a 2D array
+
+The rows and columns represent nodes. the value 0-1 means no edge, or an edge exists
+
+The same example from above would be represented like so:
+
+```
+
+   1 2 3
+   -----
+1  0 1 1
+2  1 0 0
+3  1 0 0
+```
+
+This can represent both directed and undirected graphs. This one above is undirected, as the relationship is reciprocal.
+
+Unlike adjency lists, you must have the same number of rows and columns to represent nodes.
+
+In js, this is represented with a nested array
+
+```
+const adjacencyMatrix = [
+  [0,1,0],
+  [0,0,1],
+  [0,0,0]
+]
+
+```
+
+Notice how that one above is a directed graph as node0 has an edge to node1, but node1 doesn't point back to node0
+
+### Weights
+
+Graphs can have different weights on their edges.
+When there are more than 0 and 1 representing edges, they represent weights of each edge.

@@ -43,3 +43,23 @@ addButton.addEventListener("click", function() {
 ```
 function addItem() { setItems([...items, itemInput]); }
 ```
+
+## Setting up React
+
+The old old way pre 2015 - react was one library and it used React.render as well as React.create
+Be aware of these, but don't worry about set up too much.
+
+### Setting up via regular html and CDN directly into html
+
+1. Make sure the target element has an id of 'app' or 'content' or whatever you want to call it for rendering later
+2. set up jsx <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+   now jsx is available in all scripts when you add `type="text/babel"`
+3. add core React and ReactDOM
+   `<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>`
+   `<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>`
+
+These are dev versions. Production versions are different. Look for updates
+
+4. add the js file with the babel jsx
+   `<script src="app.js" type="text/babel"></script>`
+5. now in app.js you can create a function, return jsx, and ReactDOM.render the component to the target element

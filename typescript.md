@@ -51,6 +51,10 @@ uncomment and edit the rootDir to be `"./src"` and outDir to be `"./build"`
 
 Now you have an automatic ts complier that is running on save. Note that this does not run the newly built js file on save.
 
+### File structure and tsconfig
+
+For the tsconfig to apply correctly, you must call ts-node from within that same dir level! if you call ts-node somedir/somefile, then the file will be called as if there were no tsconfig files attached to it!!
+
 ### NODEMON and CONCURRENTLY
 
 make sure there is an index.ts inside src
@@ -1376,8 +1380,267 @@ First, determine if it's worth it. Does this significantly enhance the developme
 
 If you think yes...
 
-## What are typescript decorators?
-
 ### Refresher: vanilla JS constructors and prototypes
 
+Remember there are no such thing as classes. They're all functions that's called with new thing(), which creates and object.
 
+PROPERTIES refer to class properties that return a primitive type - string, number, boolean.
+class properties are made in the CONSTRUCTOR, which is only ran upon instantiating a class.
+
+Methods and accessors (getters) are stored in the PROTOTYPE of the class, which means the class itself without it even been instantiated.
+
+Prototypes can be appended to a class AFTER it's already been instanticated, and that instance will also gain the new method when the class is changed.
+
+1. A property on an object or class is a primitive type that can be assigned to a sting key.
+
+Animal.age = 13
+
+2. An Accessor is a getter function that doesn't require parens.
+
+3. A method is a function that requires writing () to call.
+
+## What are typescript decorators?
+
+Decorators - are FUNCTIONS that can be used to modify different properties/methods inside a class.
+
+JS decorators also exist, but TS decorators are different.
+
+Used inside/on classes ONLY.
+
+Understanding the order in which decorators are ran is key
+
+They are experimental at this point in 2020.
+You may need to `tsc --init` to make a `tsconfig.json` file and turn on `experiementalDecorators: true` as well as `emitDecoratorMetadata: true`
+
+code example
+
+```
+// here inside boat he have a PROPERTY of color, an ACCESSOR formattedColor, and a METHOD, pilot.
+
+class Boat {
+  color: string = 'red';
+
+  get formattedColor(): string {
+    return `The boat color is ${this.color}`;
+  }
+
+
+  pilot(): void {
+    console.log('swish');
+  }
+}
+
+```
+
+the decorator function
+
+```
+function testDecorator (target, key) : void{
+console.log(target)
+console.log(key)
+}
+```
+
+APPLYING the decorator means simply add this code ABOVE the declaration of the property/method/accessor.
+
+In this example, now we insert `@testDecorator` right above the pilot method.
+
+```
+class Boat {
+  color: string = 'red';
+
+  get formattedColor(): string {
+    return `The boat color is ${this.color}`;
+  }
+
+@testDecorator
+  pilot(): void {
+    console.log('swish');
+  }
+}
+
+// output is
+Boat { formattedColor: [Getter], pilot: [Function]}
+pilot
+```
+
+Notice how the decorator ran automatically on the class itself without having to create any new classes.
+
+1st arg, target, will be the PROTOTYPE of the class
+remember, the prototype only contains accessors and methods and NO properties, which is why color was not printed.
+
+2nd arg, is the key of the property/accessor/method that we applied the decorator to,
+in this case we applied it to ONLY the pilot method, we we get output 'pilot'
+
+We didn't put in a third, but a 3rd arg is an object called the property descriptor.
+
+The decorator is run ONLY once when the class is first defined.
+It does not get run when an instance of the class is created.
+
+All its doing is calling the decorator function ON what whatever method it's on top of, and the 1st arg is always the class prototype and the 2nd arg is key name of the prop/method/accessor.
+
+### what is a property descriptor
+
+usually shorhand `desc` and the type is `PropertyDescriptor`, available on default js
+This is an object that has configuation options around a property defined on an object
+
+propertyDescriptor is available on regular js
+
+All object properties (including accessors and methods) have a property descriptor object that shows 4 thigns
+
+1. writable - can value be overwritten?
+2. enumerable - will key/value show up in a for - in loop?
+3. value - the value attached
+4. configuarable - can property definition be changed?
+
+To access it in JS,
+
+`Object.getOwnPropertyDescriptor(obj, key;`
+
+To CHANGE the property descriptor,
+
+`Object.defineProperty(obj, key, { writable: false })`
+// now you've changed the property such that its value can't be updated!
+
+### Using property descriptor inside a descriptor
+
+Going back to the example above with the additional third argument, the desc (shorthand for property descriptor)
+
+```
+
+class Boat {
+  color: string = 'red';
+
+  get formattedColor(): string {
+    return `The boat color is ${this.color}`;
+  }
+
+@myDecorator
+  pilot(): void {
+    throw new Error();
+  }
+}
+
+funcion myDecorator(target: any, key: string, desc:PropertyDescriptor):void {
+
+  // desc is the propertyDescriptor for the method, pilot
+  // desc.value = someOther Function
+  // will reassign another function to the method, pilot
+
+  // now we have the power to modify the function with this, and still have reference to the original:
+
+  const method = desc.value;   // store the original func
+
+  desc.value = () => {
+    try {
+      method();
+    }
+    catch(e) {
+      console.log('Oops we have an error')
+    }
+  }
+}
+
+
+```
+
+A decorator can intercept a method or property or an accesso and modify it.
+
+### Property Descriptor limit
+
+Since property descriptors only applies to objects, putting that third arg of the descriptor on a property like a .color or size will not be valid. Only put in 2 args (target and key) for all descriptors that are applied to properties
+
+### Decorator function invocation, factory decorators
+
+When calling a decorator with the syntax `@decoratorName`, you can call it with args if the decorator is wrapped with another outside function.
+
+```
+function decoratorContainer (anyArgYouWant) {
+ return actualDecorator(target, methodApplied, descriptorOfMethod) {
+   stuff
+ }
+}
+
+@decoratorContainer(anyArg)
+```
+
+Always remember to RETURN the inner function!
+
+### Class properties
+
+Since properties (as opposed to methods/accessors) are made in the constructor upon creating an INSTANCE of a class, you can't find properties inside the target arg of a decorator since decorators only run on the class DECLARATION without any instances.
+
+As a result, decorators are usually pointless when applied to class properties.
+It's usually applied on methods/accessors.
+
+### other decorator usage - class decorators, arg decorators
+
+Decorators can also be applied to the class itself, and also as an argument to a method inside the class.
+
+when applied to the class itself, it only takes in one parameter, the CONSTRUCTOR of the class
+
+When applied to a method arg, it takes in the target, string, and the index number of itself (in relaiton to the other args on the method)
+
+The class decorator always runs LAST, after all the inside method and property decorators
+This functionality is what we can manipulate to add route definitions in express.
+
+## Making express work with typescrip in OOP using decorators.
+
+1. node executes code
+2. class definitions are read - decorators are executed immediately before the class being instantiated
+3. decorators associate route configuration using METADATA (more below)
+4. All method decorators run
+5. class decorator of the controller runs last and reads metadata from each method and adds route definitionto router.
+
+### Metadata
+
+Proposed feature in js and ts.
+Snippets of info that can be added to class properties, class methods, or the class definition itself
+TS will optionally provide type information (that's usually lost at compile) as metadata
+Read and written using the `reflect-metadata` npm package.
+
+To use metadata, like decorators, you must
+`tsc --init` to make a `tsconfig.json` file and turn on `experiementalDecorators: true` as well as `emitDecoratorMetadata: true`
+
+You also need npm reflect-metadata
+
+`npm init`
+`npm i reflect-metadata`
+
+simply
+`import 'reflect-metadata'`
+
+now you have a Reflect object inside your ts file.
+
+### Reflect.defineMetadata, Reflect.getMetadata
+
+Attaches metadata key and value pair to object
+1st arg is key
+2nd arg is arg 1's value
+3rd arg is the object to attach
+4th optional - key string -if available, this will assign the metadata to the SPECIFIC property IN that object
+
+```
+const plane = {
+  color: red
+}
+Reflect.defineMetadata('note', 'hello!', plane);
+
+// using 4th arg
+Reflect.defineMetadata('anotherNote', 'hey there!', plane, 'color')
+```
+
+The metadata will not show up on console.log or on the object in dev console.
+You can only retrieve it with
+`console.log(Reflect.getMetadata('note', plane));`
+
+for the 2nd example, also add the key of the particular prop
+`console.log(Reflect.getMetadata('anotherNote', plane, 'color'));`
+
+For get, just pass in the key and the object and the value will be returned.
+
+### Back to decorators
+
+Use decorators to add metadata to a CLASS now.
+
+zoom out one more and use factory decorators so that you have even more control
