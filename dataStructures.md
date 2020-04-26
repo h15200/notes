@@ -445,7 +445,7 @@ This makes that particular adjency list an `undirected graph`
 
 A `directed graph` will have a directional edge that only goes one way
 
-### Adjencency Matrix
+## Adjencency Matrix
 
 Another way to represent a graph in a 2D array
 
@@ -483,3 +483,53 @@ Notice how that one above is a directed graph as node0 has an edge to node1, but
 
 Graphs can have different weights on their edges.
 When there are more than 0 and 1 representing edges, they represent weights of each edge.
+
+## Incidence Matrix
+
+Another graph represenatation type
+
+In an incidence matrix, the Rows are nodes and the Columns are edges
+The rows and columns can be different lengths
+A '1' represents yes and '0' no
+Can represented both undirected and directed graphs
+
+```
+    1 2 3
+--
+1   1 0 1
+2   0 1 0
+3   1 1 0
+4   0 0 1
+// 4 nodes, 3 edges. node 1 - 3, 2 - 3, 1-5. Look on each column for matching pair
+```
+
+It's easy to get confused.. remember, the ROW is a particular EDGE, so seeing one '1' doesn't tell you about the destinatino of that edge. It just means that edge EXISTS. You go down the same column to find another '1' to find WHERE that edge is connecting to.
+
+In js, it is again an array of arrays
+The "labels" of row and column are assumed
+
+```
+
+const incidenceMatrix = [
+[ 1, 0, 1 ],
+[ 0, 1, 0 ],
+[ 1, 1, 0 ],
+[ 0, 0, 1],
+]
+
+```
+
+A directed matrix will show the in and outs with 1 and -1. [-1] means LEAVING that node and [1] means entering. Each edge should have a [1], [-1] pair
+
+```
+
+const incidenceMatrixDirected = [
+[ -1, 0, 1],
+[ 0, 1, 0],
+[ 1, -1, 0],
+[ 0, 0, -1]
+]
+
+```
+
+A number greater than 1 represents weight
