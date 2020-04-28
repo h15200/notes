@@ -73,3 +73,7 @@ class Person {
 ```
 
 For this reason, you should always choose to write arrow functions methods ALL THE TIME even though it's slightly more verbose than the shorthand function declaration.
+
+## Alternate array creation
+
+const arrayOfThreeHellos = Array(3).fill('hello');
