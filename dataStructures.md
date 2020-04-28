@@ -533,3 +533,13 @@ const incidenceMatrixDirected = [
 ```
 
 A number greater than 1 represents weight
+
+## Graph searches (breadth-first, depth-first)
+
+A search on a graph structure is used to get the distance between ALL nodes and an input node.
+If not reachable, it defaults to Infinity
+A breath first search will explore the root and all of its neighbor roots, and then those neighbors
+A depth first search will explore one neighbor all the way until it reaches a leaf
+
+// breadthFirst(graph, 1) - what is the distance form this root to all nodes in this graph
+// returns something like { 0:1, 1:0, 2:infinity, 3:3 }
