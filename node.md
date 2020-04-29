@@ -59,7 +59,7 @@ const server = http.createServer((request, response) => {
 const PORT = 3000;
 
 server.listen(PORT, () => {
-  console.log('server is listening on port ${PORT})
+  console.log(`server is listening on port ${PORT}`)
 });
 ```
 
@@ -72,6 +72,10 @@ Express is very bare bones and only adds a few things to node, but those are ess
 Express manipulates the request (info coming into the serrver) and response (info going to the browser) such that middlewares can be run. When all (if any) maddlewares are done parsing through those, then they finally go to what we wrote in inside the route.
 
 node can't use middlewares
+
+The boilerplating of Node is a little verbose. Connecting html, css, and frontend js to the server can be a lot of code.
+
+<strong>See vanillaNodeServer folder for more details</strong>
 
 ## Sessions and Cookies cookie-session
 
