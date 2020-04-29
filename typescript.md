@@ -1644,3 +1644,63 @@ For get, just pass in the key and the object and the value will be returned.
 Use decorators to add metadata to a CLASS now.
 
 zoom out one more and use factory decorators so that you have even more control
+
+## Typescript and react / redux - could be complicated, but documenting just in case you want to use it
+
+Pros and Cons
+
+Pros
+Easy to debug incorrect action types (misspelling)
+gives dev a better understanding of type of data flowing around
+easier to refactor just about anything
+
+Cons
+Not the best type def files, especially for redux
+A lot of generics
+Tons of imports (action creator, action, reducer) for type annotation
+Redux is inherently functional in nature, so tough integration with classes
+
+## using create-react-app with typescript
+
+go to project dir,
+`create-react-app . --typescript` //also try adding --use-npm
+
+You'll notice ts files are labeled as tsx.
+
+Make a new App.tsx file in src and try to connect with a class component as you usually would
+
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class App extends React.Component {
+  render() {
+    return <div>Hi There</div>;
+  }
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+```
+
+## Annotating props
+
+All class componenets are generic classes, so you can make an interface for props and pass it in as a class arg.
+
+Note how color is an optional property in case you DON'T want to pass on color as a prop.
+
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+interface AppProps {
+  color?: string;
+}
+
+class App extends React.Component<AppProps> {
+  render() {
+    return <div>{this.props.color}</div>;
+  }
+}
+
+ReactDOM.render(<App color="red" />, document.getElementById('root'));
+```
