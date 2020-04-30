@@ -37,13 +37,13 @@ const server = http.createServer((req, res) => {
       }
     );
   } else if (req.url === '/api/users') {
-    data = JSON.stringify({ cat: 'Lady', person: 'Patti' });
+    const data = JSON.stringify({ cat: 'Lady', person: 'Patti' });
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(data);
   }
 });
 
-const PORT = process.ENV.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, () => {
   console.log(`server is listening on port ${PORT}`);

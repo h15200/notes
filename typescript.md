@@ -1682,6 +1682,10 @@ class App extends React.Component {
 ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
+## TSX files
+
+TSX files are used to use typescript + js + jsx
+
 ## Annotating props
 
 All class componenets are generic classes, so you can make an interface for props and pass it in as a class arg.
@@ -1703,4 +1707,104 @@ class App extends React.Component<AppProps> {
 }
 
 ReactDOM.render(<App color="red" />, document.getElementById('root'));
+```
+
+### Defining state inside constructor vs property
+
+```
+class App extends React.Component<AppProps> {
+
+   state = { counter: 0 };
+
+  onIncrement = (): void => {
+    this.setState({ counter: this.state.counter + 1 });
+  };
+
+  onDecrement = (): void => {
+    this.setState({ counter: this.state.counter - 1 });
+  };
+
+  render() {
+    return (
+      <div>
+        <button onClick={this.onIncrement}>Increment</button>
+        <button onClick={this.onDecrement}>Decrement</button>
+        {this.state.counter}
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<App color="red" />, document.getElementById('root'));
+```
+
+The above is the same code as below in js
+
+```
+constructor(props: AppProps) {
+    super(props);
+    this.state = { counter: 0 };
+  }
+
+  // rest of stuff
+
+```
+
+But in typescript, since classes are generic classes, any time you want to use the constructor, you have to pass in two class arguments.
+
+The first method is actually overriding the state object in the generic class, which is why it works.
+
+To use the constructor method, make another interface for the state and pass it in like this
+
+```
+interface AppProps {
+  color?: string;
+}
+
+interface AppState {
+  counter: number;
+}
+
+class App extends React.Component<AppProps, AppState> {
+  constructor(props: AppProps) {
+    super(props);
+    this.state = { counter: 0 };
+  }
+
+  // state = { counter: 0 };
+
+  onIncrement = (): void => {
+    this.setState({ counter: this.state.counter + 1 });
+  };
+
+  onDecrement = (): void => {
+    this.setState({ counter: this.state.counter - 1 });
+  };
+
+  render() {
+    return (
+      <div>
+        <button onClick={this.onIncrement}>Increment</button>
+        <button onClick={this.onDecrement}>Decrement</button>
+        {this.state.counter}
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<App color="red" />, document.getElementById('root'));
+
+```
+
+Take the first approach by NOT using a constructor to assign state. Just understand that you are overriding the state type.
+
+### for functional components
+
+For functional components, we return jsx.
+JSX.element is the correct type that comes with the typedef.
+
+```
+const App = (props: AppProps): JSX.Element => {
+  return <div>{props.color}</div>;
+};
 ```

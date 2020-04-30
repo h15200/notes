@@ -60,7 +60,7 @@ There is no res.send() in core node. Just express
 
 html is 'text/html'
 css is 'text/css'
-js is 'text/js'
+js is 'text/javascript'
 
 JSON data is 'application/json'
 
@@ -71,7 +71,7 @@ The above method of using fs, path, and http is the standard, but there is an al
 Instead of using path.join and fs.readFile, use fs.createReadStream
 
 fs.createReadStream takes in a path as the first arg and the file type as a second arg.
-Then instead of res.end(), you can use the <yourstrem>.pipe(res).
+Then instead of res.end(), you can use the <yourstream>.pipe(res).
 .pipe() will call .end() as soon as the stream is finished reading, so it does the same thing as above method but with one less core module
 
 ```
