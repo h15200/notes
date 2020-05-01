@@ -1808,3 +1808,10 @@ const App = (props: AppProps): JSX.Element => {
   return <div>{props.color}</div>;
 };
 ```
+
+### Dispatch()
+
+There is an interface for the dispatch function inside the typedef,
+you can import {Dispatch} from 'redux'
+
+## Reducers are generic functions so you can pass in interface types as args for validating return values

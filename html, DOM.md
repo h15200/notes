@@ -76,6 +76,9 @@ templateElement.innerHTML = `<div> <h1 class="header-primary">Hi</h1> </div>`;
 
 ```
 
-```
+## DOM
 
-```
+You need to go to the parent to remove a node, as the only way to do it is to remove the child
+removeChild() needs to be called with the element so the syntax is
+
+`parentElement.removeChild(theChildToRemove)`
