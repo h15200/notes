@@ -1,5 +1,12 @@
 # Javascript
 
+## Infinity
+
+Infinity
+-Inifinity
+
+are valid number assignments
+
 ## Array.isArray()
 
 ```
@@ -24,6 +31,12 @@ for (const [i, v] of ['a', 'b', 'c'].entries()) {
 }
 ```
 
+## ASCII comparison
+
+“A” > “a” // false because lower cases have a higher ascii value
+“aa” < “Aaa” // still false because the 1st char a is bigger than A
+“aa” < “aaA” // true . third char is bigger than “nothing”
+
 ## Weird things about forEach
 
 You can pass in a second arg to the callback of forEach for index.
@@ -44,6 +57,13 @@ const html = `
 </div>
 `
 ```
+
+## array destructuring swapping
+
+let a = 1;
+let b = 2;
+[b, a] = [a, b];
+// a is 2 and b is 1
 
 ## Object.assign()
 
@@ -77,3 +97,9 @@ For this reason, you should always choose to write arrow functions methods ALL T
 ## Alternate array creation
 
 const arrayOfThreeHellos = Array(3).fill('hello');
+
+## Dates
+
+Probably looking for this one which takes in a Date Object and returns a human readable string
+
+(DateObject).toDateString()

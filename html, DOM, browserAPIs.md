@@ -122,3 +122,30 @@ but if you want to render it through javascript on an event, use hexcode.
 ## to set attributes
 
 If you want to dynamically change the src of an image tag
+
+## NodeList is NOT a JS array
+
+When getting multiple nodes back with document.querySelectorAll(), you get back a NODELIST which is NOT an array.
+
+Nodelist methods do NOT share all array methods.
+
+`NodeList.item()`
+Returns an item in the list by its index, or null if the index is out-of-bounds.
+An alternative to accessing nodeList[i] (which instead returns undefined when i is out-of-bounds). This is mostly useful for non-JavaScript DOM implementations.
+`NodeList.entries()`
+Returns an iterator, allowing code to go through all key/value pairs contained in the collection. (In this case, the keys are numbers starting from 0 and the values are nodes.)
+`NodeList.forEach()`
+Executes a provided function once per NodeList element, passing the element as an argument to the function.
+`NodeList.keys()`
+Returns an iterator, allowing code to go through all the keys of the key/value pairs contained in the collection. (In this case, the keys are numbers starting from 0.)
+`NodeList.values()`
+Returns an iterator allowing code to go through all values (nodes) of the key/value pairs contained in the collection.
+
+## STOP PROPAGATION
+
+Stop the event from going up the DOM tree. For example, if a btn is inside a div and they both have onclick functions that outputs a message, you will ONLY get “div was clicked” even when you click on the button. This is because the event will propagate UP the dom tree and “button was clicked” will be immediately overridden by “div was clicked”. To prevent this, add `stopPropagation()` on the event.
+
+const nestedBtnClick = event => {
+document.querySelector(message).textContent=”button clicked!”
+event.stopPropagation()
+}
