@@ -82,3 +82,43 @@ You need to go to the parent to remove a node, as the only way to do it is to re
 removeChild() needs to be called with the element so the syntax is
 
 `parentElement.removeChild(theChildToRemove)`
+
+## fetch()
+
+Remember it's async and that you need to use response.json() (not json.parse), which is also sync
+
+## Geolocation API
+
+To get the lat/long of user, use the API on the browser.
+
+First see if `navigator.geolocation` exists on the user browser. If not, it is not supported. If yes, run the method .getCUrrentPosition() which takes in a success callback and an error.
+
+```
+const sucessCB = (position) => {
+  // position is the name of the incoming data. there is a coords property that contains the location
+
+  const { coords } = position;
+  console.log(`lat is ${coords.latitude}, long is ${coords.longitude} `);
+  // do other stuff with this data
+};
+
+const errorCB = (error) => {
+  console.log(error);
+  // means geolocation is supported but there was some kind of error in getting the location
+};
+
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(sucessCB, errorCB);
+} else {
+  alert('Gelolocation is not supported by this browser');
+}
+```
+
+## rendering symbols
+
+In html, you can use `&lt;`
+but if you want to render it through javascript on an event, use hexcode.
+
+## to set attributes
+
+If you want to dynamically change the src of an image tag

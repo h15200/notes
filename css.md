@@ -860,3 +860,25 @@ position: relative;
 z-index: 10;
 }
 ```
+
+## Loading images from an api
+
+If you are loading an image tag with outside data and assigning it to src, the browser
+will render an empty border during the time the element has no src attribute.
+
+Putting # or "" inside the src does not work.
+
+THe best workaround is to use css and keep the element out of the flow until it's loaded
+
+```
+img {
+  display: none;
+}
+
+img[scr*="https"] {
+  displya: inline-block;
+  // other props for the image
+}
+```
+
+`*=` is 'includes'
