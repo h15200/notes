@@ -31,6 +31,38 @@ for (const [i, v] of ['a', 'b', 'c'].entries()) {
 }
 ```
 
+## types
+
+7 Built in Types in JS
+
+null
+boolean
+undefined
+number
+string
+object
+symbol
+
+All of these EXCEPT objects are “primitives”
+
+All of these can be defined correctly by typeof except null, which returns Object bc of a bug
+
+Because of the nature of null being falsy And returning “object”, you must check for it this way:
+
+var a = null;
+
+(!a && typeof a === "object"); // then it must be null
+
+typeof will also identify “function” but not array despite both of them being subsets of objects
+
+Many developers will assume "undefined" and "undeclared" are roughly the same thing, but in JavaScript, they're quite different. undefined is a value that a declared variable can hold. "Undeclared" means a variable has never been declared.
+JavaScript unfortunately conflates these two terms, not only in its error messages ("ReferenceError: a is not defined") but also in the return values of typeof, which is "undefined" for both cases.
+However, the safety guard (preventing an error) on typeof when used against an undeclared variable can be helpful in certain cases.
+
+    Values
+
+Arrays are also objects, so keys can be added arr.<key> = <value> in either dot or bracket notation without changing the array or arr.length. Don’t use anything that could be coerced into numbers because that will actually add indexes to the array.
+
 ## ASCII comparison
 
 “A” > “a” // false because lower cases have a higher ascii value
