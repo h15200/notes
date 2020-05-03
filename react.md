@@ -114,7 +114,7 @@ then `<img src={apple}/>`
 
 Use react-router-dom npm
 To have multiple pages, use BrowserRouter (as Router), Switch, Route
-In the entry point of the ReactDOM render, put the Routes component
+Put Routes components in the entry point of the ReactDOM render
 
 ```
 cont Routes = () => {

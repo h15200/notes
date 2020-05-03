@@ -95,6 +95,9 @@ the main one being the order of insertion is not specified.
 
 In ES6, maps are available as another value-pair data structure with useful methods not available to objects.
 
+Map has no prototypes that interfere and can be used as a purer storage than js objects.
+It can also use any type for the key, not just strings!
+
 Map methods. The last two are especially useful
 
 .has(key) - returns boolean

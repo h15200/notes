@@ -3,6 +3,11 @@
 `<template>` elements can render strings like `<div>hi</div>`
 Can be used to render elements dynamically
 
+## form
+
+You can set a regex to attribute pattern
+`input type="text" pattern="/\d+/"` // must be 0 or more digits
+
 ## Form, button, preventing default submit action
 
 You can handle form submit in two ways
