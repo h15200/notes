@@ -30,16 +30,18 @@ env react is for react and jsx
 
 make and fill out `webpack.config.js` for the file transpiling
 
+dist or public or whatever you're using
+
 ```
 module.exports = {
   entry: './src/index.js',
   output: {
-    path: __dirname + '/dist',
+    path: __dirname + '/public',
     publicPath: '/',
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: './dist',
+    contentBase: './public',
   },
   module: {
     rules: [
@@ -54,6 +56,7 @@ module.exports = {
       }
     ]
   },
+  devtool : ‘cheap-module-source-map’
 };
 ```
 
