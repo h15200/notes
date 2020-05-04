@@ -8,6 +8,23 @@ Add a tests dir, and name the files <something>.test.js
 
     Jest Config
 
+    	npm i -D jest
+
+On the test script, add a flag to watch
+"test": "jest --watch",
+
+Make a test file with ext .test.js
+
+No need to import jest, just write the test with
+
+test( ‘ name of test ‘ , () => {
+expect( <funct> ).toBe (something)
+})
+
+Npm run test
+
+Usually a good idea to make a jest config in json file with both globalSetup and globalTeardown (one async function that runs before the test suite, and one after)
+
 In package.json, add
 
 “jest” : { “testEnvironment“ : “node” } // default is browser-environment. Do this for backend

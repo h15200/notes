@@ -1,46 +1,215 @@
 Redux is a library that manages state as an alternative to using state in React components. Both methods tries to track changing data
 
-The cons of component states
-All components must be on the same tree with one parent to control all data
-Components are bound to each other with states and props so are not really reusable
-Very hard to track multiple states in code
+## set up and overview
 
-With redux, the goal is to make components with no props and can be rendered anywhere. State, instead, is managed by the global redux store.
+Follow first steps from create-react-app
 
-    Keep in mind, when there is a situation where a parent needs to pass data to the child, using props is still feasible and recommended. If you are passing data over 2 levels just to get it to another element, it is recommended to use redux instead of props.
+npm i redux react-redux
 
-    The createStore parameters include
+If the store is complicated, make a seperate store.js
+In index.js, import { createStore } from ‘redux’
 
-Callback function (reducer)
-action
-Usually, a switch statement is set to action.type
+2 boilerplate steps before calling createstore
 
-Action types are usually ALL CAPS by convention separated by underscores
+Additional pre-step. Make a file in actions called types.js that just simply returns a string
+Const SET_ALERT = ‘SET_ALERT’
+Bring that into actions and use it instead of returning an object with strings, use the variables
 
-Store Methods
+Action(s) - seems stupid but a good idea for later. Just a function that returns { action: SOMETHING}
 
-store.dispatch( {type: someActionType} or an actionGenerator function );
+```
+    const increment = () => {
+      return { type: ‘INCREMENT’ }
+  }
+```
 
-    Actions objects can be manually inserted, but usually a better idea to have an action generator function to avoid typos. If manually inserted, typos won’t register in the store and code will be hard to debug
+Reducer - pure func that takes in 2 args. One to set default state, and the action object
+Usually a switch structure that’s set on action.type
+action.type is CAP with \_ for spaces by convention
 
-store.getState(); // current state
-store.subscribe(callback) ;  
-// gets called automatically on state change. callback is usually related to store.getState() like logging it
-The return value of store.subscribe(); is a function that acts like unsubscribe.
+const counterReducer = (state = 0, action) => {
+switch (action.type) {
+case ‘INCREMENT’:
+return state + 1
+case ‘DECREMENT’:
+return state - 1
+default :
+return state
+}
 
-    So const func = store.subscribe(()=console.log(store.getState));
-    func() ;    //   now you have unsubscribed
+make sure it’s let and not const. Call it with whatever reducer(s) you made above
 
-Everytime store.dispatch( {actionObject} ) is called, createStore is run.
+let store = createStore(counterReducer)
 
-REMEMBER, the redux store itself is not a class, so it refers to its state as state and NOT this.state.
+## redux dev tools
 
-When setting action types, simply return an state object
-return {count: state.count+1}
+GOOD IDEA to use chrome redux tool, so in createStore, add
+use npm i redux-devtools-extension to simplify things
+`window.__REDUX_DEVTOOLS_EXTENSION__**__()`
+As a second arg after a comma
 
-store.subscribe(); takes in a function that gets called every time the state changes
+## The store has 3 apis
 
-All actions MUST have a “type” key but it could also have additional ones
+    	1.  store.getState()  - gets the current state
+    	2. store.subscribe() - takes in a callback that runs upon every state change
+
+Usually, react-redux is a better option but you can also just store redux state in local storage as well 3. Store.dispatch() - will call reducer based on action.type
+It is called with { action: ‘SOMETHING’ } , which is usually returned from the action like:
+
+    		store.dispatch(increment())
+
+    			increment() will return { type: ‘INCREMENT’ } so same as
+    			store.dispatch({ type: ‘INCREMENT’ }
+
+Create src/reducers and src/actions
+In reducers, make index.js (to combine all)
+In src/reducers/index.js - import all reducers, { combineReducers } from ‘redux’
+const allReducers = combineReducers( { anyName: reducer, anyName: reducer etc... } )
+export default allReducers
+
+Make individual reducers in files, export default.
+
+    For individual reducer functions, might be a good idea to call it   nameReducer
+
+In src/index.js
+import { createStore, combineReducers } from ‘redux’  
+ // you don’t need combineReducers if you only need one state, but you probably don’t need redux at all if you’re using only one state
+
+    import allReducers from ./reducers/index.js
+
+## FILE STRUCTURES:
+
+Create src/reducers and src/actions
+
+    In src/actions, break out all actions per reducer and export default
+    	This only needs to be exported to the appropriate components in react. Does not need to be imported to src/index.js
+
+    In reducers dir, make individual files per reducer function  and export default
+    Good idea to use the naming  “whateverReducer” to be clear
+
+
+    In src/reducers/index.js
+    	import all reducers and import  { combineReducers } from ‘redux’
+    	const allReducers = ( {  anyName: reducer, anyName: reducer etc...          } )
+    	// you can name the reducer functions any name at this point
+    	Export default allReducers
+
+Now in src/index.js you can import { createStore, applyMiddleware, compose } from ‘redux’
+And let store = createStore(allReducers) to have a store with all reducers
+
+To use the dev tool with middleware,
+
+    Let store = createStore (
+             rootReducer,
+            initialState,
+           compose (
+         applyMiddleware(...middleware),window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() )
+
+);
+
+## HOOKING IT UP TO REACT APP
+
+In src/index.js
+import { Provider } from ‘react-redux’ // Capital P
+
+Wrap the entire react app with the Provider while passing the prop, store as store
+
+So:
+
+let store = createStore(reducers, window.**REDUX_DEVTOOLS_EXTENSION** && window.**REDUX_DEVTOOLS_EXTENSION**())
+
+ReactDOM.render(
+<Provider store={store}>
+<App />
+</Provider>,
+document.getElementById(‘root’)
+)
+
+Now every stateless, functional components can import
+
+{ useSelector } from ‘react-redux’ and have access to state!!
+
+And Do something like
+
+function App() {
+const counter = useSelector(state => state.counter)
+return (
+
+<div className="App">
+hello, {counter}
+</div>
+);
+}
+
+Notice the syntax of useSelector(state => state.nameOfState)
+
+To CHANGE state, you still need to import actions from src/actions as well as { useDispatch } from react-redux
+
+Make sure const dispatch = useDispatch() in the top level scope of the react function, then use the var dispatch inside handlers.
+
+## Usage
+
+```
+import React from 'react';
+import './App.css';
+import { useSelector, useDispatch } from 'react-redux'
+import { increment, decrement, signIn} from './actions/index'
+
+function App() {
+
+const counter = useSelector(state => state.counter)
+const isLogged = useSelector(state => state.isLogged)
+const dispatch = useDispatch()
+const handleIncrement = () => {
+dispatch(increment())
+}
+const handleDecrement = () => {
+dispatch(decrement())
+}
+const handleSignIn = () => {
+dispatch(signIn())
+}
+
+return (
+
+<div>
+<h1 className="App">
+Counter: {counter}
+</h1>
+<button style={{fontSize:'2rem', margin:'0 2em'}} onClick={handleIncrement}>+</button>
+<button style={{fontSize: '2rem', margin: '0 2em'}} onClick={handleDecrement}>-</button>
+<button style={{fontSize: '2rem', margin: '0 2em'}} onClick={handleSignIn}>Sign In</button>
+{isLogged && <h2>Secret Info that you need to be logged in for!</h2>}
+</div>
+);
+}
+
+export default App;
+```
+
+You can pass another parameter when calling the action like dispatch(increment(5))
+
+And in the action which used to be this
+
+const increment = () => {
+return { type: ‘INCREMENT’}
+}
+
+Can also adapt so
+
+const increment = (num) => {
+Return {
+type: ‘INCREMENT’,
+payload: num}
+}
+
+And the payload can be used in the reducer to say, increment by 5 now
+
+ASYNC actions
+
+If you want to call dispatch on async actions like fetch(), the standard way is to use redux-thunk
+
+To use it, you need to import { applyMiddleware } from ‘redux’
 
 Reminder
 Destructuring objects
