@@ -390,3 +390,52 @@ No constructors, no “new”, no parent or child classes
 Use different names between the prototypes
 Refer to a prototype when delegation is necessary
 Flexible, composition based with nothing to do with “fake” classes
+
+## Codesmith OOP lecture
+
+const obj = {stuff} takes up too much local memory
+
+better to store in dunder proto, `__proto__`
+
+### Object.create()
+
+```
+const factory = {greet: () => 'hi'}
+Object.create(factory); // returns an object that has a `__proto__` with the greet function
+```
+
+### using new with functions
+
+functions can have prototypes that is used as ingredients to form `__proto__` upon being used with `new`
+
+even better is to use a factory function.
+
+```
+function UserCreator(name, score) {
+    this.name = name;
+}
+
+UserCreator.prototype.greet = function () { 'hi' }  // this CAN NOT BE an arrow function!
+
+const user = new UserCreator;
+
+// now user has `__proto__` based on prototype
+user.greet // returns 'hi'
+```
+
+### using classes (syntax difference only)
+
+```
+class UserCreator {
+    constructor (name) {
+        this.name = name
+    }
+    greet () {
+        console.log('hi')
+    }
+}
+```
+
+adding a method to a class is actually adding UserCreator.prototype.greet.
+
+const user = new UserCreator;

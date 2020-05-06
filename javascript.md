@@ -135,3 +135,38 @@ const arrayOfThreeHellos = Array(3).fill('hello');
 Probably looking for this one which takes in a Date Object and returns a human readable string
 
 (DateObject).toDateString()
+
+## array.concat()
+
+Very cool property that's not in the spread operator is:
+
+let a = [1,2,3]
+let b = [4]
+let c = 4
+
+a.concat(b) AND a.concat(b) will give the same output, [1,2,3,4]
+
+This can be used to flatten arrays!!
+
+## .contructor === String, Object, Array, Function
+
+for type checking
+
+## sort() comparator is weird
+
+Often, sort comparators are abbreviated as they still work. Depending on the browser(?) it may behave differently so be safe and be explicit
+and always return 0, -1, and 1!
+
+For alphabetical order increasing,
+
+```
+(a, b) => {
+  if (a < b) {
+    return -1;
+  }
+  if (a > b) {
+    return 1;
+  }
+  return 0;
+}
+```
