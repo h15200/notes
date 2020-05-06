@@ -170,3 +170,12 @@ For alphabetical order increasing,
   return 0;
 }
 ```
+
+## eval()
+
+evaluates a string as math operation IF valid
+
+str = '4+4'
+eval(str) // returns the number 8
+
+DO NOT include the equal sign
