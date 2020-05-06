@@ -250,13 +250,13 @@ Three Types of depth-first searches. All of these use recursive algorithms
         4     5          6
 ```
 
-1. In-order - Begin at left subtree(2), go deeper if there is another subtree (node with more branches). Get left node, root, then right node. Back up to root (of the subtree you were on) return that, then the right subtree of that root.
+1. In order - Begin at left subtree(2), go deeper if there is another subtree (node with more branches). Get left node, root, then right node. Back up to root (of the subtree you were on) return that, then the right subtree of that root.
    ex from top- 4, 2, 5, 1, 3, 6
-2. Pre-order - Return values from the root and end in the leaf
+2. Pre order - Return values from the root and end in the leaf
 
 ex - 1, 2, 4, 5, 3, 6
 
-3. Post-order - Return values from the leaf and end in the root for each subtree
+3. Post order - Return values from the leaf and end in the root for each subtree
    ex - 4, 5, 6, 2, 3, 1
 
 ### Breath first search
