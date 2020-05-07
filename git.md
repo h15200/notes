@@ -36,9 +36,6 @@ If the repository and local codes are different and you try to git push/pull, yo
 To see the history of commits
 `git log`
 
-To go back to an older version of commit
-`git reset --hard “commithash”` (the hash for that particular commit)
-
 To go back one commit
 `git checkout HEAD “filename”`
 
@@ -75,3 +72,10 @@ make a gitignore, add `node_modules` as well as `node_modules/` if you have sub 
 
 then to remove the current repo with modules,
 `git rm -r --cached node_modules`
+
+## Going back!
+
+ABSOLUTELY make sure that you want to go back, as the current code will be deleted completely!
+
+To go back to an older version of commit
+`git reset --hard “commithash”` (the hash for that particular commit)
