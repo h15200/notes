@@ -55,3 +55,9 @@ const factorial = (n, product = 1) => {
 };
 
 ```
+
+## mutual recursion
+
+2 recursive functions call each other
+
+ex. json parser.

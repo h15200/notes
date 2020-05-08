@@ -22,6 +22,8 @@ Factorial       `O(n!)`          Generating permutations                SLOWEST
 
 ```
 
+Exponential is the opposite of Logarithmic. One task creates TWO tasks
+
 ## Space Complexities - MEMORY
 
 Space complexity is based on number of stacks called. Requires more cpu
