@@ -24,6 +24,8 @@ Factorial       `O(n!)`          Generating permutations                SLOWEST
 
 ## Space Complexities - MEMORY
 
+Space complexity is based on number of stacks called. Requires more cpu
+
 Space and Time complexties have an inverse relationship.
 
 You can buy more RAM, but not more time so ALWAYS prioritize time complexities

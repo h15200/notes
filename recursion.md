@@ -29,3 +29,23 @@ referencePoint.doSomething
 // now we have access back to initial
 }
 ```
+
+## regular recursion - O(n) LINEAR recursion
+
+```
+const factorial = (n) => {
+  if (n===0) return 0;
+  else return n * factorial(n-1)
+}
+
+```
+
+## tail recursion (tail call optimization) Stack won't pop back up if you do it this way
+
+```
+const factorial = (n, product = 1) => {
+  if (n ===0) return product;
+  else return factorial(n-1, product * n);
+};
+
+```

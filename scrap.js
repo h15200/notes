@@ -6,5 +6,5 @@
 // let posLook = /(?=ab)/;
 // console.log(posLook.test(password)); //returns true
 
-const a = new Set([1, 1, 1, 2, 3]);
-console.log(a);
+// const a = new Set([1, 1, 1, 2, 3]);
+// console.log(a);
