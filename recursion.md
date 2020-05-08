@@ -42,7 +42,9 @@ const factorial = (n) => {
 
 ## tail recursion (tail call optimization) Stack won't pop back up if you do it this way - Time complexity is still O(n) but Space complexity is O(1)
 
-with tail recursion, we don't need the initial stacks for the return value, so the cpu is ONLY using one stack.
+with tail recursion, we don't need the initial stacks for the return value, so the cpu is ONLY using one stack by reusing the first stack.
+
+JS will evaluate the base case and if no other info is needed, it will trigger tail recursion automatically.
 
 For tail recursion, you CARRY the return variable inside the params TO the recursive calls so that when you hit the base case, you don't need to go back.
 
