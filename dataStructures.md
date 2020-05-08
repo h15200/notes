@@ -259,7 +259,11 @@ ex - 1, 2, 4, 5, 3, 6
 3. Post order - Return values from the leaf and end in the root for each subtree
    ex - 4, 5, 6, 2, 3, 1
 
-### Breath first search
+### Breadth first search
+
+NOTE!!
+
+Breadth first searches can be solved using a queue in MOST cases!!
 
 Get all the nodes in a certain depth first by having a queue that keeps track and loops through everything
 
@@ -316,6 +320,17 @@ Unlike binary trees, nodes are not associated with values but the storage method
 
 For example, to store "patti" in a trie, you must travel to nodes p, a, t, t, and i. The path is then stored
 Each node can store many children as well as the
+
+Implementation:
+
+all nodes have a keys collection which is an object or a map with key-value pair of char, and another node.
+all nodes have an isEnd boolean to signify a word
+
+a tree will have a root that is a node which doesn't have a value but with a key and isEnd to false.
+
+add function ('hi') will first look through the keys of the root, if 'h' doesn't exist, make one, and then now look into that 'h' node, and its keys, and add 'i' if it doesn't exist along with the isEnd true on the i node.
+
+a search function will look through keys to see if a word exists
 
 ## Binary Heap
 
@@ -546,3 +561,18 @@ A depth first search will explore one neighbor all the way until it reaches a le
 
 // breadthFirst(graph, 1) - what is the distance form this root to all nodes in this graph
 // returns something like { 0:1, 1:0, 2:infinity, 3:3 }
+
+## Breath first graph search
+
+Tools for keeping track
+
+1. a queue which initializes as the first node you're visiting. It doesn't matter which
+2. a doneList which has the nodes that are 'done'
+
+Steps
+
+1. Queue starts off as one node. Base case is queue length 0
+2. Do whatever you need to do at queue[0], then check it's neighbor edges. If those edge nodes do NOT exist in the
+   doneList, push() them to the queue
+3. After you've added all neighbor nodes, shift() the queue INTO the doneList
+4. Recursively go into the new queue[0]

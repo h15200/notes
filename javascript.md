@@ -179,3 +179,5 @@ str = '4+4'
 eval(str) // returns the number 8
 
 DO NOT include the equal sign
+
+## str.repeat() !!!

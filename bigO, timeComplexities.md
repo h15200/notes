@@ -6,22 +6,40 @@ The time it takes for a function to finish depends on many thigns like computer 
 
 Time Complexity is a way to describe the relationship between input size and runtime.
 
-1. Linear Time - Time incerases at the same rate input size increases
-   example might be adding up the total of an array
-2. Constant Time - Time is the same regardless of input size.
-   example - return first char of a string
-3. Quadratic Time - Time inscreases quadratically, a lot steeper than linear time as input size increases. Least desirable.
-   example - get the total of a 2 dimensional array.
-4. Logarithmic Time - Could be half of linear time, or at worst, linear time.
-   ex. binary search tree.
+note log(16) is the same thing as 2** ? is 16? the answer is 4 as 2**4 is 16.
+How many HALVING steps does it take to get to 1?
+
+```
+name             notation         ex                                    speed
+
+Constant        `O(1)`            key look up                           FASTEST
+Logarithmic     `O(log n)`        BST
+Linear          `O(n)`            1 Level Looping
+Quasilinear     `O(n log n)       Good stort(merge)
+Quadratic       `O(n2)`          Nested loop (selection sort)
+Exponential     `O(Cn)`          Recursive Backtracking: Subsets
+Factorial       `O(n!)`          Generating permutations                SLOWEST
+
+```
+
+## Space Complexities - MEMORY
+
+Space and Time complexties have an inverse relationship.
+
+You can buy more RAM, but not more time so ALWAYS prioritize time complexities
 
 ## BIG O Notation is simply a way to describe different time complexities
 
 n is the size of the input
 
 1. Linear Time = O(n) called "Big O of n" or "O of n"
+
+The most common time complexity
+
 2. Constant Time = O(1) "Big O of 1"
+
 3. Quadratic Time = O(n2) "Big O of n squared"
+   ex - nested for loops have O n2
 
 ## How to get the big O notation
 
