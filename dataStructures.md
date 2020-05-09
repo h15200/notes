@@ -576,3 +576,13 @@ Steps
    doneList, push() them to the queue
 3. After you've added all neighbor nodes, shift() the queue INTO the doneList
 4. Recursively go into the new queue[0]
+
+## Sorts
+
+### Bubble sort - just keep swapping and iterating
+
+to optimize, use a didSwap boolean and only run it if the previous iteration had a swap
+
+### Insertion sort - use pointer,
+
+loop left to right, but for every time something is unsorted, sort that element ALL the way to the left using pointer j. Same time complexity as bubble sort, but can be done in one loop
