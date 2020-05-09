@@ -181,3 +181,11 @@ eval(str) // returns the number 8
 DO NOT include the equal sign
 
 ## str.repeat() !!!
+
+## Use array destructuring to swap items in an array like
+
+[item[i], item[i+1]] = [item[i+1], item[i]]
+
+## Using POINTERS to keep reference to do stuff inside a for loop.
+
+let j = i, swap things to the left for ex. insertion sorts
