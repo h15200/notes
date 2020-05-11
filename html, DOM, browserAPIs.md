@@ -1,3 +1,25 @@
+# DOM is a tree
+
+```
+              Window
+
+              Document
+
+              <Html>
+      <Head>              <Body>
+<meta> <title> <link>     <header> <main> <footer> <scrypt>
+
+
+```
+
+ALL things in the dom are basically objects with built-in methods
+
+## steps
+
+1. HTML page loads, browser creats a Document Object Model
+2. DOM is exposed to javascript via `document`
+3. Browser loads the js script LAST
+
 ## Rendering additional html from js
 
 `<template>` elements can render strings like `<div>hi</div>`
