@@ -176,3 +176,11 @@ const nestedBtnClick = event => {
 document.querySelector(message).textContent=”button clicked!”
 event.stopPropagation()
 }
+
+## Node.replaceChild()
+
+syntax is
+
+`parentNode.replaceChild(newChild, oldChild)`
+
+If the newChild ALREADY exists in the DOM, it is first removed from that original position!
