@@ -25,6 +25,18 @@ ALL things in the dom are basically objects with built-in methods
 `<template>` elements can render strings like `<div>hi</div>`
 Can be used to render elements dynamically
 
+## Make sure js runs after DOM is loaded
+
+```
+document.addEventListener("DOMContentLoaded", () => {
+
+// put ALL js code inside here
+
+
+
+})
+```
+
 ## form
 
 You can set a regex to attribute pattern
