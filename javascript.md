@@ -189,3 +189,13 @@ DO NOT include the equal sign
 ## Using POINTERS to keep reference to do stuff inside a for loop.
 
 let j = i, swap things to the left for ex. insertion sorts
+
+## != null
+
+checks for BOTH null AND undefined
+
+## one line if returns are good
+
+cleaner code to have
+
+`if (input > 0) return null`
