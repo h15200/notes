@@ -199,3 +199,9 @@ checks for BOTH null AND undefined
 cleaner code to have
 
 `if (input > 0) return null`
+
+## When using a cache for tallying
+
+you can increment to the current value or 0 by doing something like
+
+`tally[val] = (tally[val] || 0) + 1`
