@@ -882,3 +882,10 @@ img[scr*="https"] {
 ```
 
 `*=` is 'includes'
+
+## weird bug opacity, display, transition
+
+To go from display none to fade in
+
+1. display: 'none' transition: 'opacity 3s'
+2. WAIT by using setTimeout( () => {opacity: 1}, 0)
