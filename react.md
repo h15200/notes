@@ -44,6 +44,38 @@ addButton.addEventListener("click", function() {
 function addItem() { setItems([...items, itemInput]); }
 ```
 
+## Basics
+
+All react code is written in JSX (as of now, wasn't the case in the beginning)
+
+```
+class App extends React.Component {
+render() {
+   return (
+      <div>
+         <Welcome name="Richard" />
+         <Welcome name="Dinesh" />
+         <Welcome name = "Gilfoyle" />
+      </div>
+     );
+   };
+}
+
+class Welcome extends React.Component {
+render() {
+   return <h1>Hello, {this.props.name}</h1>
+   };
+}
+
+```
+
+1. create a react component class
+2. declare at LEAST a render method, which is a LIFE-CYCLE method!
+3. Inside the return, also render another component, Welcome
+4. Welcome takes in a JSX atrribute, "name"
+
+Rendering a component with jsx is akin to instantiating a new object via `const component = new Component()`
+
 ## Setting up React
 
 The old old way pre 2015 - react was one library and it used React.render as well as React.create
