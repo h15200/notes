@@ -119,6 +119,10 @@ class Box extends React.Componenet {
 
 Remember that render() runs when the component is being rendered, so you can have js logic BEFORE the return statement to use inside return.
 
+## constructor()
+
+Constructor method is ALSO a life cycle method
+
 ## Common pattern
 
 Making an array before the return statement of render() like `const a = [<h1>hello</h1>, <div>hi</div> ]
