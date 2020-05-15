@@ -76,6 +76,55 @@ render() {
 
 Rendering a component with jsx is akin to instantiating a new object via `const component = new Component()`
 
+## Making state (class componenet)
+
+```
+class App extends React.Component {
+   constructor() {
+      super()
+      this.state = {
+         cohortNumbers: [34,35,36]
+      }
+   }
+
+   render(){
+      return (
+         <section>
+            <Box number={this.state.cohortNumber[0]} />
+            <Box number={this.state.cohortNumber[1] />
+            <Box number={this.state.cohortNumber[2] />
+         </section>
+
+      )
+   }
+}
+
+class Box extends React.Componenet {
+   render() {
+      return (
+         <div>
+         <p> Cohort {this.props.number} is awesome! </p>
+         </div>
+      )
+   }
+}
+```
+
+1. State is declared INSIDE the constructor of the top-level component.
+2. ONLY the top level component has access to state via this.state.
+3. For other components to use that state, it must be rendered as a child of the top level component as a prop.
+4. Those child components do NOT have access to current state, just the form of the state when it was passed on to the child when it was rendered by the parent component
+
+## JSX, js constrictions
+
+Remember that render() runs when the component is being rendered, so you can have js logic BEFORE the return statement to use inside return.
+
+## Common pattern
+
+Making an array before the return statement of render() like `const a = [<h1>hello</h1>, <div>hi</div> ]
+
+then return {a} will render all of those as siblings
+
 ## Setting up React
 
 The old old way pre 2015 - react was one library and it used React.render as well as React.create
@@ -149,20 +198,22 @@ To have multiple pages, use BrowserRouter (as Router), Switch, Route
 Put Routes components in the entry point of the ReactDOM render
 
 ```
+
 cont Routes = () => {
-   return (
-      <Router>
-         <Switch>
-            <Route exact path="/" />
-               <IndexComponenet />
-            </Route>
-            <Route exact path="/about">
-               <AboutCompoenent />
-            </Route>
-         </Switch>
-      </Router>
-   )
+return (
+<Router>
+<Switch>
+<Route exact path="/" />
+<IndexComponenet />
+</Route>
+<Route exact path="/about">
+<AboutCompoenent />
+</Route>
+</Switch>
+</Router>
+)
 }
+
 ```
 
 If the layout is simple without any auth or other functions, you can just put it in the main App and use Link as a way to navigate
@@ -186,11 +237,13 @@ Set the value of a form to the state of react, and set a changeHandler that dete
 You can render additional components through functions inside jsx
 
 ```
+
 const Component = () => {
 
 const addElements = () => <div>more divs!</div>;
 
 return (
+
    <div>
    </div>
    { addElements() }
