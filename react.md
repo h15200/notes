@@ -189,6 +189,16 @@ You also can't return jsx for rendering.
 To render, you must add JS inside the component return like
 { someStateBooleon && <Redirect to="/anotherSection"> }
 
+## life cycle methods!!!
+
+1. constructor
+2. render
+3. componentDidMount
+   render fires again!
+4. componenetDidUpdate (after every state update)
+   render fires
+5. componenetWillUnmount (as the component closes)
+
 ### images
 
 Sourcing direct from the project dir doesn't work as well as importing
