@@ -272,3 +272,9 @@ To render multiple elements, use an array of elements and they will render in or
 useEffect is great for putting in fetch, but keep in mind that any setStates you call inside useEffect WILL work, but it will not be reflected inside useEffect through console.log or even setTimeout with a console.log.
 
 put any logic to use that state outside the useEffect
+
+## Don't setState in constructor
+
+In class components, don't use this.setState inside the constructor as it might run BEFORE the state declaration itself.
+
+Put any state changes inside componentDidMount, or inside an event, as an event will always run after the DOM is rendered

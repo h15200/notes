@@ -196,3 +196,15 @@ syntax is
 `parentNode.replaceChild(newChild, oldChild)`
 
 If the newChild ALREADY exists in the DOM, it is first removed from that original position!
+
+## error handling
+
+For ex, if a src is not valid on an image tag
+
+USE onerror attribute!
+
+html
+`<img src="whatever" onerror="callbackFunc()"></img>`
+
+react
+`return <img src={props.src} onError={someFuncToRunIfThereIsError}></img>`
