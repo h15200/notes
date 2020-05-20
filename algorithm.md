@@ -4,9 +4,10 @@
 
 See code. The hardest one so far to date (4-30-20)!
 
-## for recursive functions that aren't sequencial
+## for recursive functions that aren't sequential
 
 Use an object to store all solved index values. see partitionFunction.js
+This is called memoization!
 
 ## balanced parens
 
