@@ -131,3 +131,21 @@ For server package.json scripts,
 "dev" : "NODE_ENV=development nodemon server.js"
 
 process.env.NODE_ENV inside the server script will be set to "development" or "production" based on script
+
+## FS streams
+
+Streams are used to get data gradually
+You need to add event listeners on the stream to put the chunk buffers together
+You need to add event listener on 'end' for all function to run after the stream is done
+
+```
+// initiates the stream
+const stream = fs.createReadStream(<pathToFile>)
+stream.on('data', (chunk)= {
+  // do something with the chunk of data
+})
+stream.on('end' () = {
+  // logic for what to do when the stream is done
+})
+
+```
