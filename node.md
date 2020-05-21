@@ -3,19 +3,55 @@
 Node is javascript that runs on your computer rather than on the browser.
 You don't have access to document or window, but you have access to process and the ability to create files, make changes to your system, and listen to network traffic.
 
+## Difference between browser js
+
+JS in the browser uses the event loop to sort the stack and callback queue. Web apis are pushed to the callback queue (promises have high priority) and the callback queue is not cleared until the main stack is clear.
+
+Node uses the LibUV library which works similary to the event loop but it communicates with C++ to handle the node equivalent event loop, callback queue (event quque) and background I/O operations.
+
+Node has no Web API, no window, document, navigator, XMLHttpRequest, or any other browser-specific objects.
+
+Instead it has **dirname, **filename, and process
+
 ## Module
 
-modules are used to share information between files.
+modules are used to share information between files and keep your namespace clean.
+Modules allow us to expose only the parts of your program you want exposed, sort of like a closure.
 
 By default, module.exports is an OBJECT.
 
-When you write code to import a file, `const stuff = require('someJsFile');`
+When you write code to import a file, `const stuff = require('someBuiltInModule');`
 We are assigning the module.exports object of the someJsFile to the variable, stuff.
 
 If someJsFile is empty, it will be an empty object
 
 In the exporting file, you can refer to the exporting object with the full name, `module.exports`
 OR the shorthand, `exports`
+
+### Why it's like closure
+
+```
+counter.js
+
+let i = 0;
+function counter() {
+  console.log(i);
+  return i++;
+}
+
+modules.exports = counter;
+
+
+index.js
+
+const counter = require('./counter.js');
+
+console.log(counter()); // in console: 0;
+console.log(counter()); // in console: 1;
+console.log(i); // error
+```
+
+the function counter has access to i from counter.js. index.js can CALL counter and have indirect access through the return statement, but not as a variable.
 
 ## Overriding module.exports
 
