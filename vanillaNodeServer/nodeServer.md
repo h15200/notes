@@ -91,3 +91,7 @@ else if (req.url === '/api/users') {
     res.end(data);
   }
 ```
+
+## using a readStream is BETTER
+
+Better practice to use a stream instead of using readFileSync or readFile as streams will make things more efficient. When given a choice, use a stream
