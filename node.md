@@ -122,3 +122,12 @@ The workaround to this is when a request comes in to the server for the first ti
 A common way to set this up in express is using the npm pacakge, cookie-session as a middleware
 
 If you add cookie-session as a middleware, the request now has res.session attached which is an object that you can pass back and forth.
+
+## process.env
+
+For server package.json scripts,
+
+"start" : "NODE_ENV=production node server.js",
+"dev" : "NODE_ENV=development nodemon server.js"
+
+process.env.NODE_ENV inside the server script will be set to "development" or "production" based on script
