@@ -1,15 +1,71 @@
 # Express
 
+## Express is a node framework
+
+aims to be fast, un-opinionated, and minimal
+The most used Node framework for the web
+
+Other frameworks include Hapi and Koa. Hapi was very opinionated, Kao was not.
+Kao was developed by TJ Holowaychuk, who also created Express.
+
+## Abstractions
+
+Express will handle all stream events. No need to parse buffers and add event listeners.
+Express' request and response objects wrap the vanilla node request and response objects with extra functionality.
+The middleware design pattern is implemented
+
+## middleware
+
+express middleware is simply a function that takes on 3 args (third is optional)
+
+1. req object
+2. res object
+3. next function
+
+You simply apply the current middleware, then run the next function
+
+app.get('/', middleWare1, middleWare2);
+
+// middleWare1 will need a next function but not middleWare2
+
+Stuff that you write with (req, res) => {} is also considered middleware!!
+
+### Middleware data `Res.locals`
+
+Data will persist across middleware chains.
+
+Convention to use `res.locals.<variablenName> = dataToPersistAcrossMiddlewareChain`
+
+ex
+
+```
+app.get('/', middleWare1, middleWare2)
+
+func middleWare1() {
+  const res.locals.name = 'patti';
+  return next();
+}
+
+func middleWare2() {
+  res.send(res.locals.name)
+}
+
+```
+
+As soon as the res is sent, the res.locals data will be gone.
+
 ## usage
 
 In root
 
 ```
+
 npm init
 mkdir config src views
 touch src/index.js config/dev.env
-npm i env-cmd nodemon  --save-dev
+npm i env-cmd nodemon --save-dev
 npm i express (and other middlewares like body-parser)
+
 ```
 
 Package.json script
@@ -18,15 +74,17 @@ Package.json script
 App.js
 
 ```
+
 const express = require ('express');
 const app = express();
 app.use(middleware)
 
 probably set up routes in another page, then import here
 
- const PORT = process.env.PORT || 3000 (or any port)
+const PORT = process.env.PORT || 3000 (or any port)
 
     At bottom, app.listen(PORT, () => { console.log(“server is up and listening to PORT”)}
+
 ```
 
 To serve html or other engines, `app.use(express.static(path)`
@@ -47,12 +105,14 @@ Setup script for nodemon server.js
 in server.js
 
 ```
+
 import express,
 const app = express()
 const PORT = process.env.PORT || 3000
-app.listen(PORT, () => console.log (`listening on port ${PORT}’)
+app.listen(PORT, () => console.log (`listening on port \${PORT}’)
 Do a test with a get request to index that sends back “test”, check w Postman
-  (see postman setup)
+(see postman setup)
+
 ```
 
 Don’t forget app.use(express.json()) in the server to parse requests!
@@ -66,17 +126,18 @@ require mongoose, config
 const db = config.get(‘mongoURI’) // or whatever you named it inside default.json
 
 ```
+
 const connectDB = async () => {
 Try {
 await mongoose.connect(db)
 } console.log(‘db connected!’)
 catch (e) {
 console.log(e)
-  }
+}
 }
 
-
 module.exports = connectDB
+
 ```
 
 Require it inside server.js, run it to check
@@ -160,6 +221,7 @@ Once switch routes are set, you can use <Link> to replace href in navbars and ot
 You connect the backend to the frontend when you make axios requests to the database!
 Example:
 
+```
 const newUser = {
 name: formData.name,
 email: formData.email,
@@ -178,3 +240,67 @@ headers: {
       } catch (err) {
         console.log(err)
       }
+
+```
+
+## MVC with express
+
+In express, the controller in MVC refers to a group of related middlewares.
+
+## Router
+
+articleRouter.js
+
+```
+const router = express.Router();
+
+router.get('/', () => {
+  //stuff
+  })
+
+router.post('/', () => {
+  // stuff
+})
+
+module.exports = router;
+```
+
+index.js
+
+```
+const express = require('express');
+const app = express();
+const PORT = 3000;
+const articleRouter = require('./articleRouter.js');
+
+app.use('/article', articleRouter);
+
+```
+
+## app.use()
+
+When you use app.use() with a router, it is functioning like an else if.
+
+```
+app.use('/articles', middleware);
+app.use('/', mw);
+
+// this next one will ONLY active for ALL routes that are not in ./articles or ./
+app.use('*', mw)
+```
+
+## Global error handling
+
+THE ONLY thing you pass into next() inside middleware is error.
+The global error handler will count these errors.
+
+To get them, you simply make an app.use() with FOUR args. First one is error
+
+```
+app.use(err, req, res, next) => {
+  res.localsmessage = err.message;
+  console.log('ERROR: ', err);
+  const errorStatus = err.status || 500;
+  return res.status(errorStatus).send(res.locals.message)
+}
+```
