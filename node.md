@@ -196,3 +196,28 @@ request.on('error', (err) => {
 ```
 
 Usually the .listen is chained to the end of the createServer() function along with a callback of logging `listening on port ${PORT}`
+
+## PIPE!
+
+Pipe is very powerful. if you are reading a stream and writing to a stream, remember that request objects are readableStreams and response objects are writableStreams so you can skip chunking and Buffer.concat and even response.end() if you pipe. Pipe will implicitly call response.end() when the last chunk is read and written.
+
+```
+const http = require('http');
+
+http.createServer((request, response) => {
+  request.on('error', (err) => {
+    console.error(err);
+    response.statusCode = 400;
+    response.end();
+  });
+  response.on('error', (err) => {
+    console.error(err);
+  });
+  if (request.method === 'POST' && request.url === '/echo') {
+    request.pipe(response);
+  } else {
+    response.statusCode = 404;
+    response.end();
+  }
+}).listen(8080);
+```
