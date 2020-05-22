@@ -149,3 +149,50 @@ stream.on('end' () = {
 })
 
 ```
+
+## Under the hood
+
+`http.createServer((request, response) => { })`
+is EXACTLY the same thing as making a server, and creating an event listener for 'request' as the server itself is also an EventEmitter!
+
+```
+const http = require('http');
+
+const server = http.createServer((request, response) => {
+
+});
+```
+
+Is the SAME as
+
+```
+const server = http.createServer();
+server.on('request', (request, response) => {
+});
+```
+
+All incoming body data through POST or PUT are read in chunks as buffers.
+All stream event have 'data' and 'end' which you'll have to attach as listeners.
+
+If the data is a string, the easiest way to parse the chunks is to make an array and Buffer.concat and toString();
+
+```
+let body = [];
+request.on('data', (chunk) => {
+  body.push(chunk);
+}).on('end', () => {
+  body = Buffer.concat(body).toString();
+  // at this point, `body` has the entire request body stored in it as a string
+});
+```
+
+All requests AND reponse objects should have error handling on the Node side via .on('error', callback)
+
+```
+request.on('error', (err) => {
+  // This prints the error message and stack trace to `stderr`.
+  console.error(err.stack);
+});
+```
+
+Usually the .listen is chained to the end of the createServer() function along with a callback of logging `listening on port ${PORT}`
