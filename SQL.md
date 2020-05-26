@@ -69,6 +69,21 @@ These will return ONE value, so they can't be combined with other values that re
 
 Name of table you are querying from
 
+Adding a letter will assign a variable
+
+```
+SELECT c.name
+FROM customers c
+```
+
+Very useful in joins
+
+```
+SELECT i.description, s.name
+FROM item_order i RIGHT OUTER JOIN shipper s
+ON i.shipper_id = s._id;
+```
+
 ## AS (optional)
 
 Used after SELECT when you want to rename the data as something else
@@ -218,14 +233,28 @@ ON A.key=B.key
 
 This selects all from a new table that contains all the info for rows that have the same "key" value assigned to both tables. If it only exists in one table, that info is not in the new table
 
-2. LEFT JOIN `SELECT * FROM table_A LEFT JOIN table_B ON A.key=B.key`
+LEFT JOIN === LEFT OUTER JOIN
+RIGHT JOIN === RIGHT OUTER JOIN
+
+2. LEFT JOIN `SELECT * FROM table_A LEFT OUTER JOIN table_B ON A.key=B.key`
    This will add the key info of B to all of the info on left
-   1. LEFT JOIN WITH RIGHT NULL `SELECT * FROM table_A LEFT JOIN table_B ON A.key=B.key WHERE B.key IS NULL`
+   1. LEFT JOIN WITH RIGHT NULL `SELECT * FROM table_A LEFT OUTER JOIN table_B ON A.key=B.key WHERE B.key IS NULL`
       This will take away the section of table A that has a common key with table B.
 3. RIGHT JOIN - Same as left join, but in reverse order
 4. RIGHT JOIN WITH LEFT NULL
 5. FULL OUTER JOIN - Fully combines both tables
 6. FULL OUTER JOIN WHERE A IS NULL AND B IS NULL - Excludes only the inner join part of both tables
+
+SELECTING WHERE ISN'T
+
+```
+SELECT c.name
+FROM customer c LEFT OUTER JOIN item_order i
+ON i.customer_id = c._id
+WHERE i._id IS NULL
+```
+
+// the last bit WHERE i_id IS NULL means the id does not appear in item_order
 
 ## DOUBLE SELECT
 
