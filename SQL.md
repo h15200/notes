@@ -46,10 +46,23 @@ Using SELECT DINSTINC something will only query unique items and skip repeats
 Can only be used for one selector.
 DISTINCT \* won't do anything
 
-### OTHER FUNCTIONS IN SELECT - AVG(), COUNT(), MAX)(), MIN(), SUM)()
+### AGGREGATE FUNCTIONS IN SELECT - AVG(), COUNT(), COUNT(\*) MAX)(), MIN(), SUM)()
+
+Sum of the price of all unshipped orders?
+`SELECT sum(price) FROM item_order WHERE delivered = false;`
+
+How many customers total?
+`SELECT count(*) AS cust_count FROM customer;`
+
+How many customers in each state?
+`SELECT state, count(*) FROM customer GROUP BY state;`
+
+using count(\*) after another parameter will only select things within that 1st param
+
+Which states, other than Georgia, have more than 2 customers?
+`SELECT state, count(*) FROM customer WHERE state != 'GA' GROUP BY state HAVING count(*) > 2;`
 
 `SELECT AVG(price) FROM table WHERE product_id=10`
-
 These will return ONE value, so they can't be combined with other values that return more than 1.
 
 ## FROM
@@ -193,14 +206,14 @@ WHERE height=(
 )
 ```
 
-## JOINS - Use a common key to join two tables
+## JOINS - Use a common key to join two tables. Used inside FROM
 
 1. INNER JOIN
 
 ```
 SELECT *
-FROM table_A
-INNER JOIN table_B ON A.key=B.key
+FROM table_A INNER JOIN table_B
+ON A.key=B.key
 ```
 
 This selects all from a new table that contains all the info for rows that have the same "key" value assigned to both tables. If it only exists in one table, that info is not in the new table
@@ -422,3 +435,15 @@ WHERE condition;
 
 can set multiple column-name = column-value assignments
 `UPDATE item_order SET shipper_id = 3, delivered = true WHERE _id = 8;`
+
+## DELETE
+
+MUST HAVE A WHERE CONDITION!
+If not, if will delete ENTIRE TABLE!!!
+
+```
+DELETE FROM table-name
+WHERE condition
+```
+
+`DELETE FROM customer WHERE _id = 44 OR _id = 6;`
