@@ -91,6 +91,10 @@ For HUGE apps, possible to use both an SQL and a NoSQL in one app.
 a relational database with emphasis on extensibility and standards-compliance
 It is `ACID compliant`, supporting industry best practices as well as great documentation!
 
+To see tables in the terminal, use `\d`
+
+See more inside MYSQL.md
+
 ## MongoDB
 
 a non-relational database that is common in the JS stack.

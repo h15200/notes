@@ -14,6 +14,31 @@ You can acess data with Alias.data Newrowname.price
 Used first. must specify the name of row you are querying
 You can also print onto a column any string `SELECT 'HELLO SQL'`
 
+## SQL Operators and syntax
+
+SQL Operators
+
+```
+=
+!=
+<>  same as !=
+>
+<
+AND
+OR
+NOT
+```
+
+Queries must end with a `;`
+
+`%` operator
+`WHERE name LIKE 'H%'` - all names that start with 'H'
+`WHERE name NOT LIKE 'H%'` - all names that do NOT start with 'H'
+
+`_` operator for number of chars
+`Where name LIKE 'H____ %;` - all names that start with 'H' and totals 5 chars
+MAKE SURE THERE IS 1 whitespace between the last `_` and the `%`
+
 ### (optional) DISTINCT
 
 Using SELECT DINSTINC something will only query unique items and skip repeats
@@ -377,3 +402,23 @@ WHERE condition
 ```
 
 You can't have more than one SET statement inside one UPDATE.
+
+## CREATE (insert)
+
+INSERT INTO tableName (column-names)
+VALUES (column-value)
+
+```
+INSERT INTO customer (name, address, city) VALUES ('Patti', '235 cat lane', 'los angeles');
+```
+
+## UPDATE
+
+```
+UPDATE table-name
+SET column-name = column-value
+WHERE condition;
+```
+
+can set multiple column-name = column-value assignments
+`UPDATE item_order SET shipper_id = 3, delivered = true WHERE _id = 8;`
