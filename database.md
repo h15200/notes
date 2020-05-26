@@ -6,11 +6,16 @@ Databases are usually SQL (postgress, mySQL) or NoSQL (MongoDB)
 Databases are connected from the server and is just a big computer
 In dev, databases might be stored on the same machine but it is best in production to separate server from db
 
-## Types of Databses
+SQL = Relational DB
+NoSQL = Non relational
+
+## 3 Types of Storing Databases
 
 Tables - SQL
 Documents - NoSQL
 Key-Value
+
+Both Documents and Key-Value are classified as non relational, NoSQL.
 
 ## SQL & Tables
 
@@ -50,6 +55,16 @@ NoSQL's don't use schemas, so it's not as solid but more flexible.
 
 THE MORE Acid compliant you make a NoSQL db, the less fast/flexible it will be.
 
+## key-value store
+
+The third type after Tables, Documents
+
+A Key-Value store are stored WITHOUT nesting (as opposed to NoSQL).
+Redis is a prime representative of a key-value system db.
+
+The data does NOT persist if there is a power outage.
+Sensitive or valuable data is not used in a key-value store.
+
 ## ACID compliance
 
 Properties of db transactions intended to guarantee validity event in the event of errors, power failures, etc..
@@ -67,7 +82,7 @@ Properties of db transactions intended to guarantee validity event in the event 
 Since SQL databases are ACID compliant, it is more 'solid' in general.
 Important database transactions like financial processes all use SQL.
 
-NoSQL databases are not as solid but faster and more flexible BECAUSE it doesn't use a traditional schema.
+NoSQL databases are not as solid but faster and more flexible BECAUSE it doesn't use a traditional schema. NoSQL lookups are fast because the data is formed as JSON (object lookup)
 
 For HUGE apps, possible to use both an SQL and a NoSQL in one app.
 
@@ -89,3 +104,12 @@ Indexing - any field can be indexed
 Replication - stores data as a replica set of two or more copies
 Load balancing - Mongo scales horizontally using sharding
 Aggregation - MapReduce can be used for batch processing of data and aggregation operations.
+
+## Redis
+
+Prime example of a key-value store.
+A data structure server
+Holds its entire dataset in RAM, and syncs back to the disc every 2 seconds
+Very fast because data is memcached but a power outage will destroy some data.
+
+A good choice if you want a highly scalable data store shared by multiple processes or multiple applications.
