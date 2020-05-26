@@ -50,11 +50,6 @@ NoSQL's don't use schemas, so it's not as solid but more flexible.
 
 THE MORE Acid compliant you make a NoSQL db, the less fast/flexible it will be.
 
-## PostgreSQL
-
-a relational database with emphasis on extensibility and standards-compliance
-It is `ACID compliant`, supporting industry best practices as well as great documentation!
-
 ## ACID compliance
 
 Properties of db transactions intended to guarantee validity event in the event of errors, power failures, etc..
@@ -70,5 +65,27 @@ Properties of db transactions intended to guarantee validity event in the event 
 ## SQL vs NoSQL
 
 Since SQL databases are ACID compliant, it is more 'solid' in general.
-
 Important database transactions like financial processes all use SQL.
+
+NoSQL databases are not as solid but faster and more flexible BECAUSE it doesn't use a traditional schema.
+
+For HUGE apps, possible to use both an SQL and a NoSQL in one app.
+
+## PostgreSQL
+
+a relational database with emphasis on extensibility and standards-compliance
+It is `ACID compliant`, supporting industry best practices as well as great documentation!
+
+## MongoDB
+
+a non-relational database that is common in the JS stack.
+
+A free open-source cross-platform document-oriented database.
+uses JSON-like documents with dynamic schemas (flexible)
+
+Features:
+
+Indexing - any field can be indexed
+Replication - stores data as a replica set of two or more copies
+Load balancing - Mongo scales horizontally using sharding
+Aggregation - MapReduce can be used for batch processing of data and aggregation operations.
