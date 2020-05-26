@@ -14,12 +14,35 @@ Key-Value
 
 ## SQL & Tables
 
-A relational database (SQL) is composed of tables
+Relational databses are `ACID` Compliant
+
+A relational database (SQL) `model` is defined as one or more `tables`.
+
 Table has columns. Columns DO NOT change as they are defined in a schema.
+Columns are also known as `attributes` or `fields`
+
 Table has rows. Rows are instances of new records and are added continuously.
+Rows are also known as `records`
 
 you cannot have a table INSIDE of a table but you can reference other tables through ids.
 
 ## NoSQL & Collections
 
-In a not only relational detabase (NoSQL),
+A non relational database (NoSQL)
+
+## PostgreSQL
+
+a relational database with emphasis on extensibility and standards-compliance
+It is `ACID compliant`, supporting industry best practices as well as great documentation!
+
+## ACID compliance
+
+Properties of db transactions intended to guarantee validity event in the event of errors, power failures, etc..
+
+`A` Atomicity - Requires that a transaction be 'all or nothing'. If one part fails, the whole transaction fails and db state is unchanged
+
+`C` Consistency - Any data written to the db must be valid according to implemented rules (constraints, cascades, triggers, etc)
+
+`I` Isolation - Concurrency control. Concurrent execution of transactions result in a state that would be obtained if they were run one after the other.
+
+`D` Durability - Once a transaction is committed, it will remain so, even if there is a crash or power loss.
