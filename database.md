@@ -113,3 +113,29 @@ Holds its entire dataset in RAM, and syncs back to the disc every 2 seconds
 Very fast because data is memcached but a power outage will destroy some data.
 
 A good choice if you want a highly scalable data store shared by multiple processes or multiple applications.
+
+## Schema
+
+A schema is a map of what your data looks like.
+
+In an SQL - defined the columns in your tables and the rules that data in rows must follow
+In a NoSQL, defines the object
+
+In a key-value, there is no schema at all.
+
+## SQL relationships
+
+One to One
+One to Many
+Many to Many
+
+Linking model to model happens by establishing relationships through the creation of foreign keys
+
+Often, ID fields are used for this but any common field can be used.
+
+model Users id, name, email
+model Houses id, name, user_id (which equals the Users id)
+
+The id is the primary key for Users
+The id is the primary key for Houses
+The user_id is the FOREIGN key for Houses that links to Users.
