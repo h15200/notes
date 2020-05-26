@@ -28,7 +28,7 @@ you cannot have a table INSIDE of a table but you can reference other tables thr
 
 ## NoSQL & Collections
 
-A non relational database (NoSQL)
+A non relational database (NoSQL) 'mode' is defined as `documents`
 
 ## PostgreSQL
 
@@ -41,8 +41,14 @@ Properties of db transactions intended to guarantee validity event in the event 
 
 `A` Atomicity - Requires that a transaction be 'all or nothing'. If one part fails, the whole transaction fails and db state is unchanged
 
-`C` Consistency - Any data written to the db must be valid according to implemented rules (constraints, cascades, triggers, etc)
+`C` Consistency - Any data written to the db will follow the schema and follow the guidelines (constraints, cascades, triggers, etc)
 
 `I` Isolation - Concurrency control. Concurrent execution of transactions result in a state that would be obtained if they were run one after the other.
 
-`D` Durability - Once a transaction is committed, it will remain so, even if there is a crash or power loss.
+`D` Durability - Once a transaction is committed, the data will persist, even if there is a crash or power loss.
+
+## SQL vs NoSQL
+
+Since SQL databases are ACID compliant, it is more 'solid' in general.
+
+Important database transactions like financial processes all use SQL.
