@@ -493,10 +493,12 @@ db.query(queryString)
 RATHER, do this
 
 ```
-const arrayOfJsVariables = ['5', 'ben']
+const arrayOfData = ['5', 'ben']
 const string = 'SELECT FROM table WHERE age=$1, name=$2
-db.query(string, arrayOfJsVariables)
+db.query(string, arrayOfData)
 ```
 
 $1 points to '5'
 $2 points to 'ben'
+
+## DO NOT USE double quotes for sql query strings
