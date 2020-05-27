@@ -13,6 +13,15 @@ Instead of tables, you have a collection of documents
 
 Duplicate data is ok.
 
+## Mongoose
+
+Wrapper library that sits on top of Mongo to provide structure.
+
+Mongoose syntax
+
+findOne - returns null or an object
+findMany - returns an empty array (still truthy) or an array of data
+
 ## Installation and setup;
 
 Mongodb.com
@@ -71,9 +80,10 @@ Gotchas:
 
 Remember .find and .findOne are different syntax.
 
-Must have callback to find One query
-findOne ( {query}, (error, result) => { stuff} )
+Error handling
 
-NO callback but must chain a method and THEN use the callback (error, result)
-.find( {query}).toArray( (error, result) => {
-etc..
+1. callbacks (err, data)
+
+2. .then.catch
+
+3. async try catch block
