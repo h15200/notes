@@ -1,5 +1,18 @@
 # MongoDB
 
+MongoDB is a document-oriented, NON-relational db
+
+Everything is stored as JSON (a JS object)
+Built with an emphasis on speed
+NOT equipped to handle complex relationships like SQL
+Instead of tables, you have a collection of documents
+
+- each document is a js object
+- have ability to store array and object data types
+- ability to nest
+
+Duplicate data is ok.
+
 ## Installation and setup;
 
 Mongodb.com
@@ -24,6 +37,7 @@ Make sure it mounts, if not, look for typos and correct path.
 
 Most likely will be port=27017
 
+```
 In the js file,
 
 const mongodb = require(‘mongodb’)
@@ -47,6 +61,7 @@ Whatever2: ‘whatever’
 })
 
 })
+```
 
 The above is easier on mongoose as it’s only mongoose.connect
 
@@ -56,7 +71,7 @@ Gotchas:
 
 Remember .find and .findOne are different syntax.
 
-Must have callback to find ONe query
+Must have callback to find One query
 findOne ( {query}, (error, result) => { stuff} )
 
 NO callback but must chain a method and THEN use the callback (error, result)

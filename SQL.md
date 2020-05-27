@@ -476,3 +476,14 @@ WHERE condition
 ```
 
 `DELETE FROM customer WHERE _id = 44 OR _id = 6;`
+
+## SQL with js variables syntax!!!
+
+'" + data.name + "'
+
+SINGLE QUOTE, DOUBLE QUOTE, SPACE, +, VARIABLE, SPACE, +, DOUBLE, SINGLE
+
+```
+const queryString = "INSERT INTO people (name) VALUES('" + <JSvariableName> + "', '" + <anotherVariable> + "');"
+db.query(queryString)
+```
