@@ -479,6 +479,8 @@ WHERE condition
 
 ## SQL with js variables syntax!!!
 
+DO NOT DO THIS because of SQL injections
+
 '" + data.name + "'
 
 SINGLE QUOTE, DOUBLE QUOTE, SPACE, +, VARIABLE, SPACE, +, DOUBLE, SINGLE
@@ -487,3 +489,14 @@ SINGLE QUOTE, DOUBLE QUOTE, SPACE, +, VARIABLE, SPACE, +, DOUBLE, SINGLE
 const queryString = "INSERT INTO people (name) VALUES('" + <JSvariableName> + "', '" + <anotherVariable> + "');"
 db.query(queryString)
 ```
+
+RATHER, do this
+
+```
+const arrayOfJsVariables = ['5', 'ben']
+const string = 'SELECT FROM table WHERE age=$1, name=$2
+db.query(string, arrayOfJsVariables)
+```
+
+$1 points to '5'
+$2 points to 'ben'
