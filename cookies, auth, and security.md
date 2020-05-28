@@ -106,6 +106,11 @@ methods:
 
 localStorage.set(key, value);
 
+Must be created, expired, and sent manually.
+Local storage will last forever unless you remove it.
+
+Can be used to hold state in a non-SPA that doesn't need to be sent to the server.
+
 ## Coookies vs localStorage
 
 If you don't need the info inside the server or the database and it's only used in the front end, better to use localStorage.
