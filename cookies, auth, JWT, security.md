@@ -156,3 +156,26 @@ bcrypt.genSalt(saltRounds, (err, salt) => {
   })
 })
 ```
+
+Can be shortened to just bcrypt.hash with the plainText, saltRound, and a callback
+
+```
+bcrypt.hash('password', 10, (err, hash) => {
+  // do stuff with hash if no err
+})
+```
+
+## JWT
+
+JSON Web Tokens - open standard that defines a compact and self-contained way for transmitting information between parties as a JSON object
+
+Sending a JWT within a request allows us to verify that a user is looged in WITHOUT having to look at a cookie sessions table.
+
+JWT's have 2 important parts. the PAYLOAD and the SIGNATURE
+
+The payload is usually user information stored as JSON object
+
+We can send a JWT as a cookie or as a token within the Authorization header.
+BEST practice is to send within the Authorization header.
+
+JWTs are used to send more sensitive information than cookies, but it still doesn't offer high security like bcrypt. Mostly used for quickly obtaining information about a looged-in user without going to the database
