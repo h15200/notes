@@ -116,3 +116,43 @@ Can be used to hold state in a non-SPA that doesn't need to be sent to the serve
 If you don't need the info inside the server or the database and it's only used in the front end, better to use localStorage.
 
 If the server or the database needs the info, better to use cookies as the req.body will automatically send cookies back.
+
+## Never store passwords as cleartext
+
+Cleartext or plaintext means not encrypted (humanly readable)
+Ciphertext is encrypted
+
+ALWAYS store passwords as ciphertext.
+
+Standard practice is to encrypt passwords stored in your database.
+
+## Known hashing algorithms
+
+MD-5
+SHA-1
+SHA-2
+etc..
+
+One can perform a dictionary attack utilizing a lookup table as follows:
+
+1. Make a list of common dictionary words or common passwords
+2. Make a lookup table thata precomputes hashes from all standard hashing algorithms
+3. Go through the lookup table one-by-one, query the database for each hash.
+
+IF a hacker figures out what the hashing algorithm was, he has access to the entire database.
+
+## bcrypt
+
+`npm i bcryptjs`
+
+Bcrypt is a library that uses a one-way hashing algorithm with a salt.
+
+typically bcrypt.genSalt is used, which takes in 2 args - a number of saltRounds and callback with an error and the salt. Take the async of that, then use the salt to use bcrypt.hash, which takes in 3 args - the cleartext password, salt, and callback
+
+```
+bcrypt.genSalt(saltRounds, (err, salt) => {
+  bcrypt.hash(myPlaintextPassword, salt, (err, cipherText) => {
+    // store cipherText in db
+  })
+})
+```
