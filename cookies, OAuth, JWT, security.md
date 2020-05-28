@@ -179,3 +179,22 @@ We can send a JWT as a cookie or as a token within the Authorization header.
 BEST practice is to send within the Authorization header.
 
 JWTs are used to send more sensitive information than cookies, but it still doesn't offer high security like bcrypt. Mostly used for quickly obtaining information about a looged-in user without going to the database
+
+## OAuth
+
+Auth stands for both Authentication and Authorization
+
+Currently OAuth (2.0) is an authentication standard where we use a third-party site (Google/Facebook/Github, etc..) to authenticate.
+
+The user provides teh user / pass to the third party site to log in
+
+The first-party site doesn't ever get the user's username and password. The user gets an authorization code from the third party and the first party site simply checks the legitimacy of the authorization code.
+
+If Auth checks out, the third party will send a token so the user has access within the scope of that request.
+
+In terms of code,
+
+1. set up Oauth through a 3rd party. Have a click trigger a GET request to the OAuth
+2. User grants access, puts in authorization pass
+3. Server will automatically get a request with the code in query string. Server checks that code against 3rd party
+4. If good, server sends back a token to the User which grants access.
