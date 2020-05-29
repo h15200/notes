@@ -1,29 +1,108 @@
-Usually jest or mocha
+# Testing
+
+Why Test?
+
+To verify the correctness of our code in an organized way
+Adding a new feature can have unintended side effects.
+Over time, code bases can become too large to hold in your mind at once
+Testing is essential to maintain a codebase.
+
+## Testing Methodology
+
+TDD - Test-Driven Development is an AGILE development process in which code is iterated upon quickly to add new features.
+Each new feature involves writing tests BEFORE adding new code.
+Many argue that test-driven development results in more maintainable, readable, modular code.
+As the code base grows, this coding style influences the architecture of the project in a way that can be more easily refactored, tested, and iterated.
+
+## TDD steps
+
+1. Start by writing a test
+2. Run the tests to confirm that they are FAILING since there is no code available.
+3. Write the minimum amount of code required to make the test pass
+4. Run the tests to check the new test passes
+5. Refactor and optimize your code while making sure they still pass the tests.
+
+## Types of Tests and scope
+
+- Unit tests: focuses on a single, small piece of code. a function in an object, or module. Unit tests are isolated from other pieces.
+
+- Integration tests: multiple parts tested together. ex when I hit a route, does that send me back what I need? This is testing multiple controllers/middlewares/functions at once.
+
+- End-to-end (acceptance) tests: Test of a large part or entirety of application.
+
+The most common test writing architecture is to have A LOT of unit tests (smaller tests), some integration tests, and even fewer end-to-end tests.
+
+## Features of a testing framework
+
+1. Coordination: Running 100 - 1000 tests requires coordination. We want to be able to independently run tests and parallelize them.
+2. Assertion: Testing our expectations cleanly.
+3. Isolation: Failure should be clearly isolated and meaningful. <em>Mocking</em> and <em>dependency injection</em> help us make failures independent.
+
+## just
+
+Industry leader for testing alongside mocha.
 
 Install as a dev depency
-npm install --save-dev jest
-
-In package.json under scripts, add “test”:” env-cmd ./config/test.env jest --watch” (--watch will run the tests on change on git, --watchAll will run all test files, see below for env-cmd explanation)
-Add a tests dir, and name the files <something>.test.js
+`npm i --save-dev jest` or `npm i -D jest`
 
     Jest Config
 
-    	npm i -D jest
+inside script, `"test": "jest --verbose file.test.js"`
+
+Good idea to always use `--verbose`
+
+For more complex configuration using .env files, use something like
+
+`“test”:” env-cmd ./config/test.env jest --watch”`
+--watch will run the tests on change on git, --watchAll will run all test files, see below for env-cmd explanation
+
+### test file format
+
+must end in `.test.js`
+
+### dir format
+
+name the testing folder -> `__test__`
 
 On the test script, add a flag to watch
 "test": "jest --watch",
 
-Make a test file with ext .test.js
+Make a `someName.test.js` file
 
-No need to import jest, just write the test with
+to run, simply `npm test` no need to add `run`
 
-test( ‘ name of test ‘ , () => {
-expect( <funct> ).toBe (something)
+### writing the test
+
+Inside the `.test.js` file, first import or require the js file you are testing depending on front/back end
+No need to import jest
+
+```
+test( <name of test> , () => {
+expect(<something>).toBe (something)
 })
+```
 
-Npm run test
+### syntax
 
-Usually a good idea to make a jest config in json file with both globalSetup and globalTeardown (one async function that runs before the test suite, and one after)
+Top level - describe()
+
+Inside describe, beforeEach(), and a bunch of it()
+
+toBe() or is() checks for strict equality (===)
+toEqual() is loose equality (==)
+
+expect()
+
+to check for a returning object
+expect(object).toHaveProperty('key', value)
+
+.toBeTruthy()
+
+.not.toBe() // bang operator
+
+### jest config
+
+Usually a good idea to make a jest config in json file with both globalSetup and globalTeardown (one async function that runs before the test suite, and one after to simulate a test group)
 
 In package.json, add
 
@@ -33,7 +112,7 @@ Jest installs test() as a global, so you don’t need to require it.
 In the file, call test() - 1st arg string, 2nd arg function
 If the function runs without throwing and error, the test passes
 
-    		ENV
+### ENV
 
 Jest must have the same env variables to test the routes properly
 To do so:
@@ -47,7 +126,7 @@ Definitely change the DATABASE_URL to from ‘...app-name’ to ‘...app-name-t
 Now use env-cmd (or whatever package you used in the main app)
 And put the command before the test script
 
-    		Npm supertest
+### npm supertest
 
 Like jest, save as a dev dependency
 
@@ -61,7 +140,7 @@ and have another file like index.js import that, and just call listen.
 
 This way testing can be done on app.js before app.listen is called
 
-    	MOCKS
+### mocks
 
 To avoid packages like sendgrid firing off emails for every test,
 
@@ -78,3 +157,12 @@ So, make another dir inside `__mocks__` called @sendgrid, then create a file, ma
 
 Then in mail.js module.exports { anyMethodsfromThisPackageYouUsed }
 And set them up usually as an empty function UNLESS you are using the return values i
+
+## Jest vs Moccha
+
+Moccha does not include mocking feature out of the box.
+Must download chai for that.
+
+Jest has a wider built-in feature set: assertions, data mocking, clearer console output
+Jest automatically runs tests in parallel, making testing faster
+Jest provide other tools like fake timers, spies, etc. without an additional library
