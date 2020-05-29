@@ -38,7 +38,7 @@ The most common test writing architecture is to have A LOT of unit tests (smalle
 2. Assertion: Testing our expectations cleanly.
 3. Isolation: Failure should be clearly isolated and meaningful. <em>Mocking</em> and <em>dependency injection</em> help us make failures independent.
 
-## just
+## jest
 
 Industry leader for testing alongside mocha.
 
@@ -100,7 +100,7 @@ expect(object).toHaveProperty('key', value)
 
 .not.toBe() // bang operator
 
-### Testing end-to-end or 'acceptance' testing
+### Testing end-to-end or 'acceptance' testing in the browser
 
 We want the most realistic environment possible, ie a real browser. We can automate these tests with a headless browser or browser automator.
 
