@@ -87,3 +87,9 @@ Error handling
 2. .then.catch
 
 3. async try catch block
+
+## Mongoose queries does NOT return a promise natively
+
+must chain .exec() to uses .catch and async.
+
+EXCEPTION is Model.create() which natively returns a promise
