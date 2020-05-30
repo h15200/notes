@@ -235,8 +235,18 @@ describe('GET /user', () => {
 		.expect(200, done);
 	})
 });
-
 ```
+
+### process.env.NODE_ENV
+
+jest will automatically change process.env.NODE_ENV to 'test' when it's running!
+
+### Supertest async-await
+
+await the request
+res object will have statusCode
+For headers, do
+`expect(res.headers['content-type']).toMatch(/text\/html/)`;
 
 ## Jest vs Moccha
 
