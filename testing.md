@@ -227,12 +227,12 @@ This way testing can be done on app.js before app.listen is called
 
 ```
 describe('GET /user', () => {
-	it('responds with json', () => {
-		request(app)
-		.get('/user')
-		.set('Accept', 'application/json')
-		.expect('Content-Type', 'application/json')
-		.expect(200, done);
+	it('responds with json', async () => {
+		const res = await request(app).get('/user).set('Accept, 'application/json');
+
+
+		expect(res.header['content-type').toMatch(/application\/json/);
+		expect(res.statusCode).toEqual(200);
 	})
 });
 ```
