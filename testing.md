@@ -38,14 +38,12 @@ The most common test writing architecture is to have A LOT of unit tests (smalle
 2. Assertion: Testing our expectations cleanly.
 3. Isolation: Failure should be clearly isolated and meaningful. <em>Mocking</em> and <em>dependency injection</em> help us make failures independent.
 
-## jest
+## jest config
 
 Industry leader for testing alongside mocha.
 
 Install as a dev depency
 `npm i --save-dev jest` or `npm i -D jest`
-
-    Jest Config
 
 inside script, `"test": "jest --verbose file.test.js"`
 
@@ -144,6 +142,14 @@ inside jest
 
 // runs once before every test
 beforeAll() - do something like let wrapper = shallow(<ReactComp> {...props})
+
+`<ReactComponent label='mega' text='markets'>`
+is the same as
+
+```
+const props = { label: 'Megha', trext: 'Markets'}
+<ReactComponent {...props}>
+```
 
 now wrapper is a shallw copy of a react comp without
 wrapper.find('h1').toHaveLength(1); // there is ONE h1 element inside
@@ -247,6 +253,50 @@ await the request
 res object will have statusCode
 For headers, do
 `expect(res.headers['content-type']).toMatch(/text\/html/)`;
+
+### Enzyme syntax
+
+```
+import React from 'react';
+import { configure, shallow, mount } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+
+import react components to test
+configure({ adapter: new Adapter() });
+
+make wrapper with a fake props to test each component
+make a fake props {}
+wrapper = shallow(<someReactComp {...props}>)
+
+use jest.fn() for mock functions
+
+
+```
+
+useful functions
+
+- .find('div')
+  For finding react components, no quotes! .find(MarketDisplay)
+  can chain .at(indexNum)
+  can chain .prop('propName')
+
+      	find('.className') will also work
+      	.type() will equal a string of the ele type like 'div'
+
+- .toHaveBeenCalled() with mocks
+- .containsMatchingElement().toBe(true)
+
+## Overview on HOW to test
+
+1. DB - check all db functions
+2. Redux - Check the reducer to see if it's pure
+3. superset - Check routes
+4. react - check components that are NOT connected to redux (as redux test will take care of reducers)
+5. Integration test (pupeteer) - check all at once
+
+### Puppeteer
+
+see codesmith unit12 `__tests__/puppeteer`
 
 ## Jest vs Moccha
 
