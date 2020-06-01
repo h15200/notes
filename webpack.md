@@ -1,8 +1,69 @@
 # Wepack
 
-- used to separate components into file while organizing the entire project. Multiple components should not live in one file for scalability.
+Webpack is a module bundler tool
 
-Used to load babel comppiler. As of now, the simplest way to make a light-weight react app. crr is a lot more bulky
+Overview
+
+- why are build tools necessary
+- intro
+- bundling (review of modules in Node and in the browser)
+- Features include transpilation, minification/uglification, css, images.
+- Webpack-dev-server, live reloading
+- Other bundlers and task-runners
+
+## Why do we need build tools
+
+1. Modularity: Devs want to modularize their code for maintainablility. Separate files for separate tasks
+   Code bundlers allow us to bundle up these modularized source code files in to one JS file for our browser to work with.
+   Remember, the browser can ultimately only read ONE js file, plain .css, .jpg and .png but not much else.
+
+2. Source code typically isn't code that can be run in the browser - TS, JSX, CofeeScript, SASS, ES6
+   Build tools allow us to transpile these languages into browser readable code with uglyfying and minifying to optimize performance.
+   (minifying deletes whitespace and comments, uglyfying will replace human readable variables with short vars)
+
+   BEFORE webpack, multiple script tags were used inside HTML files with defer options.
+   Each script was a separate GET request. bad for speed
+   Polluted the global namespace.
+
+## Modules Review for backend and frontend
+
+### Backend = Common.js = module.exports and require()
+
+- Common.js is what we use in Node - module.exports
+  Each file is module
+  Each module exports a variable called module.exports `module.exports = whateverToExport`
+  Other modules are imported with const `anyVariable = require('/somePath')`
+  Encompasses built-in modules fs, path, process, etc.. as well as community node_modules from npm: express, mongoose, pg
+  For npm modules, they are stored in the node_modules folder so we don't need a relative path and can just use the package name `const express = require('express')`
+
+### Frontend = No native modules
+
+Must use webpack.
+
+2 main choices - CommonJS and ES6 modules
+
+CommonJS is the same as node as above
+ES6 modules - import, export, default etc.. allows tree-shaking (selecting specific export pieces)
+
+ES6 Modules are BETTER OPTIMIZED because you can ONLY import the thing you need from that particular file.
+This is called `tree-shaking`
+
+ES 6 Module review
+
+```
+export default Apple = (props) => {};
+export const Banana = props => {};
+export const Cherry = props => {};
+```
+
+```
+import Apple from '/fruits';                // will only import the default Apple. no access to banana or cherry.
+import Apple, * as myModule from '/fruits'  // will import Apple as the default, myModule as the object of everything else. myModule.Banana , myModule.Cherry
+import Apple, { Cherry } from '/fruits';    // will import Apple as the default and Cherry as the destructured value from the object. no a access to banana
+
+```
+
+## What is HMR, codesplitting
 
 ## Setup
 
