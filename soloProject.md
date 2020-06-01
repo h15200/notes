@@ -47,14 +47,14 @@
   <input type='text' />
 
   <p>Type</p>
-  <input type="radio" name="type" value="audio">
-  <label for='audio'>audio</label>
-  <input type="radio" name="type" value="film">
-  <label for='film'>film</label>
-  <input type="radio" name="type" value="jingle">
-  <label for='jingle'>jingle</label>
-  <input type="radio" name="type" value="other">
-  <label for='other'>jingle</label>
+  <input type="radio" name="type" value="music">
+  <label for='music'>audio</label>
+  <input type="radio" name="type" value="film score">
+  <label for='film score'>film</label>
+  <input type="radio" name="type" value="commercial jingle">
+  <label for='commercial jingle'>jingle</label>
+  <label for='other'>other</label>
+  <input type="text" name="type">
 
 <label>Artist</label>
 <input type='text'/>
@@ -91,13 +91,13 @@
 <input type="radio" name="ppl" value="notApplicable">
 <label for="ppl">N/a</label>
 
-<p>IMBd</p>
+<p>IMDb</p>
 <input type="radio" name="imdb" value="yes">
 <label for="imdb">Yes</label>
 <input type="radio" name="imdb" value="no">
 <label for="imdb">No</label>
-<input type="radio" name="imdb" value="notAimdbicable">
-<label for="ppl">N/a</label>
+<input type="radio" name="imdb" value="notApplicable">
+<label for="imdb">N/a</label>
 
 <button>Submit</button>
 
