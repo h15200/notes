@@ -99,6 +99,11 @@
 <input type="radio" name="imdb" value="notApplicable">
 <label for="imdb">N/a</label>
 
+<p>Youtube links</p>
+<input type="text" name="url">
+<input type="text" name="url">
+<input type="text" name="url">
+
 <button>Submit</button>
 
 </form>
