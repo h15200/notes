@@ -297,10 +297,10 @@ The global error handler will count these errors.
 To get them, you simply make an app.use() with FOUR args. First one is error
 
 ```
-app.use(err, req, res, next) => {
+app.use((err, req, res, next) => {
   res.localsmessage = err.message;
   console.log('ERROR: ', err);
   const errorStatus = err.status || 500;
   return res.status(errorStatus).send(res.locals.message)
-}
+})
 ```
