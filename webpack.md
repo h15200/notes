@@ -111,8 +111,6 @@ One for webpack-dev-server - usually localhost:8080. Serves .html, .css, .js sto
 
 When a request comes in, the dev server doesn't have the information needed to make a response. It will make ANOTHER request to the node backend, then get the info. This is the PROXY server.
 
-## What is HMR, codesplitting
-
 ## Alternatives to webpack
 
 - gulp
@@ -140,18 +138,33 @@ Structure
 
 `npm init -y`
 `npm i -D webpack webpack-cli webpack-dev-server @babel/core babel-loader @babel/preset-env @babel/preset-react css-loader style-loader sass-loader node-sass`
-optionally npm i react react-dom
+For react, `npm i react react-dom`
 
-webpack and webpack-cli is part of webpack
+webpack and webpack-cli is for dev mode
+
+Babel itself doesn't do anything without either babel-cli OR babel-core. cli allows terminal commands to build and core uses webpack.config.js
+
+presets vs plugins
+Plugins are individual features (es6, jsx)
+presets are a collection of plugins bundled up already
+
 webpack server is a dev server
 core is just babel
+
 the loader is how webpack communicates with babel
 the env preset is for es5 to es6 (modules)
 env react is for react and jsx
 
+More details at https://stackoverflow.com/questions/47721169/babel-vs-babel-core-vs-babel-loader-vs-babel-preset-2015-vs-babel-preset-react-v
+
 make and fill out `webpack.config.js` for the file transpiling
 
 dist or public or whatever you're using
+
+gotchas:
+
+- in entry, you MUST use './' to select root dir.
+- best practice to use path module and resolve for output
 
 ```
 module.exports = {
@@ -215,4 +228,144 @@ then finally, `.babelrc`
 
 ```
 
+ALTERNATIVELY, you can opt out of making .babelrc file and just inside webpack.config.js, do inside modules
+
+```
+module.exports = {
+  ... other stuff,
+  modules: {
+    rules: [
+      {
+        test: /\.jsx?/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env', '@babel/preset-react'],
+        },
+      },
+    ],
+  },
+}
+
+```
+
 npm start to run the dev server
+
+### Clarification on module
+
+a preset is a subset of loader, and a plugin is a subset of preset
+
+to use a SINGLE loader with options of presets and plugins, use
+`loader` and add another field, options assigned to an object of presets and plugins like so
+
+```
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.jsx?/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env', '@babel/preset-react']
+        }
+      }
+    ]
+  }
+}
+```
+
+If you want to use multiple loaders like with SASS, use `use` with the value of arrays of loaders instead of loader
+
+```
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.scss?/,
+        exclude: /node_modules/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
+      }
+    ]
+  }
+}
+
+```
+
+### mode: development and webpack dev server
+
+To use WDS, set up mode as "development" and add devServer: { publicPath:}
+
+```
+module.exports = {
+  ...
+  mode: 'development',
+  devServer: {
+    publicPath: '/build'
+  }
+}
+```
+
+With the dev server, if you don't have the option publicPath, it will default to '/'. so without this option above, it will try to GEt the bundle from localhost:3000/bundle.js.
+
+### Using NODE_ENV
+
+running a script like `"build": "webpack-dev-server --open"`
+will AUTOMATICALLY set process.NODE_ENV to 'development' but better to explicitly write it in the script anyway.
+
+```
+  "scripts": {
+    "start": "nodemon server/server.js",
+    "build": "NODE_ENV=production webpack",
+    "dev": "NODE_ENV=development webpack-dev-server --open",
+  },
+```
+
+YOU MUST include the node setting as the FIRST ARG!
+
+### Setting up a proxy server for webpack-dev-server
+
+the dev-server can only serve static sites and can't make fetch calls to outside APIs. To do this, we must set up a proxy server.
+
+Two steps
+
+1. run the express server and webpack-dev-server at the same time with a bash & operator inside a single script. Concurrently not needed
+
+2. add a "proxy" field in the webpack config
+
+```
+module.exports = {
+  ...
+    devServer: {
+    publicPath: '/build',
+    proxy: {
+      '/api': 'http://localhost:3000',
+      // requests to /api/leaders will now proxy to localhost:3000/api/leaders
+    },
+  },
+}
+```
+
+### use file-loader for images, image-webpack-loader for compression
+
+npm i -D file-loader image-webpack-loader
+
+### HRM, Codesplitting, Minify/compress optimizations in webpack
+
+Codesplitting optimization - using `mini-css-extract-plugin`
+styles are not inlined in bundle.js but rather placed in a separate style.cssfile that can be loaded in parallel to the js bundle. This improves the perforamcne of the initial page load
+
+HRM - Hot Module Replacement - ability to make changes in to modules in webpack-dev-server without needing a full refresh of the browser.
+
+inside webpack.config.js just simple use
+
+```
+module.exports = {
+  ...,
+  devServer: {
+    hot: true
+  }
+}
+```
+
+Minify/Compress tool for jpgs so that load time is quicker.
