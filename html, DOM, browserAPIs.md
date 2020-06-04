@@ -44,6 +44,11 @@ You can set a regex to attribute pattern
 
 ## Form, button, preventing default submit action
 
+action="/someRoute"
+method="post"
+
+Forms can ONLY make 'get' or 'post' requests!
+
 You can handle form submit in two ways
 
 1. On the form itself as a `onsubmit` attribute

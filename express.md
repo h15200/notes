@@ -304,3 +304,9 @@ app.use((err, req, res, next) => {
   return res.status(errorStatus).send(res.locals.message)
 })
 ```
+
+## Gotchas
+
+- When redirecting back to a page at the end of a DELETE request, it will redirect as a delete request as well. TO prevent this, use `return res.redirect(303, '/'); 303 will convert it back to a GET request
+
+- When parsing form data, you need to `app.use(express.urlencoded({extended: true}))`
