@@ -79,3 +79,55 @@ ABSOLUTELY make sure that you want to go back, as the current code will be delet
 
 To go back to an older version of commit
 `git reset --hard “commithash”` (the hash for that particular commit)
+
+## Working with collaborators
+
+You can work collaboratively on your own public repos or even on other public repos where you don't have push (write) access. Even with read-only access, you can make pull requests.
+
+A git master creates a public repo, adds collaborators
+
+At the top level (upstream), pull requests are reviewed and merged.
+
+TWO ways of setting up GitHub for teams
+
+1. Organizations - account owner creates many teams with differing permission level for various repos
+
+2) Collaborators - Repo owner (git master) can add collaborators with read only or read and write access.
+   (git master should be a different person from the scrum master) Everyone except the git master should have read-ONLY access.
+
+TWO models of pull requests
+
+1. Fork & Pull Model - used in public repos where we don't have write access
+2. Private
+
+Use Fork & Pull with Organization
+
+1.  Set up organization
+2.  Set up public repo (git master makes a clone of the organization level repo)
+3.  Make boilerplate file structure
+4.  Everybody FORKS (not clone!) this public repo (even as the git master) and clone
+5.  git master must take care never to work directly on the organization level repo!
+6.  Everybody makes an upstream to the organization level to make pull requests.
+7.  Make feature branches
+
+Never write on master branch. Not even on your forked repo. Create feature branches and review and merge
+`git checkout -b [new-feature]`
+add and commit,
+`git remove -v` see what the remote is
+`git push origin [new-feature]` -> push to your forked repo
+Then make a PR to the ORGANIZATION LEVEL master (never your own master to your own branch)
+
+`git pull upstream master`, then `git push origin master` to update your own master.
+`git merge master` inside branch will update the base of the branch
+
+### PR
+
+- problem you were solving
+- your solution
+- any notes on testing
+- screenshots of working solution
+
+The reviewer (git master or the whole team) will review the PR and merge if approved.
+
+Best practice to set protections on the master branch
+github - settings - master - organization level add some rules.
