@@ -218,6 +218,8 @@ Types include binary trees and tries.
 
 ### Binary Tree (Binary Search Tree in particular)
 
+Unlike a linked list which has Nodes, a BST should only have ONE class. Every leaf IS a BST
+
 A binary tree can only have 2 branches per node
 The branches of a binary tree are ordered such that the left branch has a smaller value than the parent,
 and the right branch has a greater value than the parent node
@@ -586,3 +588,19 @@ to optimize, use a didSwap boolean and only run it if the previous iteration had
 ### Insertion sort - use pointer,
 
 loop left to right, but for every time something is unsorted, sort that element ALL the way to the left using pointer j. Same time complexity as bubble sort, but can be done in one loop
+
+## Getting the midpoint of a linked list
+
+The most efficient way is to make two pointers
+
+```
+let i = this.head
+let j = this.head
+while (j !== null && j.next !==null) {
+  i = i.next;
+  j = j.next.next;
+}
+return i;
+```
+
+Basically have the second pointer tragerse twice as fast.
