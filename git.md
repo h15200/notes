@@ -131,3 +131,44 @@ The reviewer (git master or the whole team) will review the PR and merge if appr
 
 Best practice to set protections on the master branch
 github - settings - master - organization level add some rules.
+
+### CS workflow
+
+#### Setup
+
+Create Org, add public Repo, invite users
+Git-master clones empty repo, npm init, npm i, add .gitignore and .env,, sets up file structure, then add/commit/push to origin, make a new branch ‘staging’, optionally may have to use --set-upstream to make a new branch in github, push to staging branch
+All users then fork and clone org master branch
+
+#### Team members begin working on a feature…
+
+git remote add upstream <org url>
+git remote -v (optional to confirm)
+git checkout master
+git pull upstream master (sync with organization master)
+
+Make a new branch and switch to it
+git checkout -b <newFeature> (this is a combo of git branch <newFeature> followed by git checkout <newFeature>)
+Do stuff...periodically committing changes to your local repo
+git add …
+git commit -m “...”
+git push origin <newFeature> (optional to make backup; not ‘master’)
+When feature is ready, add to org-level
+On github, make pull request from your newFeature branch to org staging branch
+
+Git-Master does stuff...
+Switch to local organization-level Git-Master folder
+Get staging changes
+git checkout staging
+git pull origin staging
+Review changes
+Merge into master
+git checkout master
+git merge staging
+git push origin master
+
+After any changes added to org master, team members merge those into their local versions - If at any given point in development if a new organization level master is merged, you need to make that the new master AND the new base of the branch. Go back to (your personal) master, and git pull upstream master again, and then go back to feature branch and merge master.
+First time, set up remote alias - git remote add upstream <org url>, git remove -v to confirm
+
+switch to master - git checkout master, git pull upstream master
+switch to featureBranch, git merge master
