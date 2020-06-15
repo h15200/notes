@@ -1,4 +1,4 @@
-const { pool } = require('pg');
+const { Pool } = require('pg');
 
 const pool = new Pool({
   connectionString: ``,

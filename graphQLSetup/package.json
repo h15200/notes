@@ -1,0 +1,17 @@
+{
+  "name": "graphql-test",
+  "version": "1.0.0",
+  "description": "first test GraphQL build",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "graphql": "^15.1.0"
+  }
+}
