@@ -206,6 +206,10 @@ function LinkedList() {
 A Doubly Linked List has a next AND a previous element stored in each node.
 It allows both way travel but takes up more memory.
 
+often notated like this
+
+null -> head/node -> node -> tail/node -> null
+
 ## Tree
 
 Starts with a root node up top and splits into children.
