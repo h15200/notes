@@ -71,6 +71,14 @@ Similar to cross-site-scripting but with SQL queries.
 Scrub inputs - escape characters that have special maeaning, pattern-check/validate input to see if it conforms to a valid representation
 Use an ORM, which scrubs for you
 
+ex on hack-yourself-first.com
+
+`http://hack-yourself-first.com/CarsByCylinders?Cylinders=V6' OR 1=1;--`
+This will inject something that's always true to get ALL cars
+
+`http://hack-yourself-first.com/CarsByCylinders?Cylinders=V6' AND 1=(SELECT TOP 1 password FROM userprofile WHERE email = 'something');--`
+this will get any info from userprofile table
+
 ### CSRF (CORS)
 
 Request Forgery - make a request from a malicious site that looks the same as a legitimate request from a user
