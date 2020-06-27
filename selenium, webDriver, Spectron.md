@@ -16,6 +16,8 @@ JS driver that wraps Selenium with a nice JS API
 
 Yet another wrapper around Webdriver that allows devs to use WebdriverIO with Electron apps. This is necessary as electron apps often have more power over regular browser apps
 
+Can technically use any task runner, but the recommended one is mocha since all the docs are written in mocha (and chai if you like it)
+
 ### Usage
 
 WebdriverIO takes care of controlling Selenium WebDriver on our behalf.
@@ -53,3 +55,7 @@ getWindowCount() - returns a promise that resolves to an integer
 waitUntilTextExists(selector, text, optional milliseconds to wait before giving up)
 waitUntilWindowLoaded()
 windowByIndex(index)
+
+### Reference sample tests
+
+https://github.com/electron-userland/spectron/blob/master/test/application-test.js#L219
