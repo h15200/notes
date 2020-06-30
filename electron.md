@@ -83,3 +83,10 @@ const data = await ipcRenderer.invoke('read-file', '/path/to/file')
 Notice that the Main process is now re-written as an event handler with a 2nd arg which is an ASYNC function
 
 That way the renderer can set a variable to AWAIT ipcRenderer.invoke() which uses 1st arg as the event, and 2nd arg is the path to the main process file
+
+## preload details
+
+if turning off nodeIntegration, use a preload script.
+
+All preload script errors will print as `unable to load preload script` inside elctron console
+Keep Electron stuff in main?

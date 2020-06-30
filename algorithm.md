@@ -28,3 +28,13 @@ Else if closing brackets, check to see if the POP value of the stack matches.
 If not, return false
 
 After loop, if there are any items inside the stack, it was never closed
+
+## merge sort
+
+return all array length 1 or less
+
+separate into left and right
+
+make a helper merge
+
+return merge(recursive(left), recursive(right))
