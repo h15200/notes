@@ -61,6 +61,8 @@ Freshness - allows a cached item to be used without rechecking it on the origin 
 Validation - is used to check whether a cached item is still good after it becomes stale
 Invalidation - side effect of another request that passes through the cache.
 
+7. Use dev tool lighthouse audit
+
 ## Cross Browser Compatibility
 
 Each browser uses its own rendering engine to convert HTML, css, and js
