@@ -89,4 +89,6 @@ That way the renderer can set a variable to AWAIT ipcRenderer.invoke() which use
 if turning off nodeIntegration, use a preload script.
 
 All preload script errors will print as `unable to load preload script` inside elctron console
-Keep Electron stuff in main?
+main.js still has access to node_modules, but none of the other files do.
+
+All electron requires should be moved from non main.js files to the loader as a global variable
