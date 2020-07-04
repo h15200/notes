@@ -13,13 +13,12 @@ const subsetSum (nums, target, index = 0) {
   // base case
 
   // if element is found
-  if (target ===0) return true;
+  if (target === 0) return true;
 
   // if done with entire array
   if (index === num.length) return false;
 
 // first part of OR is if you ADDED the current index, second part is NOT taking the current index as part of the total.
-// if true, end immediately.
   return (subsetSum(nums, target - nums[index], index + 1) || subsetSum(nums, target, index + 1))
 }
 ```
