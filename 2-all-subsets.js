@@ -47,26 +47,26 @@ Output:
 //   return output;
 // };
 
-function allSubsets(nums) {
-  const result = [];
-  const current = [];
+// function allSubsets(nums) {
+//   const result = [];
+//   const current = [];
 
-  // function to recursively generate results
-  (function generate(index) {
-    // base case
-    if (index === nums.length) return result.push(current.slice());
+//   // function to recursively generate results
+//   (function generate(index = 0) {
+//     // base case
+//     if (index === nums.length) return result.push([...current]);
 
-    // take it
-    current.push(nums[index]);
-    generate(index + 1);
-    // leave it
-    console.log('AFTER generate index, current ->', result, index, current);
-    current.pop();
-    console.log('AFTER pop result, index, current ->', result, index, current);
-    generate(index + 1);
-  })(0);
+//     // take it
+//     current.push(nums[index]);
+//     generate(index + 1);
+//     // leave it
+//     console.log('AFTER generate index, current ->', result, index, current);
+//     current.pop();
+//     console.log('AFTER pop result, index, current ->', result, index, current);
+//     generate(index + 1);
+//   })();
 
-  return result;
-}
+//   return result;
+// }
 
-console.log(allSubsets([1, 7, 4]));
+console.log(allSubsets([1, 2, 3]));

@@ -18,6 +18,17 @@ subsetSum([-4], -4) -> true
 
 */
 
+const subsetSum = (array, target, index = 0) => {
+  if (target === 0) return true;
+  if (index === array.length) return false;
+
+  // take it or leave it
+  return (
+    subsetSum(array, target - array[index], index + 1) ||
+    subsetSum(array, target, index + 1)
+  );
+};
+
 // function subsetSum(nums, target, index = 0) {
 //   // base cases
 //   if (target === 0) return true;
@@ -28,16 +39,16 @@ subsetSum([-4], -4) -> true
 //           subsetSum(nums, target, index + 1)); // leave it
 // }
 
-const subsetSum = (nums, target, index = 0) => {
-  // base cases
-  if (target === 0) return true;
-  if (index === nums.length) return false;
-  // true OR false and false OR true always returns true, so get the OR of taking the value or leaving the value
-  return (
-    subsetSum(nums, target - nums[index], index + 1) ||
-    subsetSum(nums, target, index + 1)
-  );
-};
+// const subsetSum = (nums, target, index = 0) => {
+//   // base cases
+//   if (target === 0) return true;
+//   if (index === nums.length) return false;
+//   // true OR false and false OR true always returns true, so get the OR of taking the value or leaving the value
+//   return (
+//     subsetSum(nums, target - nums[index], index + 1) ||
+//     subsetSum(nums, target, index + 1)
+//   );
+// };
 
 // TESTS
 console.log(subsetSum([3, 7, 4, 2], 5)); // -> true (3 + 2)
