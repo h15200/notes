@@ -103,6 +103,6 @@ const htPermutations = (heads, tails) => {
 // }
 
 console.log(htPermutations(1, 1));
-// console.log(htPermutations(2, 1));
-// console.log(htPermutations(2, 2));
-// console.log(htPermutations(0, 0));
+console.log(htPermutations(2, 1));
+console.log(htPermutations(2, 2));
+console.log(htPermutations(0, 0));
