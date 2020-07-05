@@ -18,16 +18,28 @@ subsetSum([-4], -4) -> true
 
 */
 
-const subsetSum = (array, target, index = 0) => {
+const subsetSum = (arr, target, index = 0) => {
+  // base case
   if (target === 0) return true;
-  if (index === array.length) return false;
+  if (index === arr.length) return false;
 
-  // take it or leave it
+  // depth first search based on take it / leave it
   return (
-    subsetSum(array, target - array[index], index + 1) ||
-    subsetSum(array, target, index + 1)
+    subsetSum(arr, target - arr[index], index + 1) ||
+    subsetSum(arr, target, index + 1)
   );
 };
+
+// const subsetSum = (array, target, index = 0) => {
+//   if (target === 0) return true;
+//   if (index === array.length) return false;
+
+//   // take it or leave it
+//   return (
+//     subsetSum(array, target - array[index], index + 1) ||
+//     subsetSum(array, target, index + 1)
+//   );
+// };
 
 // function subsetSum(nums, target, index = 0) {
 //   // base cases

@@ -21,6 +21,45 @@ Output:
 
 */
 
+const allSubsets = (arr) => {
+  const output = [];
+  (function generate(index = 0, subset = []) {
+    if (index === arr.length) {
+      return output.push([...subset]);
+    }
+
+    // take it
+    subset.push(arr[index]);
+    generate(index + 1, subset);
+
+    // leave it. Since this ALWAYS runs after take-it, you have to pop off the last element to undo the last add
+    // index still needs to increment to push an element that is less than the length of arr
+    subset.pop();
+    generate(index + 1, subset);
+  })();
+  return output;
+};
+
+// const allSubsets = (arr) => {
+//   const output = [];
+//   const subset = [];
+//   (function generate(index = 0) {
+//     if (index === arr.length) {
+//       return output.push([...subset]);
+//     }
+
+//     // take it
+//     subset.push(arr[index]);
+//     generate(index + 1);
+
+//     // leave it. Since this ALWAYS runs after take-it, you have to pop off the last element to undo the last add
+//     // index still needs to increment to push an element that is less than the length of arr
+//     subset.pop();
+//     generate(index + 1);
+//   })();
+//   return output;
+// };
+
 // const allSubsets = (arr, index = 0, temp = []) => {
 //   const take = () => {
 //     console.log('about to take. arr, index, temp', arr, index, temp);
