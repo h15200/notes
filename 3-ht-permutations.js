@@ -36,22 +36,23 @@
 
 const htPermutations = (heads, tails) => {
   const output = [];
-  let combo = '';
-  (function generate(heads, tails) {
+
+  (function generate(heads, tails, combo = '') {
     if (heads === 0 && tails === 0) {
-      output.push([...combo]);
-      return;
+      return output.push(combo);
     }
 
     // take heads
     if (heads > 0) {
-      combo += 'H';
-      generate(heads - 1, tails);
+      // combo += h , then passing in new combo DOES NOT work because it will change the global combo,
+      // which means the take tails clause will now have an extra 'H'
+      // console.log('combo in heads ->', combo + 'H');
+      generate(heads - 1, tails, combo + 'H');
     }
-    // take tails - pop off last as heads is always first
+    // take tails
     if (tails > 0) {
-      combo += 'T';
-      generate(heads, tails - 1);
+      // console.log('combo in tails ->', combo + 'T');
+      generate(heads, tails - 1, combo + 'T');
     }
   })(heads, tails);
   return output;
@@ -102,6 +103,6 @@ const htPermutations = (heads, tails) => {
 // }
 
 console.log(htPermutations(1, 1));
-console.log(htPermutations(2, 1));
-console.log(htPermutations(2, 2));
-console.log(htPermutations(0, 0));
+// console.log(htPermutations(2, 1));
+// console.log(htPermutations(2, 2));
+// console.log(htPermutations(0, 0));
