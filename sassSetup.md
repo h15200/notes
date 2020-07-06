@@ -65,3 +65,9 @@ functions
 CSS and postCss and
 
 Decision path - let's cook our own dinner, but ask a friend to chop the carrots. I recommend this as it doesn't abstract away any styling skills
+
+### Resources
+
+State of css
+css tricks
+mdn
