@@ -1,5 +1,7 @@
 # Docker
 
+Dev Ops - To help devs have the same exact environment when coding a project.
+
 Server computers used to host one app, which often did not utilizie the full capacticy of the machine.
 
 Virtual machines were developed to have multiple apps with multiple OS's, controlled by the `hypervisor`.
