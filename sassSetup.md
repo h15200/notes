@@ -33,7 +33,16 @@ Style.scss (compiles to .public/css/style.min.css or .dist/css/style)
 
 ## Sass/Less Tech Talk
 
-### What is Sass/Less, css pre-processors vs css libararies
+### Where are we??
+
+CSS world
+
+- Pre & Post Processors
+- Frameworks
+- Methodologies
+- CSS-in-JS
+
+### Clarify pre/post processors vs frameworks
 
 css Pre-processors vs css libararies
 They are different technologies, but often grouped together as options when deciding how to style a site.
