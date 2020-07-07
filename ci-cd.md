@@ -1,4 +1,6 @@
-# CD/CI
+# CI/CD
+
+devs often work in isolation and they need to integrate their changes with the rest of the team's code base. If the changes are simply on github, it's ok but when there are thousands of changes on a docker container, best practice is to test and merge seamlessly.
 
 ## CI = Continuous Integration
 
@@ -27,7 +29,9 @@ lower costs
 faster time to market
 better products
 
-## Travis CI
+Big 3 are Travis CI, Cirlcle CI, and jenkins
+
+## Travis CI - free for open source projects
 
 A great first CI/CD application
 
@@ -43,6 +47,10 @@ build matrix - run tests with many different versions
 
 - CONS
   not flexible or customizable
+
+  Travis can keep track of what's happening with github by listening via hooks, like the event emitter model.
+
+  If the github attemps to merge a branch (by push or PRs), travis CI will get a merge hook and spin up a virtual image and run a series of tests. Only if the tests pass, the merge will continue.
 
 ## Jenkins
 
