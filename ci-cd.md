@@ -48,9 +48,61 @@ build matrix - run tests with many different versions
 - CONS
   not flexible or customizable
 
-  Travis can keep track of what's happening with github by listening via hooks, like the event emitter model.
+### Test
 
-  If the github attemps to merge a branch (by push or PRs), travis CI will get a merge hook and spin up a virtual image and run a series of tests. Only if the tests pass, the merge will continue.
+First, Travis is installed on your github account
+Travis can keep track of what's happening with github by listening via hooks, like the event emitter model.
+
+If the github attemps to merge a branch (by push or PRs), travis CI will get a merge hook and spin up a virtual image and run a series of tests. Only if the tests pass, the merge will continue.
+
+When pushes and PRs are made, Travis will first run `npm test` to run any tests
+
+Results are displayed on Github.
+
+## files needed to connect github to traivs and to aws
+
+- .travis.yml
+- bash script
+- Dockerrun.aws.json or Dockerfile
+
+### .travis.yml
+
+Used to configure our repo with Travis Cl
+
+something like:
+
+```
+services:
+- docker
+script:
+- docker-compose -f docker-compose-test.yml up --abort-on-container-exit
+before_deploy:
+- pip install --user awscli
+```
+
+### bash script to deploy containerized apps to AWS
+
+ex
+
+```
+echo "Processing deploy.sh"
+EB_BUCKET=elasticbeanstalk-us-west-1-blablabla
+aws configure set default.region us-west-1
+eval $(aws ecr get-login --no-include-email --region us-west-1)
+
+```
+
+### AWS
+
+How does AWS know to start our app with a container?
+Dockerrun.aws.json
+
+When a docker instance spins up in AWS, it look for one of TWO things in order to start
+
+1. Dockerrun.aws.json
+2. Dockerfile
+
+Without our bash file, we build, tag, and push our image up to ECR. AWS will then use the Dockerrun.aws.json file to instruct EC2 to look in our ECR repository to find the image and build the container in our EC2 instance to run our application
 
 ## Jenkins
 
