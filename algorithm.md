@@ -38,3 +38,29 @@ separate into left and right
 make a helper merge
 
 return merge(recursive(left), recursive(right))
+
+## Kadane's algo
+
+max subset
+
+brute force-
+
+if you get the max subset of all that ENDS on index 0, then 1, then 2, that is brute force.
+
+ex [1,2,3]
+
+index 0 -> possible substrings that ENDS in 1 = only [1]
+index 1 -> [2], [1+2]
+index 2 -> [3], [3+2], [3+2+1]
+
+Kadane's algo dictates that at each index, all you need is to compare the num itself with the max subset of the previous.
+
+SO
+
+[1,2,3]
+
+max = currSubset = index[0]
+
+then in second index, new subset is either prev subset or prev subset + current item
+
+etc..
