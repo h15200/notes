@@ -88,7 +88,61 @@ That way the renderer can set a variable to AWAIT ipcRenderer.invoke() which use
 
 if turning off nodeIntegration, use a preload script.
 
-All preload script errors will print as `unable to load preload script` inside elctron console
-main.js still has access to node_modules, but none of the other files do.
+```
+const { ipcRenderer, contextBridge } = require("electron");
 
-All electron requires should be moved from non main.js files to the loader as a global variable
+contextBridge.exposeInMainWorld("api", {
+  send: (channel, ...data) => {
+    // allowlist channels
+    const allowedChannels = [
+      "toMain",
+    "other-events-from-renderer"
+    ];
+    if (allowedChannels.includes(channel)) {
+      ipcRenderer.send(channel, ...data);
+    }
+  },
+  receive: (channel, cb) => {
+    console.log("listening on channel : ", channel);
+    // allowlist channels
+    const allowedChannels = [
+      "fromMain",
+      "other-events-TO-renderer"
+    ];
+    if (allowedChannels.includes(channel)) {
+      ipcRenderer.on(channel, (event, ...args) => cb(...args));
+    }
+  },
+});
+```
+
+renderer process will declare `const { api } = window`
+and have access to window.send and window.receive
+
+main will use `mainWindow.webContents.send('channel');` if inside main
+
+to keep main small, use a module by
+
+main_grpcController.js
+
+```
+const { ipcMain } = require('electron');
+require other core node modules
+
+some functions
+
+then at bottom
+
+module.exports = () => {
+  ipcMain.on('channel-name', (event, data) => {
+    someFuncInThisFile(event, data)
+  })
+}
+
+```
+
+main
+
+```
+require("./main_grpcController.js")()
+```
