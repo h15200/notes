@@ -146,3 +146,9 @@ main
 ```
 require("./main_grpcController.js")()
 ```
+
+## electron-builder
+
+Leverages the OS of the machine you are building with, so some errors can be related to os versions or node versions
+
+the "build" key inside package.json acts as the config
