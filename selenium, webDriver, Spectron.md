@@ -59,3 +59,9 @@ windowByIndex(index)
 ### Reference sample tests
 
 https://github.com/electron-userland/spectron/blob/master/test/application-test.js#L219
+
+### SYNTAX
+
+Spectron versions (which are governed by Electron version) often use different versions of webDriver, which means there are syntax differences so always double check.
+
+For testing mode, turn off contextIsolation and sandbox and make electronRequire = require (see preload of swell5.0)
