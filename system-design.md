@@ -87,7 +87,24 @@ apply fundamental principles of scalable system design
 
 - helps scale horizontally by distributing requests to multiple servers
 
-  ### Caching
+#### Consistent hashing in load balancers
+
+Traditionally, when scaling horizontally, it might look like
+
+name fetches
+server 1 does a - n
+server 2 does n - z
+
+when adding server 3, it goes a third, a third a third
+
+`fault tolerance` - how to protect against a crashed server or machine
+`allocation` - the way a request is mapped to a server.
+
+Consistent hashing allows a load balancer to allocate the request that protects against fault tolerance AND scalibility based on efficiency of existing cache.
+
+Consistent hashing is used to preserve the most common users (that are already cached) so instead of going 0 - 33%, 33 - 66, 66-100 in the new model, you slice the LAST percentage of each existing server and assign them to the new ones to scale efficiently
+
+### Caching
 
 - enable you to make vastly better use of the resources you already have
 - recently requested data is likely to be requested again
