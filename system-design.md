@@ -220,10 +220,9 @@ Doewside is that these index structures will require more disk space, so you are
 
 Break up a big db into many smaller parts.
 
-Horizontal partitioning takes a key from a record and separates it.
+Horizontal partitioning separates rows (users a-j, j-z)
 
-Vertical partitioning takes a group of full records and separates it.
-PROS
+Vertical partitioning separates columns (categories)
 
 - avoids failures
   CONS
