@@ -83,9 +83,49 @@ apply fundamental principles of scalable system design
 
 ## Main tools
 
+### Microservice architecture
+
+Monolithic - one or a group of machines (servers) handle ALL services.
+Microservice is a single business unit. It doesn't not mean it's small. It's just a way of identifying a unit of business logic like sign in, check out, etc.. and each of them usually have a dedicated db.
+
+A client may talk to a `gateway` which then communicates to a microservice.
+
+#### Pros and Cons
+
+Monolithic architecture
+
+PROS
+
+1. Easier to organize for smaller teams
+2. Less duplication of code
+3. Faster as there are no additional network calls
+
+CONS
+
+1. nothing is decoupled, so there's too much responsibility on each server
+2. single point of failure for the entire system rather than just that one business logic
+
+Microservice architecture
+
+PROS
+
+1. Easier to design the system
+2. Less dependency between servers, so the business can keep going even if one microservice fails
+3. Easier to identify bottlenecks and debug problems with a streamlined approach
+
+CONS
+
+1. Harder to initially design
+2. Needs a good architect
+
+   Ways to reason about which service to use..
+
+If there are only 2 microservices, it's a sign you should just use a monlithic structure.
+
 ### Load balancers
 
 - helps scale horizontally by distributing requests to multiple servers
+- avoids duplicate requests
 
 #### Consistent hashing in load balancers
 
@@ -123,9 +163,23 @@ methods of invalidation
 ex challenge "we've got a distributed system and we want to manage request calls"
 solution:
 
-### Message Brokers (Queues)
+### Message Queue / Brokers
 
-- queues are used to effectively manage requests in a large-scale distributed system to allow us to decouple our processes and distribute/throttle processing load.
+a COMBINATION of services that include having a NOTIFIER that keeps track of which servers are healthy (heartbeat sent to notifier)
+
+The notifier also has access to a db that keeps a queue of asynchronous tasks
+
+queues are used to effectively manage requests in a large-scale distributed system to allow us to decouple our processes and distribute/throttle processing load.
+
+The notifier also acts as a load balancer to distribute requests.
+
+ALL OF THESE services are handled by a message queue.
+
+#### Methods of storing message queue
+
+if it's stored in memory, a server outage will not keep that info
+
+solution: store the queue in a database, each server sends a NOTIFIER a heartbeat every 10 seconds. If a server dies, the notifier consults the db and reroutes unfinished tasks to another server.
 
 ### Proxies
 
@@ -145,11 +199,30 @@ Reasons for:
 Relational - ACID complicance. data is structured and unchanging
 Non-Relational - large volumes of data that require little to no structure, makes the most of cloud computing and storage for horizontal scaling
 
-### Sharding - Data partitioning
+Techniques
+
+#### Optimizing queries
+
+#### Indexing
+
+background - a sorted record can be searched with binary log2 N time, but an unsorted one will require linear time.
+
+Indexing will create another data structure which holds the field value and a pointer to the record, allowing binary searches to be performed.
+
+Doewside is that these index structures will require more disk space, so you are sacrificing space for time.
+
+#### Sharding - Data partitioning over multiple databases
 
 Break up a big db into many smaller parts.
 
-Horizontal partitioning ex - (zipcodes less than 50000 are on one db, above on another)
-Vertical partitioning ex - (all entries with id 0 - 10000 on db1, 10001-20000 on db2, etc..0)
+Horizontal partitioning takes a key from a record and separates it.
 
-Redundancy and Replication - remove single points of failure by having replicas or backups of a db or server.
+Vertical partitioning takes a group of full records and separates it.
+PROS
+
+- avoids failures
+  CONS
+- can be tricky to determine HOW to shard efficiently without slowing down queries.
+- joins can be expensive over different shards
+
+#### Redundancy and Replication - remove single points of failure by having replicas or backups of a db or server.
