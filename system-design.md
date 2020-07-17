@@ -3,7 +3,7 @@
 Big picture ideas with no code.
 Frequent interview questions, but no clear, ONE answer.
 
-Can be broken down to 3 things
+Can be broken down to 3 main categories.
 
 1. scoping
 2. sketching
@@ -149,6 +149,9 @@ Consistent hashing is used to preserve the most common users (that are already c
 - enable you to make vastly better use of the resources you already have
 - recently requested data is likely to be requested again
 - used in almost every layer of computing: hardware, operating systems, web browsers, web apps
+- servers can have their own in memory cache, but data will be lost if it dies. It is usually better (even if slower) to use a global cache like Redis that all servers will go through. A global cache acts like another db, but it stores far less, is a key-value pair, and is still much faster than a db.
+
+When using a global cache, we must consider updating the cache AND the db.
 
 Cache Invalidation
 
@@ -157,8 +160,10 @@ Cache Invalidation
 
 methods of invalidation
 
-- Write-through cache: data is written into the cache and the corresponding database at the same time
-- Write-back cache: data is written to cache ALONE, and completion is immediately confirmed to the client. The storage write is done later, when traffic is low.
+- Write-through cache: data is written into the cache and the corresponding database at the same time. Accurate, but it's expensive to make calls to the db to update during peak time.
+- Write-back (deferred) cache: data is written to cache ALONE, and completion is immediately confirmed to the client. The db write is done later, when traffic is low. It is less expensive, but bad if the server goes down and skips the db write step.
+
+Hybrid solution: use write-throughs for sensitive information. Use write-back for non-critical data.
 
 ex challenge "we've got a distributed system and we want to manage request calls"
 solution:
