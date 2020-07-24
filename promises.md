@@ -87,3 +87,25 @@ console.log(num);
 
 // answer 1, 2
 // not 1, 3 because line 78 num += await 2 will resolve to 2 and that is set before running line 82.
+
+// an async function is a regular function UNTIL you hit a line with await, or any variables that refer to an awaited value
+
+//
+let num = 0;
+const test = async() => {
+console.log('num before await', num);
+num += await 2; // now it will skip to num++ and finish main thread until it comes back to next line
+console.log('num after await', num);
+console.log('num at this point', num);
+}
+test();
+num++;
+console.log('num last line', num)
+
+prints
+
+'num before await', 0
+'num last line', 1
+'num after await', 2
+'num at this point' 2
+//
