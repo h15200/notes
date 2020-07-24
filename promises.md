@@ -27,6 +27,8 @@ Microtasks are prioritized immediately after the end of the current main thread 
 
 ## Differences between macro and micro tasks
 
+Notice that a promise object runs immediately, and the baz() is treated like regular code despite it being INSIDE the promise object
+
 ```
 const bar = () => console.log('bar');
 const baz = () => console.log('baz');
@@ -41,6 +43,8 @@ const foo = () => {
   baz()
 }
 
+foo()
+
 // prints
 'foo'
 'baz'
@@ -54,4 +58,32 @@ const foo = () => {
 ECMA2017 way of dealing with asynchronicity in JS.
 Just syntactical sugar over Promises to make them more readable (no callback / chained .thens)
 
+Like promises, the resolved value will end up in the micro task queue, ahead of the callback queue.
+
+```
+const hi = async () => {
+  const hello = await new Promise((resolve, reject) => {
+    resolve('I'm still a promise but resolved using async await')
+  })
+  console.log(hello);
+}
+
+```
+
 ## ways in which async / promises might show up in interviews
+
+```
+let num = 0;
+async function increment() {
+  num += await 2;
+  console.log(num);
+}
+increment();
+num += 1;
+console.log(num);
+```
+
+// what order will the console logs be?
+
+// answer 1, 2
+// not 1, 3 because line 78 num += await 2 will resolve to 2 and that is set before running line 82.
