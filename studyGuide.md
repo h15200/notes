@@ -4,12 +4,13 @@
 2. Review front/back/SDI
 3. Work on take home
 4. Learn a new concept
-5. Apply/Paperwork
+5. Apply/Paperwork 10-15 apps
 
 ## Algos
 
 1. 14 Coding patterns
 2. whiteboard practice
+   promises
 
 ## Concepts
 
@@ -28,6 +29,8 @@ What is a callback? A callback itself is simply just a function definition as a 
 
 PROMISES - microtask Queue has priority OVER event queue.
 
+4. How does node modules and import/export work? When you import a module, the entire file is wrapped in a function and ran immediately. When you say `import React from 'react'`, you are running the React FUNCTION and storing the result to a variable named React. Since this is all wrapped in a function, you have access to React via closure.
+
 ### React
 
 1. React life-cycles and useEffect counterpart
@@ -44,11 +47,42 @@ PROMISES - microtask Queue has priority OVER event queue.
 
 5. What is ReactDOM and Create? ReactDOM libarary in charge of rendering html and pushing it to an html file from the algorithm in memory that React made. React only makes the virtual DOM. In react native, instead of HTML, the virtual DOM is compiled into IOS and Android code.
 
-### Node
-
-1. How does node modules and import/export work? When you import a module, the entire file is wrapped in a function and ran immediately. When you say `import React from 'react'`, you are running the React FUNCTION and storing the result to a variable named React. Since this is all wrapped in a function, you have access to React via closure.
-
 ### RESEARCH
 
 - How does History API and react router work?
   ck function is used to write asynchronous code. This was the case before Promises.
+
+- HOw does http2 and http work in relation to http, https, websockets, SSE, gRPC
+
+- graphQL make a server and a client and experiment on swell. Pros and cons, how it’s all POST requests, how headers are not used, how caching works under the hood.
+
+- Apollo state?
+
+- redux thunk
+
+- redux w useReducer vs use Context & useReducer w no redux
+
+- THIS keyword 4 situations
+
+- new keyword 3 things
+
+  Combination
+
+  - nested array counting stuff
+    recursion with
+  - merge sort
+
+learn
+
+- cached-promise (promise all)
+- the extension about the paths
+- unit coin extension
+- hh the path extension
+
+Algorithmic thinking MIT openCourseWare Eric Demaine
+
+PROMISE ALL??
+
+General permutations
+
+figure out Two-sum-closest with sorts
