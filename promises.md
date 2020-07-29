@@ -109,3 +109,35 @@ prints
 'num after await', 2
 'num at this point' 2
 //
+
+// solution to "promise all"
+
+```
+const promiseAll = new Promise((resolve, reject) => {
+  const n = promiseis.length;
+  const returnedPromise = new Promise((resolve, reject) => {
+  // dec var to keep track of promises
+  let completed = 0;
+  // declare array with same length of the promise one passed in
+  // set every value to null
+  const results = new Array(n).fill(null);
+  // iterate through the arr
+  promises.forEach((promise, i) => {
+    // on each iteration use .then method to write logic for when teh promise resolves
+    promise.then(result => {
+      // each time result is resolved increment completed by one
+      completed++
+      // reassign the curr idx of our results arr to be the resolved rsult
+      results[i] = result;
+      // check if the number of completed promise is equal to the length
+      if (completed === n)
+      resolve(results);
+    })
+    .catch(err => {
+      // if there is an error at any point
+      reject(err);
+    })
+  })
+  return returnedPromise
+})
+```
