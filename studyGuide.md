@@ -31,6 +31,9 @@ PROMISES - microtask Queue has priority OVER event queue.
 
 4. How does node modules and import/export work? When you import a module, the entire file is wrapped in a function and ran immediately. When you say `import React from 'react'`, you are running the React FUNCTION and storing the result to a variable named React. Since this is all wrapped in a function, you have access to React via closure.
 
+5. What is a data structure?
+   A way to organize data in an efficient way. The common ones we use today are data structures that have stood the test of time over decades. A bst is an efficient subset of generic trees.
+
 ### React
 
 1. React life-cycles and useEffect counterpart

@@ -8,23 +8,38 @@
 
 // const a = new Set([1, 1, 1, 2, 3]);
 // console.log(a);
-class Test {
-  constructor(name) {
-    this.name = name;
+// class Test {
+//   constructor(name) {
+//     this.name = name;
+//   }
+//   greet() {
+//     console.log('hi');
+//   }
+// }
+// const test = new Test('h');
+// console.log(test);
+
+// const Test2 = function (name) {
+//   this.name = name;
+// };
+// Test2.prototype.greet = function () {
+//   console.log('hi');
+// };
+
+// const test2 = new Test2('p');
+// test2.greet();
+
+function twoNumberSum(array, targetSum) {
+  // Write your code here.
+  const cache = {};
+  for (let num of array) {
+    console.log(cache);
+    if (cache.hasOwnProperty(targetSum - num)) {
+      return [num, targetSum - num];
+    }
+    cache[num] = true;
   }
-  greet() {
-    console.log('hi');
-  }
+  return [];
 }
-const test = new Test('h');
-console.log(test);
 
-const Test2 = function (name) {
-  this.name = name;
-};
-Test2.prototype.greet = function () {
-  console.log('hi');
-};
-
-const test2 = new Test2('p');
-test2.greet();
+console.log(twoNumberSum([3, 5, 2], 7));

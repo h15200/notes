@@ -1,4 +1,12 @@
-# list of algorithm patterns
+# Data Structures and Algorithm
+
+What is a data structure and algorithm and how do they relate?
+An algorithm is a set of instructions to solve a problem with logic.
+Data structure is a way to organize data, utilized inside algos.
+
+## Algorithmic thinking, Peak Finding
+
+
 
 ## solve 24 solve24('1234') // "(1+2+3)\*4"
 
