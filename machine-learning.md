@@ -20,3 +20,9 @@ In machine learning, we feed DATA and ANSWERS and the program ouputs RULES.
 4. Clustering: Can we find natural grouping in our data?
 
 Picking the approach is often MORE important than picking the right algorithm, because there is little theoretical guidance on picking an algorithm and there is no best algo for all types of data.
+
+## Numpy
+
+Python library for fast computaions with arrays
+Particularly strong at computation with multi-dimensional arrays
+We frequently refer to a one-dimensional array as a vector and a 2-d array a matrix
