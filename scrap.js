@@ -29,17 +29,17 @@
 // const test2 = new Test2('p');
 // test2.greet();
 
-function twoNumberSum(array, targetSum) {
-  // Write your code here.
-  const cache = {};
-  for (let num of array) {
-    console.log(cache);
-    if (cache.hasOwnProperty(targetSum - num)) {
-      return [num, targetSum - num];
-    }
-    cache[num] = true;
-  }
-  return [];
-}
+// function twoNumberSum(array, targetSum) {
+//   // Write your code here.
+//   const cache = {};
+//   for (let num of array) {
+//     console.log(cache);
+//     if (cache.hasOwnProperty(targetSum - num)) {
+//       return [num, targetSum - num];
+//     }
+//     cache[num] = true;
+//   }
+//   return [];
+// }
 
-console.log(twoNumberSum([3, 5, 2], 7));
+// console.log(twoNumberSum([3, 5, 2], 7));
