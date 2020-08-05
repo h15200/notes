@@ -1,3 +1,4 @@
+// recursive time and space is O(logN)
 const firstMissing = (array, expected = 1) => {
   // base case 1 if everything is in order
   if (array[0] === 1 && array[array.length - 1] === array.length)
@@ -14,6 +15,7 @@ const firstMissing = (array, expected = 1) => {
   } else return firstMissing(array.slice(0, midpoint + 1), 1);
 };
 
+// iterative (time is O(logN) space is O(1))
 const firstMissing = (arr) => {
   let left = 0;
   let right = arr.length - 1;
@@ -27,6 +29,7 @@ const firstMissing = (arr) => {
       right = mid;
     }
   }
+  // if there are only 3 elements left and nothing left to divide
   if (arr[right] === arr[mid] + 1) {
     return arr[right] + 1;
   }
