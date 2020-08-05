@@ -13,3 +13,22 @@ const firstMissing = (array, expected = 1) => {
     return firstMissing(array.slice(midpoint), midpoint + 1);
   } else return firstMissing(array.slice(0, midpoint + 1), 1);
 };
+
+const firstMissing = (arr) => {
+  let left = 0;
+  let right = arr.length - 1;
+  let mid;
+  if (arr[0] !== 1) return 1;
+  while (left + 1 < right) {
+    mid = Math.floor((right + left) / 2);
+    if (arr[mid] === mid + 1) {
+      left = mid;
+    } else {
+      right = mid;
+    }
+  }
+  if (arr[right] === arr[mid] + 1) {
+    return arr[right] + 1;
+  }
+  return arr[left] + 1;
+};
