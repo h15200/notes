@@ -19,12 +19,14 @@ const sort123 = (array) => {
   let current = left;
   // when current overlaps right, everything is sorted
   while (current <= right) {
-    // move left and right such that outer borders are all sorted and done
-    while (array[left] === 1) left++;
+    // move right in case there are consecutive 3s
     while (array[right] === 3) right--;
     // if current is 1, swap with left value
-    if (array[current] === 1)
+    if (array[current] === 1) {
       [array[left], array[current]] = [array[current], array[left]];
+      // since current is following from left to right, we know that left pointer can be incremented by 1 to hit a non-1 number
+      left++;
+    }
     // same on 3 and right
     else if (array[current] === 3)
       [array[current], array[right]] = [array[right], array[current]];
