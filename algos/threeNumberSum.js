@@ -1,8 +1,8 @@
 // return an ordered array of arrays.
 
 function threeNumberSum(array, targetSum) {
-  // combination of sliding window and pointers O(n^2)
-  // immeidately sort since O(n^2) is already worse than O(nlogn)
+  // combination of sliding window and pointers O(n^2) T O(n) S
+  // immeidately sort since O(n^3) is already worse than O(nlogn) + O(n^2)
   const output = [];
   array = array.sort((a, b) => a - b);
   // store i - 1, start for loop on i, go up to length - 1 (can't make triplet without 3 ele)
