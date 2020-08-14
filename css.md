@@ -911,3 +911,8 @@ nth-child(3) // only 3rd child
 
 // when passing in n to nth-child, it will start by using 0 in place of n then increment until no match
 nth-child(-n + 3) // will increment n from 0 going up until not possible
+
+- How to make a triangle with css only
+
+div with borders without content and inline-block
+make top/bottom transparent and a third one not transparent
