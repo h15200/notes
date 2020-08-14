@@ -6,34 +6,32 @@ const sort123 = (array) => {
   // do it in place O(1) space
   // and linear time O(n)
 
+  // basic idea - left keeps all 1's to the left, current keeps all 2s to the left, right keeps all 3s to right
+  // when current is on the right side of right, it's done
+
   // this is linear time because original initialization + incrementing current all adds up to n,
   // and all comparisons and swapping is constant time and constant space (probably 1 for temp under the hood)
 
-  // make 3 pointers
+  // make 2 pointers
   // left is the first element that is not 1. everything to the left of left is 1, so sorted
   let left = 0;
-  while (array[left] === 1) left++;
-  // same for right. keep moving left until it's not a 3. everything to the right of right is sorted
   let right = array.length - 1;
-  while (array[right] === 3) right--;
-  // initialize current to left
   let current = left;
   // when current overlaps right, everything is sorted
-  while (current < right) {
-    if (array[current] === 1) {
-      // swap with left
+  while (current <= right) {
+    // move left and right such that outer borders are all sorted and done
+    while (array[left] === 1) left++;
+    while (array[right] === 3) right--;
+    // if current is 1, swap with left value
+    if (array[current] === 1)
       [array[left], array[current]] = [array[current], array[left]];
-      left++;
-      // because current is starting from left, we only need to increment by 1
-    } else if (array[current] === 3) {
-      // swap with right
+    // same on 3 and right
+    else if (array[current] === 3)
       [array[current], array[right]] = [array[right], array[current]];
-      // it's possible the next few on the left are all 3s, so keep decrementing until a non-3
-      while (array[right] === 3) right--;
-      // ignore 2s
-    } else current++;
+    else current++;
   }
   return array;
 };
 
-console.log(sort123([1, 1, 2, 2, 2, 1, 3, 2, 3, 1, 2, 3, 2, 1, 3, 2]));
+// console.log(sort123([1, 3, 2, 2, 3, 1, 3]));
+console.log(sort123([3, 1, 2, 3, 3, 2, 2, 3, 1, 2, 2, 2, 2]));
