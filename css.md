@@ -889,3 +889,25 @@ To go from display none to fade in
 
 1. display: 'none' transition: 'opacity 3s'
 2. WAIT by using setTimeout( () => {opacity: 1}, 0)
+
+- latest aha's
+
+you can repeat the same tag, class, id and add specificity (no reason, but possible)
+.header.header
+
+a pseudo class has the same specificity as a class
+
+.test:hover {
+background-color: orange
+}
+
+.test.test{
+background-color: blue;
+}
+
+// will be blue
+
+nth-child(3) // only 3rd child
+
+// when passing in n to nth-child, it will start by using 0 in place of n then increment until no match
+nth-child(-n + 3) // will increment n from 0 going up until not possible
