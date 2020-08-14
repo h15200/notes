@@ -26,7 +26,6 @@ const sortTickets = (tickets) => {
   output.push([origin, stack[origin]]);
 
   // now find the rest from the stack until the last city is reached
-  console.log('output is', output);
 
   while (output[output.length - 1][1] !== last) {
     for (const key in stack) {
@@ -34,7 +33,7 @@ const sortTickets = (tickets) => {
       if (key === currentPort) output.push([key, stack[key]]);
     }
   }
-  console.log(output);
+  return output;
 };
 
 const stack = {
@@ -44,4 +43,4 @@ const stack = {
   LA: 'BOS',
 };
 
-sortTickets(stack);
+console.log(sortTickets(stack));
