@@ -69,9 +69,9 @@ concurrently allows us to run multiple scripts at the same time. one for startin
 package.json file scrypt should look something like this:
 
 ```
-"start:build": "tsc -w",
-"start:run": "nodemon build/index.js",
-"start": "concurrently npm:start:*"
+"start:build": "tsc -w", // watches ts files and converts to js
+"start:run": "nodemon build/index.js", // runs the js file (faster)
+"start": "concurrently npm:start:*" // runs both build and run
 ```
 
 ## Running typescript ON THE BROWSER the easy way with parcel
