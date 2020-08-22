@@ -1,3 +1,5 @@
+see separate flex.md and grid.md for those modules
+
 # Current Landscape
 
 2020 - vanilla CSS is growing to cover things that bootstrap and other pre-processors used to do. Bootstrap is on the way out. SCSS is still good for nesting and slightly easier variable, mixins, and functions, but CSS will probably cover these in the next few years. Stick only with SCSS (and CSS when possible) and for now don't bother with bootstrap or LESS.
@@ -264,6 +266,41 @@ If you click on an image file in vs code, you can look at the right bottom corne
 Html images - when you use img tags and add a src
 Css images - when you use background-image and use image without declaring it html
 
+### Responsive Images
+
+A responsive design By definition must have three things
+
+1. media queries
+2. responsive images
+3. grid system
+
+What is responsive images?
+
+The appropriate image file will be downloaded for the view port so phones don't download huge images
+
+Use <picture> (html 5.1) and picture fill (polyfills for pictures)
+
+first wrap your img with a picture tag
+
+each picture tag will have
+source tag with srcset attribute and media attribute with media query
+
+img tag will now be for the smallest mobile version, which is the fallback in case source doesn't work
+
+There should be a source tag for EACH version of the picture (not including mobile)
+
+this means the picture will ONLY download based on media query
+
+```
+<picture>
+  <source srcset="pathToBigImage" media="(min-width: 1200px)">
+  <source srcset="pathToSmallerImage" media="(min-width: 800px)">
+  <img src="pathToSmallestMobileImage" alt="pie"/>
+</picture>
+```
+
+download Picturefill library for older browser compatibility
+
 ### background-image or object-fit on img tags
 
 If you want to use image to cover an entire container,
@@ -316,6 +353,10 @@ media=”(max-width: 37.5em)”>
 ```
 
 ## Responsive Images in CSS
+
+For image tags, this does NOT work because adding display none inside a media query for an html tag still results in the browser downloading those images.
+
+For background images, putting them inside media queries WILL trigger the download itself, making it responsive.
 
 For css images, you can use 2 different images for background images that cover the screen. The small one can be the default (mobile first) and around 1200px - 600 x 2.
 
