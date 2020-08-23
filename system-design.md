@@ -34,7 +34,7 @@ questions might be
 
 - what scale is expected from the system (number of users, daily active users, number of new tweets, how many followers per user on average)
 - how much storage would we need? (photos, videos)
-- what network bandwidth usage are we expecting? Crucial in deciding h ow would we manage traffic and balance load between servers
+- what network bandwidth usage are we expecting? Crucial in deciding how would we manage traffic and balance load between servers
 
 ## Sketching up an abstract design
 
@@ -122,6 +122,14 @@ CONS
 
 If there are only 2 microservices, it's a sign you should just use a monlithic structure.
 
+### Proxies
+
+- Forward (default) proxies sit between the client and server on behalf of the CLIENT. It can be used as a cache, add/remove headers. It masks the client IP to the server. Most notable example is a VPN (Virtual Private Network).
+
+- Reverse proxy also sits in the SAME place as a forward proxy, in between the client and server but on behalf of the SERVER. It can log, cache, load balance or do anything as an additional step before the original client request reaches the server.
+
+ex- Nginx
+
 ### Load balancers
 
 - helps scale horizontally by distributing requests to multiple servers
@@ -185,18 +193,6 @@ ALL OF THESE services are handled by a message queue.
 if it's stored in memory, a server outage will not keep that info
 
 solution: store the queue in a database, each server sends a NOTIFIER a heartbeat every 10 seconds. If a server dies, the notifier consults the db and reroutes unfinished tasks to another server.
-
-### Proxies
-
-A proxy server is a piece of hardware/software that sits between the client and the server. It receives requests from clients and relays them to the back end servers over the internet..
-Typically, proxies are used to filter or log requests, block sites, provide anonimity.
-Its cache can also serve a lot of requests
-
-### Reverse Proxies
-
-Sits between the internet and the back-end-server.
-Used for load balancing, web acceleration via transforming requests (adding/removing headers, encrypting/decrypting, or compression), and adding additional security for your back end serverse.
-Like proxies, can serve requests from its own cache as well.
 
 ### Databases
 
