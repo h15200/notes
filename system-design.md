@@ -132,8 +132,40 @@ ex- Nginx
 
 ### Load balancers
 
+Hardware vs Software
+Hardware load balancers are actual structures.
+Software load balancers are USUALLY what systems design interviews are refering to. Software is more flexible in what you can do.
+
+- is a type of reverse proxy (most of the time) as a reverse proxy sits in between the client and server on behalf of the server.
+- can be set for the database, or even on the dns layer (google.com has many IPs and the DNS roundrobin will assign a requeset to the correct dns server to respond with a domain name)
 - helps scale horizontally by distributing requests to multiple servers
 - avoids duplicate requests
+
+Load Balancers can use different algos to choose a server.
+
+#### Server-Selection Strategy with load balancers
+
+1. random
+2. round robin (cycles through all servers in order). more ven than random
+3. weighted round robin - certain servers have weight (priority) based on power of individual servers or past performance and are given more requests.
+4. Ip based asssignment - Client request ip address will be hashed and used to assign to an index number of server. Each individual client is always sent to the same server to maximize cache functionality.
+5. Path based - requests are distributed based on the path of the request. Each server specializes in specific functionality. Speeds up deployment as you only need to re-write code for 1 server type.
+
+Random, round robin, and weighted round robin will not work with server side in-memory caching because it won't maximize cache hits as the requests will come from random clients.
+
+Multiple load balancers can have different strategies in a singular system.
+
+clients => path based LB => weighted RR LB x 2 => servers
+
+### Hashing
+
+Hashing becomes VERY important if your system uses any kind of in-memory server side caching because your client needs to request to the SAME server every time to avoid cache misses.
+
+Anything that makes in data, and returns an integer that points to an index of a sample size. IP address, username, any data can be hashed.
+
+2 main hashing algos in systems design
+
+Consistent Hashing (often used by Load balancers) and Rendezvous Hashing (highest random weight hashing)
 
 #### Consistent hashing in load balancers
 
@@ -148,9 +180,15 @@ when adding server 3, it goes a third, a third a third
 `fault tolerance` - how to protect against a crashed server or machine
 `allocation` - the way a request is mapped to a server.
 
-Consistent hashing allows a load balancer to allocate the request that protects against fault tolerance AND scalibility based on efficiency of existing cache.
+Consistent hashing allows a load balancer to allocate the request that protects against fault tolerance AND scalibility based on efficiency of existing cache. In minimizes the number of keys that need to be remapped when a hash table gets resized.
 
-Consistent hashing is used to preserve the most common users (that are already cached) so instead of going 0 - 33%, 33 - 66, 66-100 in the new model, you slice the LAST percentage of each existing server and assign them to the new ones to scale efficiently
+Consistent hashing is used to preserve the most common users (that are already cached) so instead of going 0 - 33%, 33 - 66, 66-100 in the new model, you slice the LAST percentage of each existing server and assign them to the new ones to scale efficiently so that requests in 0 - 24% range will still be routed to the same server.
+
+#### Rendezvous Hashing
+
+Each client has a weighted "ranking" of servers to go to. If a server goes down, then you simply pick the 2nd pick server.
+
+With rendezvous hashing, if one server goes down, only those clients who picked that server as the highest ranking server will be re-routed to their 2nd ranked servers, and all other clients will continue making requests to the same server, allowing cache hits and more consistent allocation.
 
 ### Caching
 
