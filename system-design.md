@@ -238,7 +238,9 @@ Reasons for:
 Relational - ACID complicance. data is structured and unchanging
 Non-Relational - large volumes of data that require little to no structure, makes the most of cloud computing and storage for horizontal scaling
 
-Techniques
+A relational database that supports SQL (most of them) has the power of running SQL directly without having to load the data in memory.
+
+If you want to use a script (js, python) on data, you have to first put that in memory which is probably impossible with large dbs
 
 #### Optimizing queries
 
@@ -249,6 +251,8 @@ background - a sorted record can be searched with binary log2 N time, but an uns
 Indexing will create another data structure which holds the field value and a pointer to the record, allowing binary searches to be performed.
 
 Doewside is that these index structures will require more disk space, so you are sacrificing space for time.
+
+Also this will yield significantly faster read time, but slightly slower write time
 
 #### Sharding - Data partitioning over multiple databases
 
