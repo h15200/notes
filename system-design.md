@@ -248,7 +248,7 @@ If you want to use a script (js, python) on data, you have to first put that in 
 
 background - a sorted record can be searched with binary log2 N time, but an unsorted one will require linear time.
 
-Indexing will create another data structure which holds the field value and a pointer to the record, allowing binary searches to be performed. Like a table of contents
+Indexing will create another data structure which holds the field value and a pointer to the record, allowing binary searches to be performed. Like a table of contents.
 
 Doewside is that these index structures will require more disk space, so you are sacrificing space for time.
 

@@ -317,6 +317,11 @@ new structure is
                     15         30
                 13
 
+## Merge Sort Time complexity
+
+A merge sort is O(NlogN) because if you break down the tree into halves,
+you get levels of N, N/2, N/4, N/8 and on each level, you are "stitching" them. Stitching each level have different amounts of items to sort (only 2 at the bottom level, the entire N at the top level) but average out to N. Since you're stitching on every level of the tree, there are logN levels of the tree, so it's N on each logN level.
+
 ## Trie
 
 A Trie is another type of tree
@@ -340,9 +345,8 @@ a search function will look through keys to see if a word exists
 
 ## Binary Heap
 
-A binary heap is a type of tree.
-Partially ordered
-Satisfies the heap property
+An implementation of a priority queue. Array which represents a nearly complete binary tree. Binary (not binary SEARCH tree)
+
 The heap property - Specifies a relationship between a parent and child node
 Max heap = all parent nodes are greater than OR equal to their child nodes
 Min heap = all parent nodes are less than OR equal to their child nodes
@@ -382,6 +386,29 @@ An element's parent is `Math.floor(i / 2)`
 
 This array with the null in the top BEFORE the root is often how a max heap or min heap is represented!
 
+### time complexity
+
+MAKING a max or min-heap from an array is O(n) because you start from n/2 (all n/2 + 1 to n-1 have no children). At the lowest branch level (with children), it's constant time swapping because you only compare against direct children and there are no more grandchildren. At the highest level n, you have logN levels to compare to children, grandchildren, grandgrandchildren etc...
+
+When you count each row, this adds up to linear time mathmatically.
+
+To finish the sort, we extract min from a min-heap N times
+
+Finding the min is constant time
+Swapping min to end is constant time
+Dropping the last node is constant time
+
+After the drop, re-shaping the heap again is O(logN) as you swap from the head down each level.
+
+Total time is O(nLogn), the same as merge sort
+
+### Sift up/ Sift down
+
+Important to understand and implmement siftUp / siftDown methods.
+siftDown is what's used in makeHeap, as well as remove(). You compare from the current to the children, swap if necessary, then check the swapped node.
+
+In siftUp, it is used in insertion. You add to the END of the heap,then look to the parent to see if the tree is valid. If not, swap, and look the new parent etc..
+
 ### Inserting into a max heap
 
 During insertion, it is important to always maintain the heap property. For a max heap this means the root element should always have the greatest value in the tree and all parent nodes should be greater than their children. For an array implementation of a heap, this is typically accomplished in three steps:
@@ -409,7 +436,7 @@ A heap sort uses a min heap, which means the root is always the smallest number.
 
 Heap sort takes an unsorted array, adding each item in the array into a min heap, then extracting every item out of the min heap into another array. The min heap structure will insure that the new array is in least to greatest value, and is O(nlog(n)), making it one of the most efficient sorting algorithms.
 
-Note; What's interesting is that the array version of a min heap is NOT in least to greatest order
+## Note; What's interesting is that the array version of a min heap is NOT in least to greatest order
 
 [null, 2, 4, 34, 10 ] is a valid min heap because in tree form,
 
