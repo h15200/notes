@@ -1,4 +1,4 @@
-// Tic Tac Toe
+// Tic Tac Toe on NODE only for TripleByte interview
 
 // prompt user (readline?) 'Please enter your move (grid x, y) -> translate logic
 // Human makes the first move as 'X'
