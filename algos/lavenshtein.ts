@@ -9,10 +9,10 @@ function levenshteinDistance(str1: string, str2: string): number {
 	atr2 = 'yabd'
 	
 	      '' , 'y', 'a', 'b', 'd'
-	 ''   [- ,  -,   -,   - ,  - ]
-	'a'   [                       ]
-	'b'   [                       ]
-	'c'   [                        ]
+	 ''   [0 ,  1,   2,   3 ,  4 ]
+	'a'   [1    1    1    2    3 ]
+	'b'   [2    2    2    1    2 ]
+	'c'   [3    3    3    2    2  ]
 	
 	make a 2d array of length str1 + 1
 	each subarray length is str2 + 1
