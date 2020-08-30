@@ -6,8 +6,6 @@ Data structure is a way to organize data, utilized inside algos.
 
 ## Algorithmic thinking, Peak Finding
 
-
-
 ## solve 24 solve24('1234') // "(1+2+3)\*4"
 
 See code. The hardest one so far to date (4-30-20)!
@@ -51,27 +49,42 @@ return merge(recursive(left), recursive(right))
 
 max subset
 
-brute force-
+brute force- get the max of ALL subsets
 
-if you get the max subset of all that ENDS on index 0, then 1, then 2, that is brute force.
+ex [1,-4,3]
 
-ex [1,2,3]
+let leftPointer = 0
+let rightPointer = 0
+const allSubMax = [];
 
-index 0 -> possible substrings that ENDS in 1 = only [1]
-index 1 -> [2], [1+2]
-index 2 -> [3], [3+2], [3+2+1]
+start at left, push arr[left] alone to array (1)
+move right, push arr[left] plus arr[right] to array (1 + -4)  
+move right, (1 + -4 + 3)
 
-Kadane's algo dictates that at each index, all you need is to compare the num itself with the max subset of the previous.
+now move left,
+add -4
+add -4 + 3
 
-SO
+Now move left
 
-[1,2,3]
+add 3 alone
 
-max = currSubset = index[0]
+Now you have ALL possible combinations in O(n^2) time, and you just get the max out of those
 
-then in second index, new subset is either prev subset or prev subset + current item
+Kadane's algo says you can at least get the max substring of each index linearly if you definitely HAVE to use that index. Compare previous index max + itself VS itself alone and the bigger one is the max for that substring
 
-etc..
+[1, 3, -5, 7 ,-3]
+1 4 -1 7 4
+
+first index is 1 because that is the max by default
+second index 1 + 3 is bigger than 3, so 4
+third index. remember you MUST use the index element, so the choice is either 4 + -5 or -5 alone. answer is -1
+fourth index - 7 alone is bigger
+last index 4
+
+Notice how at index 7, we cut off all possibilites from the left hand side as it was determined that nothing in the left is useful.
+
+As a last step, you must get the highest out of the new dp array for the max
 
 ### two sum
 
