@@ -14,14 +14,9 @@ Data structure is a way to organize data, utilized inside algos.
 
 See code. The hardest one so far to date (4-30-20)!
 
-## for recursive functions that aren't sequential
-
-Use an object to store all solved index values. see partitionFunction.js
-This is called memoization!
-
 ## balanced parens
 
-Instead of using difficult regex, better to use a Stack to keep track of most recent open brackets.
+use a Stack to keep track of most recent open brackets.
 
 Strategy
 
@@ -92,17 +87,18 @@ As a last step, you must get the highest out of the new dp array for the max
 
 ### two sum
 
-Two Sum
-Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+the brute force is O(n^2)
+using a cache is O(n) T O(n) S
+if prioritizing S over time, sort and using shrinking window with O(nlogn) T , O(1) S
 
-You may assume that each input would have exactly one solution, and you may not use the same element twice.
+left to 0
+right to length - 1
 
-Example:
+if total === target, that's the pair
+if total is smaller than target, left++
+if not, right--
 
-Given nums = [2, 7, 11, 15], target = 9,
-
-Because nums[0] + nums[1] = 2 + 7 = 9,
-return [0, 1].
+This sliding window is extremely useful in threeNumberSum as it is optimal for space AND time
 
 ### buy and sell
 
