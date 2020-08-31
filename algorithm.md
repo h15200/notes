@@ -1,5 +1,9 @@
 # Data Structures and Algorithm
 
+LATEST stupid discovery
+
+- When using recursion, make sure to remind yourself that primitive values are passed in by VALUE so does not update through all the recursion stacks, but arrays and objects WILL update. This means primitive answers like a number or boolean will usually use closure and need a 2nd IIFE to generate something
+
 What is a data structure and algorithm and how do they relate?
 An algorithm is a set of instructions to solve a problem with logic.
 Data structure is a way to organize data, utilized inside algos.
