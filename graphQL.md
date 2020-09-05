@@ -139,3 +139,30 @@ import db into the index, then pass it in to context when you make new GraphQLSe
 Unlike queires and mutations, you need to import {pubsub} for Subscription. for the resolver, the property is NOT a method, but an object for subscription. Return value must go through pubsub.asyncIterator which takes in ONE arg, which is a string, channel name
 
 pubsub.publish needs to be called every time data changes. It takes in the channel string and an object for the changing value
+
+## GraphiQL mutation queries
+
+Use variables in the lower left console "Query Variables" so it's easy to swap values
+
+```
+mutation updateAuthClient($input: UpdateAuthClientInput!) {
+  updateAuthClient(input: $input) {
+    authClient {
+      id
+      displayName
+    }
+  }
+}
+
+
+Query Variables:
+
+{
+  "input": {
+    "id": "QXV0aENsaWVudDo5MjNmY2M2MC02MDk0LTQyNjctOGY1Mi01ZDE1MWEyYTk4NDM=",
+    "displayName": "test-displayName-change"
+
+  }
+  }
+
+```
