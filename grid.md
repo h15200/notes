@@ -144,6 +144,7 @@ A great trick is to use:
 // This whole area should already have a max-width parameter in some way
 
 grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+// or auto-fill
 
 // the min should be set to a number that gives you the desired INITIAL number of columns. Then resizing should make it responsive
 

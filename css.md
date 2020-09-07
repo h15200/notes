@@ -674,7 +674,7 @@ Make two cards (one with ::after) have them stack on stop of each other with pos
 Have the back card already hidden and rotated 180 deg on rotateY
 Backface-visibility: hidden
 
-On hover, transform rotateY(180deg) the front card, and rotate the back card back to 0 deg
+On hover (or click), transform rotateY(180deg) the front card, and rotate the back card back to 0 deg
 Perspective: the lower it is, the more drastic the rotation transformation is
 
 ## Changing highlighted / selected text color
