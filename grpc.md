@@ -21,7 +21,10 @@ At aiva, this tech is being used as the backbone of the entire front-end back-en
 - `syntax = "proto3"` simply declares what syntax version. Must be the first line of proto file
 - `package packageName.protected.driver_management.v1beta1;` Named after the directory.
 - `option go_package = "github.com/compiled/go/blabla` Use a certain package when compiling to a particular language, in this case, go
-- `import "/path/tofile/"` imports all messages from that proto file. Those Requests/Responses can be used directly in this file
+- `import "/path/toFileName/"` imports all messages from that proto file to the PACKAGE namespace.
+  To use, `nameOfPackage.messageName`. Note that the file name isn't needed in usage. Furthermore, if the current file that you're importing
+  is in the same package as the imported file, you can simply declare the message or enum name directly
+
 - a proto file does not need to define a service. It can just have the syntax, package, and a message
 
 ### Syntax (message and/or enum)
