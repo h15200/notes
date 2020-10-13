@@ -459,10 +459,11 @@ Then pick the current hosting or domain registry company and:
 
 ### GoDaddy
 
-Add A record in DNS record
+`Add a record` in DNS record
 Go to the domain company, change namerecord to what netlify offers
 Check to see the new domain is live
-NAMECHEAP
+
+### NAMECHEAP
 
 ADVANCED DNS, then change the placeholder to the namerecord that netlify spits out
 
