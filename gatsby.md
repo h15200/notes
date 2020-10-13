@@ -452,7 +452,10 @@ Use the URL record if you want the name to redirect (change address) instead of 
 
 ### Connect Domain to netlify -
 
-Go to netlify, go to website, then under domain, add custom domain (actual name of site)
+1. Set up Netlify DNS, change the name server in Domain Register site (goDaddy, nameCheap, inMotion)
+
+2. add custom domain (actual name of site) in netlify
+
 Look for nameRecord and copy
 
 Then pick the current hosting or domain registry company and:
