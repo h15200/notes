@@ -1,14 +1,9 @@
-TODOS:
+Driver TODOS:
 
-- Test performOauth2 call
 - test all create/delete crud
-- support AIVA RESOURCES to be multi values in AFH? new linear item
 
 ## actionable:
 
-- smile
-  - form add issue (hopefully just adding an exception)
-  - styling
 - getwell styling
 
 ## failing on create:
@@ -29,7 +24,11 @@ TODOS:
 - afh performOauth2Code
 - getwell - (oauth2, clientCredentials) refreshAuth not working
 - twilio - no status
-- workxhub - (oauth2, clientCredentials) refreshAuth is working, but needsAuth true
+- workxhub
+  - (oauth2, clientCredentials) refreshAuth is working, but needsAuth true
+  - deleteInstall failing
+- smile
+  - deleteInstall failing
 
 ## finished (CRUD and style):
 
@@ -41,3 +40,7 @@ TODOS:
 ## before making PR
 
 `git rebase -i HEAD~n`
+
+find n by going back to first commit on branch AFTER master
+
+git log -g
