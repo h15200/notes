@@ -1,45 +1,52 @@
-Driver TODOS:
+## ask about
 
-- config should not redirect
-  - compDidUpdate
-  - formikSubmitting off (check disabled)
-- "This DriverInstall has been authenticated" should be hidden if there was an authErrorList.length
-- itemMapper should be options array for documentation (value, {doNotCapitalize: true}), then on func side `if options.doNotCapitalize === true` and document `options object. doNotCapitalize defaults to false`
+- afh
+  - config can't handle multiple facilities
 
 ## actionable:
 
-- test new config with properly working specs
 - check getwell styling
+- figure out general validation of nested stuff OR Make a dropdown of "missing fields" ?
 
-## failing on create:
+## KNOWN ISSUES:
 
-## known issues:
+### twilio
 
-- failing on create
+- not sending status
+- can't see auth/config
+- can't see style
 
-  - tasks
-  - careteam
-  - epic
-  - fdb
-  - jci
-  - legacy
-  - patientsafe
-  - pointClickCare
-  - vocera
+### failing on create
 
-- getwell - (oauth2, clientCredentials) refreshAuth not working
-- twilio - no status
-- workxhub
+- epic (expected)
+- fdb (ask)
+- patientsafe (ask)
+- pointClickCare (ask)
+- vocera (ask)
 
-  - (oauth2, clientCredentials) refreshAuth is working, but needsAuth true
-  - deleteInstall failing
+### smartthings (oauth2, authCode)
 
-- smile
-  - deleteInstall failing
+- oAuth not set up
+- can't see config/style
+
+### workxhub (oauth2, clientCredentials)
+
+- refreshAuth is working, but sending status.needsAuth true
+
+### getwell (oauth2, clientCredentials)
+
+- margins
+- refreshAuth not implemented in back-end
 
 ## finished (CRUD and style, but not accounting for global known issues like delete failing) :
 
 - aiva-knowledge
 - aive-remotelink
 - aiva-tasks
+- careteam
+- cbord
+- clockwise
+- legacy
+- mailgun
+- smile
 - tels
