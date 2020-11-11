@@ -1,12 +1,18 @@
-## ask about
+# report
 
-- afh
-  - config can't handle multiple facilities
+- toBeDeleted was not working in smile, was fine in cbord
+- UI should handle new submission. refactored
+
+## waiting for back-end
+
+- afh config can't handle multiple facilities
 
 ## actionable:
 
-- check getwell styling
-- figure out general validation of nested stuff OR Make a dropdown of "missing fields" ?
+- add confirmation for dynamic table delete
+- check and style other nested tables
+- check getwell styling margin
+- style smile
 
 ## KNOWN ISSUES:
 
@@ -23,6 +29,10 @@
 - patientsafe (ask)
 - pointClickCare (ask)
 - vocera (ask)
+
+### globally deleteDriverInstall fails randomly
+
+- error: driver does not exist, but works properly on refresh (driver was deleted)
 
 ### smartthings (oauth2, authCode)
 
