@@ -1,5 +1,7 @@
 ## ask about
 
+- workflow for getting QA issues into linear
+
 - afh
   - config can't handle multiple facilities
 
