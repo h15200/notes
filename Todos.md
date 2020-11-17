@@ -1,30 +1,18 @@
-## ask about
-
-- workflow for getting QA issues into linear
-
-- afh
-  - config can't handle multiple facilities
-
-## actionable:
-
-- check getwell styling
-- figure out general validation of nested stuff OR Make a dropdown of "missing fields" ?
-
-## KNOWN ISSUES:
-
-### twilio
-
-- not sending status
-- can't see auth/config
-- can't see style
+## driverInstalls known issues
 
 ### failing on create
 
 - epic (expected)
-- fdb (ask)
-- patientsafe (ask)
-- pointClickCare (ask)
-- vocera (ask)
+- pointClickCare
+
+### smile
+
+- toBeDeleted flag not deleting in back-end
+
+### twilio
+
+- not sending status
+- can't see auth/config/style
 
 ### smartthings (oauth2, authCode)
 
@@ -33,22 +21,8 @@
 
 ### workxhub (oauth2, clientCredentials)
 
-- refreshAuth is working, but sending status.needsAuth true
+- refreshAuth seems to be working, but still sending status.needsAuth true
 
 ### getwell (oauth2, clientCredentials)
 
-- margins
 - refreshAuth not implemented in back-end
-
-## finished (CRUD and style, but not accounting for global known issues like delete failing) :
-
-- aiva-knowledge
-- aive-remotelink
-- aiva-tasks
-- careteam
-- cbord
-- clockwise
-- legacy
-- mailgun
-- smile
-- tels
