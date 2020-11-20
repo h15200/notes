@@ -1,3 +1,16 @@
+# beds
+
+- make create mutation
+- test create
+- make delete mutation
+- test delete
+- look for associated device
+- take in unit scope devices into bed form
+- use selectField to link associated devices
+- look for update
+- write update mutation
+- test update mutation
+
 ## driverInstalls known issues
 
 ### failing on create
@@ -12,7 +25,8 @@
 ### twilio
 
 - not sending status
-- can't see auth/config/style
+- can't see auth/config
+- check out add table, multi selector if it's stale data after status is sorted out
 
 ### smartthings (oauth2, authCode)
 
