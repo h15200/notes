@@ -1,14 +1,15 @@
 # beds
 
-- make create mutation
+- write update mutation
+- devices have bed assignment?
+
 - test create
-- make delete mutation
+
 - test delete
 - look for associated device
 - take in unit scope devices into bed form
 - use selectField to link associated devices
-- look for update
-- write update mutation
+
 - test update mutation
 
 ## driverInstalls known issues
