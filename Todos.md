@@ -1,16 +1,10 @@
-# beds
+@hideaki So that list is the accounts (aka NluSystems) that have been set up. NluApps get published into those NluSystems.
+So the relationship is: [NluApp] --[binding]--> [NluSystem]
 
-- write update mutation
-- devices have bed assignment?
+The invocation is a property of the binding in the middle.
+NluSystemBinding.invocation
 
-- test create
-
-- test delete
-- look for associated device
-- take in unit scope devices into bed form
-- use selectField to link associated devices
-
-- test update mutation
+So that relationship is set up in the screen where a single NluApp is being edited in "attach voice platforms"
 
 ## driverInstalls known issues
 
