@@ -1,11 +1,3 @@
-@hideaki So that list is the accounts (aka NluSystems) that have been set up. NluApps get published into those NluSystems.
-So the relationship is: [NluApp] --[binding]--> [NluSystem]
-
-The invocation is a property of the binding in the middle.
-NluSystemBinding.invocation
-
-So that relationship is set up in the screen where a single NluApp is being edited in "attach voice platforms"
-
 ## driverInstalls known issues
 
 ### failing on create
