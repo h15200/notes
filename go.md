@@ -67,6 +67,11 @@ var num int
   `myNum := 32`
   This shortcut will default to `int` and not `int32` or `int64`
 
+- if you want shorthand to be of a specific type, PRIMITIVE types use () and structs use {}
+
+  - `myNum := int8(20)`
+  - `mySlice := structName{'hi', 'there'}`
+
 - to initialize to something that's not inferred `z := float64(1)`
 
 ### inline multiple declarations
@@ -239,10 +244,11 @@ fmt.Printf("hello there, %v", name)
 
 #### fmt.Printf verb types
 
-%v - the actual value of variable
+%v - the actual value of variable turned into a string
 %T - TYPE of value ex. num, string, float
 %d - type coersion of int -> string `fmt.Printf("You're %d years old", age)`
 %f - float -> string. option to set decimal place `fmt.Printf("Your test average is %.2f", gpa)` - 3.80
+%q - puts double quotes around string
 
 if a variable isn't used but is appended with `, someVar` it will print (EXTRA type=Value)
 
@@ -319,6 +325,11 @@ func main() {
 ### package "math"
 
 math.Pow
+
+### package "strings"
+
+strings.Fields - takes a string and returns a slice of inidividual strings surrounded by 1 or more whitespace. In other words, returns a slice of words from a sentence
+strings.Fields("Hello Patti Kilroy!") // returns ["Hello", "Patti", "Kilroy!"]
 
 ## loop
 
@@ -591,8 +602,11 @@ func main() {
 
 - Declaring slices
 
-package level `var mySlice = int[] {2,3}` or
-func level `mySlice := int[] {2,3}`
+with initial vals:
+package level `var mySlice = int[]{2,3}` or
+func level `mySlice := int[]{2,3}`
+
+without: - use `make` func
 
 #### mutating slices
 
@@ -690,9 +704,9 @@ func printSlice(s []int) {
 - if a slice has 0 capacity and 0 length will be 0 and will `== nil`
 - if a slice has one of those cap or len values, it is NOT nil
 
-#### making a slice with a bigger capacity than the length
+#### declaring a slice without initializing with make()
 
-- keyword `make`
+- function `make` declares a slice with length and capacity without having to initialize it
 
 `a := make([]int, 5, 10)`
 // makes a slice of all default ints, [0, 0, 0, 0, 0] but has cap of 10
@@ -747,3 +761,357 @@ Index is 2 and Element is 23
 - If you don't use `_` and a real letter and that variable is unused in the body, it will throw an error
 
 - this logic and usage of `_` is true for any func that returns multiple values. If you need the 2nd val only, you must use underscore
+
+## maps
+
+- maps keys to values
+- NOT ordered
+- zero value of a map is `nil` and it has no keys, nor can keys be ADDED!
+- the `make` function returns a map of the given type, initialized and ready for use
+  `var m map[string]Vertext`
+- difference between `make` in slices and maps is, with SLICES, you make(sliceType, length, capacity). with maps you only need type
+- map literals are like struct literals, written inside but keys need to be specified since ordering does not matter
+
+### using structs in maps
+
+```
+type Vertex struct {
+  Lat, Long float64
+}
+
+var m = map[string]Vertex{
+	"Bell Labs": Vertex{
+		40.68433, -74.39967,
+	},
+	"Google": Vertex{
+		37.42202, -122.08408,
+	},
+}
+```
+
+#### shorthand declaration
+
+- if tope-level type is just a type name (`Vertex` in above example), you can omit the type field name when initializing
+
+```
+type Vertex struct {
+	Lat, Long float64
+}
+
+var m = map[string]Vertex{
+	"Bell Labs": {40.68433, -74.39967},
+	"Google":    {37.42202, -122.08408},
+}
+```
+
+### mutating maps
+
+(`m` is the name of your map)
+
+insert or update `m[key] = elem`
+retreive `elem = m[key]`
+delete `delete(m, key)`
+
+### test if does key exist in map
+
+test presence `elem, ok = m[key]`
+
+- if ok == `true`, key exists in that map
+- if ok == `false`, elem still exists, but it is the default zero value for the type ("" for string, 0 for int)
+
+## syntax review
+
+array literal (meaning declaration and initialization)
+`x := [4]string{"hello", "there", "my", "friend}`
+
+array declaration without init vals
+`var x [4]string`
+
+array and slice assignment
+`x[0] = 4`,
+
+slice literal
+`y := []int{1,2,3}`
+
+slice declare only with len and cap (so it won't be nil)
+`y := make([]int, 5, 5)`
+
+map literal
+`z := map[string]int{"a": 3, "b: 4"}`
+
+map declare only
+`z := make(map[string]int)`
+
+map assignment
+`z[key] = v` // if key is string, add `""`
+
+### functions as values
+
+- like js, functions can be stored in variables
+
+- syntax for using functions as callbacks
+
+```
+func compute(callback func(int, string) bool) string {
+	if callback(3, "hi") == false {
+    return "it's false!"
+  } else {
+    return "hello!"
+  }
+}
+
+// in this case the callback is typed such that arg1 is an int, arg 2 is a string, and the callback returns the bool but the actual func returns a string
+```
+
+- because funcs can be returned from funcs, closures are made just like js
+
+## methods
+
+- Go does not have classes, but you can define methods on types
+- a method is a function with a specifial `receiver` argument that points to a type
+- syntax is `func (receiverType) funcName(args) return type {}`
+
+```
+type Vertex struct {
+	X, Y float64
+}
+
+func (v Vertex) Abs() float64 {
+	return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}
+
+// now Vertex types all have the moethod .Abs()
+```
+
+- if a type is declared IN THE SAME PACKAGE, you can add methods to any type
+- you can't declare a method with a receiver whose type is defined in another package
+
+```
+package main
+
+import (
+	"fmt"
+)
+
+type MyInt int
+
+func (m MyInt) sayHello()  {
+  fmt.Println("Hello!")
+
+}
+
+func main() {
+var myIntInstance MyInt
+myIntInstance  := MyInt(3)
+
+}
+// prints "Hello!"
+```
+
+### methods and pointer indirection
+
+- more commonly, pointers are used as methods often change the instance of that type
+- syntax is `func (pointer *TypeName)`
+  and in body,
+  `*pointer = someValue` // if primitive or otherwise
+  `pointer.x = value` // shorthand if type is struct, map
+
+}
+
+```
+package main
+
+import (
+	"fmt"
+)
+
+type MyInt int
+
+func (m MyInt) sayHello()  {
+  fmt.Println("Hello!")
+}
+
+func (m *MyInt) changeVal() {
+ *m = 9
+}
+
+func main() {
+myIntInstance := MyInt(3)
+
+
+myIntInstance.sayHello()
+myIntInstance.changeVal()
+fmt.Println(myIntInstance) // prints 9 and not 3
+}
+```
+
+- NOTE that in the changeVal() method, we didn't have to write `(&myIntInstance).changeVal()` even though it technically needs to be called from the pointer
+  This is because when the method receiver is a pointer `(m *myInt)`, Go interprets the method call and assumes a prepended `&`
+
+- the same thing happens in the reverse direction. methods with value receivers take either a value or pointer as the receiver when they are called and Go will know which to use
+
+```
+var v Vertex
+fmt.Println(v.MethodUsingValueReceiver()) // OK
+p := &v
+fmt.Println(p.MethodUsingValueReceiver()) // OK even though p SHOULD be a value and not a pointer
+
+// In this case, in method call p.MethodUsingValueReciver(), p is interpreted as (*p)
+```
+
+- another big reason to use pointer recievers is that if you use value pointers for types like structs, you are making a new instance of that type on every method call!
+
+- because of all of this, it's best practice to make ALL methods of a type either pointer receivers OR value receivers and never mix and match.
+
+## interface type
+
+- when adding
+- interface types hold a set of method signatures, which can be implmented by multiple types
+- used to make strict checks to see if a type contains a method on creation OR by equality check
+
+check on creation (not necessary to use interface, but to be strict)
+
+```
+package main
+
+import "fmt"
+// type I always contains the method M()
+type I interface {
+	PrintString()
+}
+
+type T struct {
+	S string
+}
+
+// a method with a value receiver for type T structs
+func (t T) PrintString() {
+	fmt.Println(t.S)
+}
+
+func main() {
+  // here we explicitly say i is an instance of type I interface AND an intestance of type T struct
+	var i I = T{"hello"}
+	i.PrintString()
+
+  // here's another way
+
+  var anotherI I // anotherI is an instance of interface I
+
+  anotherI = someType // if someType has the method PrintString(), will be fine. if not, will throw an errror!
+}
+```
+
+usage:
+
+```
+type Greeter interface {
+  Greet() string
+}
+
+func
+
+```
+
+- under the hood, an interface instance is a tuple of a value and a concrete type (value, type)
+  calling the method of an interface value executes the method of the same name in its type
+- it is possible to call the interface method with a nil underlying value
+- if an interface has both nil value and nil concrete type, it is considered a nil interface
+
+### empty interface
+
+- interface type that specifies 0 methods is an empty interface `interface{}`
+  this is useful for type any
+
+```
+func repeat(i interface{}) { // can take in any data type
+  fmt.Println(i)
+}
+```
+
+### type assertion
+
+- type assertion provides access to an interface value's underlying concrete value `t := i.(T)` T being type
+
+```
+package main
+
+import "fmt"
+
+func main() {
+	var i interface{} = "hello"
+
+	s := i.(string)
+	fmt.Println(s)
+
+	s, ok := i.(string)
+	fmt.Println(s, ok)
+
+	f, ok := i.(float64) // fine, because if ok is also looked at, f will be the default value
+	fmt.Println(f, ok)
+
+	f = i.(float64) // panic since i only holds "string" type and throws err without , ok look up
+	fmt.Println(f)
+}
+```
+
+### type switches
+
+- to check against types in an any interface{}, use a switch statement with `interfaceName.(type)`
+
+```
+func do(i interface{}) {
+	switch v := i.(type) {
+	case int:
+		fmt.Printf("Twice %v is %v\n", v, v*2)
+	case string:
+		fmt.Printf("%q is %v bytes long\n", v, len(v))
+	default:
+		fmt.Printf("I don't know about type %T!\n", v)
+	}
+}
+
+func main() {
+	do(21) // prints Twice 21 is 42
+	do("hello") // prints "hello" is 5 bytes long
+	do(true) // I don't know about type bool!
+}
+```
+
+### stringers
+
+- interfaces are being used in packages under the hood
+
+one that gets used a lot is type `Stringer` that looks like this
+
+```
+type Stringer interface {
+    String() string
+}
+```
+
+- when package fmt Println a struct, it's implicitly calling the struct.String()
+
+```
+package main
+
+import "fmt"
+
+type Person struct {
+	Name string
+	Age  int
+}
+
+func (p Person) String() string {
+	return fmt.Sprintf("%v (%v years)", p.Name, p.Age)
+}
+
+func main() {
+	a := Person{"Arthur Dent", 42}
+	z := Person{"Zaphod Beeblebrox", 9001}
+	fmt.Println(a, z) // actually calling fmt.Println(a.String(), z.String())
+
+}
+```
+
+## errors
