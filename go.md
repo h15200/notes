@@ -331,6 +331,11 @@ math.Pow
 strings.Fields - takes a string and returns a slice of inidividual strings surrounded by 1 or more whitespace. In other words, returns a slice of words from a sentence
 strings.Fields("Hello Patti Kilroy!") // returns ["Hello", "Patti", "Kilroy!"]
 
+### package "io"
+
+- deals with data streams
+- specifies the `io.Reader` interface, which represents the read end
+
 ## loop
 
 Go only has one looping construct, `for` loops
@@ -1082,7 +1087,7 @@ func main() {
 
 - interfaces are being used in packages under the hood
 
-one that gets used a lot is type `Stringer` that looks like this
+built-in interface `Stringer` looks like this and is used in package fmt
 
 ```
 type Stringer interface {
@@ -1115,3 +1120,65 @@ func main() {
 ```
 
 ## errors
+
+built-in type error can be used
+
+```
+func numEqualsOne(x int) (string, error) {
+	switch x {
+	case 1:
+		return "yes", nil
+	default:
+		return "", fmt.Errorf("not a valid input")
+	}
+}
+```
+
+## Goroutines
+
+- a `goroutine` is a lightweight thread managed by the Go runtime.
+- putting the word `go` before a function will start a concurrent routine
+
+`go f(x, y, z)` - starts a new goroutine running `f(x, y, z)`
+
+- the evaluation of f, x, y, and z happens in the current goroutine and the execution of `f` happens in the NEW goroutine
+
+- eventually may need `select` when using goroutine
+
+## channels
+
+don't worry about it until you absolutely need it!
+
+## importing helper funs
+
+go.mod
+
+```
+module github.com/repo
+
+go 1.15 // or whatever version
+```
+
+in main.go
+
+import (
+"lib "github.com/repo/somedirWithHelperFile"
+)
+
+// then lib.someFunc() is availble
+
+in somedirWithHelperFile, make helper.go
+
+```
+package lib
+
+import "fmt"
+
+// Test is exported to main
+func Test() {
+	fmt.Println("testing")
+}
+
+ACTUALLY write the comment above the exported func
+also the func needs to be capitalized!
+```
