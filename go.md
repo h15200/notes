@@ -336,6 +336,14 @@ strings.Fields("Hello Patti Kilroy!") // returns ["Hello", "Patti", "Kilroy!"]
 - deals with data streams
 - specifies the `io.Reader` interface, which represents the read end
 
+### package "net/url"
+
+`url.QueryEscape(someString)`
+is the same as js encodeURIComponent()
+
+`url.QueryUnescape(someEncodedUrl)`
+is the same as decodeURIComponent BUT QueryUnescape returns 2, the val and err
+
 ## loop
 
 Go only has one looping construct, `for` loops

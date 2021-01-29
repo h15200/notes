@@ -33,9 +33,11 @@ function stringify(params: { [key: string]: string | undefined }) {
     }
     // dev
     else {
-      console.log("NOT a string!", typeof param);
+      // console.log("NOT a string!", typeof param);
     }
   }
+  // console.log("result", result);
+  // console.log("result &", result.join("&"));
   return result.join("&");
 }
 
@@ -44,6 +46,21 @@ function forceUnicodeEncoding(val: string) {
 }
 
 function signEmbedUrl(data: { [key: string]: string }, secret: string) {
+  //     host,
+  // embed_path: embedPath,
+  // nonce: jsonNonce,
+  // time: jsonTime,
+
+  // session_length: params.session_length,
+  // external_user_id: params.external_user_id,
+  // permissions: params.permissions,
+  // models: params.models,
+
+  // group_ids: params.group_ids,
+  // external_group_id: params.external_group_id,
+  // user_attributes: params.user_attributes,
+  // access_filters: params.access_filters,
+
   const stringsToSign = [
     data.host,
     data.embed_path,
@@ -61,10 +78,12 @@ function signEmbedUrl(data: { [key: string]: string }, secret: string) {
   stringsToSign.push(data.access_filters);
 
   const stringToSign = stringsToSign.join("\n");
-  console.log("stringToSign", stringToSign);
+
+  // console.log("stringToSign \n", stringToSign);
   const encodedStringToSign = encodeURIComponent(stringToSign);
-  console.log("encoded stringToSign", encodedStringToSign);
-  console.log("encoded, then decoded", decodeURIComponent(encodedStringToSign));
+  // console.log("encoded stringToSign", encodedStringToSign);
+  // console.log("encoded, then decoded", decodeURIComponent(encodedStringToSign));
+
   return createHmac("sha1", secret)
     .update(forceUnicodeEncoding(stringToSign))
     .digest("base64")
@@ -80,7 +99,7 @@ function createNonce(len: number) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
 
-  console.log("created nonce", text);
+  // console.log("created nonce", text);
   return text;
 }
 
@@ -146,9 +165,10 @@ export function createSignedUrl(
     time: jsonTime,
   };
 
-  console.log("params", params);
+  // console.log("params", params);
 
   const embedPath = "/login/embed/" + encodeURIComponent(src);
+  // console.log("embedPath", embedPath);
 
   const signingParams = {
     host,
@@ -165,8 +185,10 @@ export function createSignedUrl(
     access_filters: params.access_filters,
   };
 
+  // console.log("signingParams", signingParams);
+
   const signature = signEmbedUrl(signingParams, secret);
-  console.log("signature", signature, "signature type", typeof signature);
+  // console.log("signature", signature, "signature type", typeof signature);
 
   Object.assign(params, { signature }); // add key "signature" and the value to original params
 
@@ -191,6 +213,7 @@ const myUser = {
     "embed_browse_spaces" as LookerUserPermission,
   ],
   models: [],
+  // user_timezone: ""
   // user_attributes: {
   //   locale: "en_US",
   // },
