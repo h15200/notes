@@ -1,20 +1,71 @@
 # Looker
 
-data visualization service that takes in an underlying database (bigQuery) and makes configurable looks.
+- data visualization service that takes in an underlying database (bigQuery) and makes configurable looks.
+- a model layer that sits between database and user
+- allows the dev team to shape the data with LookML and non-technical team members to shape the table based on the available data
+- uses abstracted SQL
 
-allows the dev team to shape the data with LookML and non-technical team members to shape the table based on the available data
+## Dimension vs Measure
+
+- both Dimensions and Measures are defined in View files
+
+### dimension
+
+- dimension is a data element (database column equivalent)
+- always in the GROUP BY part of any query
+- automatically created for all fields within a table
+
+### measure
+
+- measure is a function of fields that have already been aggregated
+- always part of any aggregate function
+
+for example, `users.city` is a dimension and the `users.count` is a measure
+
+```
+// get all cities and their occurances
+SELECT users.city AS "users.city", COUNT(*) AS "users.count"
+
+FROM public.users AS users
+// if using SELECT with one field and another count, must be grouped
+
+GROUP BY 1  // 1 = users.city
+ORDER BY 2 DESC // 2 = count
+LIMIT 500
+
+```
 
 ## Views
 
-- View = table
-- can join like tables
+Can correspond to 3 types
 
-`dimensions` are fields within a view and are automatically created for all fields in a table
+1. Tables in Database (Standard View)
+2. Looker-defined virtual tables (Derived Tables)
+3. Looker-defined physically written tables (materialized View) to database (Persistent Derived Table)
 
-## dimension vs measure
+- One or more view files jointed together = `Explore`
 
-- dimension is a data element (database column equivalent)
-- measure is an aggregate (count)
+## Explore
+
+- Made from 1 or more view files
+- Views become headers in Explores
+
+- Used for analysis. Clearly organize Explores around business themes to minimize confusion for end user
+- ex. Users, Orders, Inventory
+
+- explores are defined inside `Models`
+
+## Model
+
+- contains data connection info and Explore definitions
+- can restrict user access to specific Explores
+- can separate and organize Explores by business area
+
+## Project (LookML Project)
+
+- highest-level looker object
+- used per different data source
+- View files cannot be shared between different Projects (without using a project import)
 
 ## date
 
