@@ -5,6 +5,12 @@
 - allows the dev team to shape the data with LookML and non-technical team members to shape the table based on the available data
 - uses abstracted SQL
 
+## TLDR
+
+- Project (per data source) -> Model (connection info, access, explore groupings) -> Explore (View joins) -> View -> Dimension/Measures
+- File Browser will contain models and views only. Model files will define explores (made up of views) and View files will have dimension/measures
+- when in dev, put the cursor on where you are and click on the info button on the top right to see all available params for that object
+
 ## Dimension vs Measure
 
 - both Dimensions and Measures are defined in View files
@@ -257,9 +263,75 @@ Can correspond to 3 types
 
 - explores are defined inside `Models`
 
+### Building Explores
+
+- explores defined inside Model files
+- each join will be a user selectable field in explore view
+- Explore Parameters (properties)
+  - `explore` explore name, which is name of view
+    - if you want to keep the `join` value the same as the view, but rename in the explorer view, add `label` to rename Explore name
+    - `description`
+    - `view_label` changes the label of the view within explorer field picker
+- it is possible just to not join anything and make an explore that is just a view
+  examples
+- If using join, `join` is the name of 2nd view you want to join with
+  - 3 Required Join Parameters
+    - `type` join type (left_outer by default)
+    - `sql_on` fields that should be used for join
+    - `relationship` ex. many_to_one
+  - optional join params
+    - `from` if you want to declare the join name as something else in `join`, also include a `from` inside the join the declare which view you are joining
+    - `fields` limit the scope of fields for Explore or View level
+- indirect joins are possible when A is joined to B and in that same explore, B is joined to C
+
+```
+// explore === view with no join
+explore: some_view_name {}
+
+// joins a view called inventory_items with products
+explore: inventory_items {
+  join: products {
+    type: left_outer
+    sql_on:   ${inventory_items.product_id} = ${products.id} ;;
+    relationship: many_to_one
+  }
+}
+
+```
+
+### Symmetric Aggregation and the Fan Out problem
+
+- in some joins, an explore will fan out the table in a way that duplicates data.
+- Looker can solve this by using Symeetric Aggregation via the following 2 steps:
+
+1. Specify Primary keys in the joined View files under dimension.primary_key (bool).
+2. Correctly specify the correct join.relationship parameter
+
+- to figure out the correct relationship, ask the question "is this a primary key?". if the answer is yes, that side of the relationship equation is `one`. no will mean `many`
+
+- how does this work? Under the hood, Looker is adding a distinct count for primary keys
+
+### Filtering Explores - optimize and avoid sending unnecessarily big reports
+
+- filters are used for opimization so users don't accidentally send a gigantic query to all databases
+
+- most commonly utilized options for applying Explore default filters are:
+
+1. `sql_always_where` and `sql_always_having`
+
+- an automatic filter that the user is not even aware of
+
+2. `always_filter`
+
+- always_filter is a REQUIREMENT on the user to filter when selecting this explore
+
+3. `conditionally_filter`
+
+- a rare case where a default filter can be removed if at least one of the specified fields in `unless` are selected
+
 ## Model
 
-- contains connection info (where the data is comning from)
+- contains connection info (where the data is coming from)
 - info on which views to include (views are sharable across all models within the same project)
 - individual Explore definitions
 - can restrict user access to specific Explores
@@ -268,7 +340,7 @@ Can correspond to 3 types
 ## Project (LookML Project)
 
 - highest-level looker object, consisting or 1 or more model files, each containing Explore options and joins
-- has multiple view files, each corresponding to a databse table or a derived table
+- has multiple view files, each corresponding to a database table or a derived table
 - 1 or more dashboard files which define a project's data and layout if you choose to use `LookML Dashboards` in addition to User-Defined Dashboards
 - used per different data source
 - View files cannot be shared between different Projects (without using a project import)
@@ -291,6 +363,40 @@ Can correspond to 3 types
 - in dev dropdown -> Manage LookML Projects -> New LookML Project btn -> setting
 - add files
 
+## Caching
+
+- Looker has internal queryIds and caches recent queries
+- When running a query, Looker will always first check if it's cached before making the query
+- default caching policy can be changed
+
+### Datagroups
+
+- datagroups are named looker caching policies that can be applied to Models, Explores, or Persisted Derived Tables (PDT).
+- datagroups are defined at the `model` level
+- each caching policy requires separate datagroup definitions
+
+### Configuring Datagroups
+
+- `sql_trigger` parameter that returns one row with one column to determine if the cache should be busted
+- `max_cache_age` longst time a query should be cached
+- only 1 required, but both is best practice
+- in this example, the cache is good for 24 hours. all users using this datagroup will use cached results, UNLESS the sql_trigger shows something different from the cache
+
+```
+datagroup: daily_etl {
+  max_cache_age: "24 hours"
+  sql_trigger: SELECT max(id) FROM my_tablename ;;
+}
+```
+
+### Implmenting Datagroups Cache Policies
+
+- implementation methods (after datagroups have been defined on the model level)
+  - at the model file `persist_with` at top will apply to ALL explores in that model
+  - adding `persist_with` inside an individual explore will be specific to that explore
+  - in a `PDT` definition: use `datagroup_trigger`
+  - on Looks and Dashboards: build schedules that trigger based on datagroups to cause content to run and send immediately after the cache has been invalidated, thus warming the cache with the latest results
+
 ## Errors
 
 - try replacing double quotes with single quotes
@@ -305,6 +411,68 @@ Views can be extended using `extends: [view_to_extend]`
 - substitution syntax`${}` can be used for pre-mapped variables within view files like view, measures, table
 - liquid syntax `{% %}` can be used for stuff beyond tables
 
-```
+## Derived Tables
 
-```
+- used when you need a view beyond the existing data
+- manually written query whose result set can be queried like a regular database table
+- integrated as Looker views
+- can be joined in Explores like standard Views
+- they can be ephemeral or written into the database (persisted)
+
+### 2 types of Derived Tables
+
+1.  SQL derived tabled (most common)
+
+- easy to learn and understand
+- uses complex joins, calculations, and functions such as UNION
+- implmentation
+  - Develop Tab -> SQL Runner -> Type out a query
+  - Gear button on upper right -> import SQL runner -> add a name to the view
+- to persist
+  - add 2 parameters to a derived table
+    1. Table Refresh Logic
+    - `datagroup_trigger`: triggered by some change in underlying data as defined within a datagroup (most recommended)
+    - `sql_trigger_value`: triggered by a change in the direct defined underlying data
+    - `persist_for` : a set time period
+    2. Indexes
+    - A single or multi index for most dbs
+    - sort key(s) and a distribution key for Redshift
+    - cluster key(s) and partition key(s) for BigQuery
+
+2. Native Derived Table
+
+- maximum code reusablility
+- easier to maintain
+- easier to read and understand
+
+## General Best Practices
+
+- use lowercase underscore casing
+- name measures with aggregate function or common terms `total_users` for sum, `count_users`, `avg_users`
+- name `yesno` dimensions clearly with Is somewhere `User Is New` instead of `User`
+- avoid words `date` or `time` in a dimension group because Looker will append each timeframe array unit to the end of the name.. `created_date` will become `created_date_date`
+
+## Explore Design Best Practices
+
+- don't join in extraneous views
+- use fields parameter to limit fields surfaced to the end user
+- comment out or delete extra auto-generated explores in the model file
+
+## Model Design Best Practices
+
+- join many to one from the most granular level for the best query performance
+- use the fewest number of explores possible
+- organize using `group_label` to help end user find the correct explore easily
+
+## Join Design Best Practices
+
+- use ${date_raw} when joining on a date
+- always define a relationship
+- always declare a primary key in the View file
+
+## Persistent Derived Table Usage Best Practices
+
+- choose the parameter `datagroup_trigger` over `persist_for` when you want to have data ready the first time someone runs an explore or on a schedule
+- evalute `datagroup_trigger` schedules such that tables are not building during business hours/peak usage. Trigger the tables late in the night or early in the morning when ETL is completed
+- always define indexes, distribution keys/sortkeys, and cluster keys/cpartition keys to optimize performance
+- indexes should generally be applied to primary keys and date or time columns
