@@ -117,6 +117,8 @@ dimension: days_since_signup_tier {
 - Looker can cast a date or timestamp into different forms of time
 - `dimension_group` can use the timeframes parameter to specifiy date and time parts options include `[raw, time, date, hour, hour_of_day, day_of_week, day_of_week_index, time_of_day, week, month_num, month, year, quarter, quareter_of_year ]`
 - each timeframe array item will create a new field which can be referenced by underscore`${dimensionGroupName_timeframeItem}`
+- timeframe.raw is not exposed to the user, and usually just used for modeling
+- For BigQuery, Do Not Use timeframe.time! use second instead. timeframe.time will get the most detailed time unit for some SQL dialects, but NOT For STANDARD SQL (bigQuery)!! Better to leave off time so the user is not confused, and use seconds as that's what it rounds up to anyway.
 
 ```
 // example data is providing epoch time integers
