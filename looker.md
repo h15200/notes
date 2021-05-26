@@ -447,6 +447,11 @@ Views can be extended using `extends: [view_to_extend]`
 - easier to maintain
 - easier to read and understand
 
+# Access Filter
+
+- all users have access to all explores, but individual rows are restricted based on rules in Users
+- defined in the model file, inside explore definition
+
 ## General Best Practices
 
 - use lowercase underscore casing
@@ -459,6 +464,8 @@ Views can be extended using `extends: [view_to_extend]`
 - don't join in extraneous views
 - use fields parameter to limit fields surfaced to the end user
 - comment out or delete extra auto-generated explores in the model file
+- if joining something that you just want to keep in the same field (the user doesn't care of displayName came from a join), use `view_label` and add that to the original explore name camel cased
+- if you are using an indirect join and want to hide the middle join, use join param `fields` with an empty [].
 
 ## Model Design Best Practices
 
