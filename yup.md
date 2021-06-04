@@ -22,21 +22,36 @@
 
 ## Conditional Validation
 
-### for 1 other field
+### for custom test on current field
+
+- .test() will take a test title, warning text, and a callback with a test. if the return value is `true`for that value, it will pass the validation error test. `false` will trigger an error
 
 ```
+ startTime: Yup.string()
+    .required("Required")
+    .test("Is not in past", "Time Starting must not be in the past", value => {
+      // for .test(), return true for desirable condition. (selected date is after Now)
+
+      return moment(value).unix() > moment().unix();
+    }),
+```
+
+### for making conditional Yup validations on 1 other field
+
+```
+
 const schema = Yup.object.shape({
 ...,
 basicCardTitle: Yup.mixed().when("visualStyleType", (visualStyleType, schema) => {
-    if (visualStyleType === RENDERABLE_VISUAL_STYLE_TYPE.BASIC_CARD) {
-      return schema.required("Required for Basic Card");
-      // this will chain to Yup.mixed() conditionally
-    }
+if (visualStyleType === RENDERABLE_VISUAL_STYLE_TYPE.BASIC_CARD) {
+return schema.required("Required for Basic Card");
+// this will chain to Yup.mixed() conditionally
+}
 
     return schema; // Yup.mixed() if not basicCard, no requirement
-  }),
-})
 
+}),
+})
 
 ```
 
@@ -44,13 +59,21 @@ basicCardTitle: Yup.mixed().when("visualStyleType", (visualStyleType, schema) =>
 
 - for a test with 2 individual fields, make a new validation field and expose it additional to the component. use the object.is construct
 
-```
-  timeStartIsBeforeTimeEnd: Yup.mixed().when(["startTime", "endTime"], {
-    is: (startTime, endTime) => {
-      return startTime && endTime && moment(startTime).unix() >= moment(endTime).unix();
-    },
-    then: Yup.mixed().required("Time Starting must be before Time Ending"),
-  }),
+- unlike test, the `is` callback should return true for th
 
-  // note how the syntax is slightly different. Instead of chaining, this is replacing the initial yup object in the <then> field
+```
+
+timeStartIsBeforeTimeEnd: Yup.mixed().when(["startTime", "endTime"], {
+is: (startTime, endTime) => {
+return startTime && endTime && moment(startTime).unix() >= moment(endTime).unix();
+},
+then: Yup.mixed().required("Time Starting must be before Time Ending"),
+}),
+
+// note how the syntax is slightly different. Instead of chaining, this is replacing the initial yup object in the <then> field
+
+```
+
+```
+
 ```
