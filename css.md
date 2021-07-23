@@ -648,6 +648,15 @@ overflow-x: scroll;
 Whitespace: no-wrap.
 ```
 
+## Text overflowing out of container
+
+- on the container, set these two props
+
+```
+overflow-x: hidden;
+text-overflow: ellipses;
+```
+
 ## mask - like a stencil kit
 
 As of 2020, use prefixes
