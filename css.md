@@ -648,6 +648,15 @@ overflow-x: scroll;
 Whitespace: no-wrap.
 ```
 
+## Text overflowing out of container
+
+- on the container, set these two props
+
+```
+overflow-x: hidden;
+text-overflow: ellipses;
+```
+
 ## mask - like a stencil kit
 
 As of 2020, use prefixes
@@ -957,3 +966,8 @@ nth-child(-n + 3) // will increment n from 0 going up until not possible
 
 div with borders without content and inline-block
 make top/bottom transparent and a third one not transparent
+
+- when you want words to break at words, but super long single strings to break and not overflow the container
+  `overflow-wrap: anywhere`
+
+using word-break does not work for both conditions for some reason.

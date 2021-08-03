@@ -369,3 +369,13 @@ module.exports = {
 ```
 
 Minify/Compress tool for jpgs so that load time is quicker.
+
+### Aiva devserver
+
+webpack v5
+
+- if the output has a publicPath, webpack will automatically read from it. do NOT add to devServer field
+- if using htmlPlugin, do NOT add anything in devServer unless you add a fileName in htmlPlugin. If so, add a devServer.index: "name of file"
+- use historyApi {
+  index: ${output.publicPath}
+  }

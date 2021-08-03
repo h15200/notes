@@ -278,3 +278,23 @@ put any logic to use that state outside the useEffect
 In class components, don't use this.setState inside the constructor as it might run BEFORE the state declaration itself.
 
 Put any state changes inside componentDidMount, or inside an event, as an event will always run after the DOM is rendered
+
+# HOOKS
+
+## useEffect
+
+- when fetching async, always subscribe and unsubscribe based on mount to avoid `can not set state on an unmounted component` error
+
+```
+  React.useEffect(() => {
+    let isSubscribed = true
+    fetchBananas().then( bananas => {
+      if (isSubscribed) {
+        setBananas(bananas)
+      }
+    })
+    return () => isSubscribed = false
+  }, []);
+```
+
+- Another reason for that same error can be duplicate useState calls by accident!
