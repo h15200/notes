@@ -15,7 +15,7 @@ name             notation         ex                                    speed
 Constant        `O(1)`            key look up                           FASTEST
 Logarithmic     `O(log n)`        BST
 Linear          `O(n)`            1 Level Looping
-Quasilinear     `O(n log n)       Good sort(merge)
+Quasilinear     `O(n log n)       Good sort(merge, quick, heap)
 Quadratic       `O(n2)`          Nested loop (selection sort)
 Exponential     `O(Cn)`          Recursive Backtracking: Subsets
 Factorial       `O(n!)`          Generating permutations                SLOWEST

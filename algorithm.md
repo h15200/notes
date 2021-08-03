@@ -1,5 +1,9 @@
 # Data Structures and Algorithm
 
+- generally, array inputs will result in pointers and/or a map table
+- while loops with pointers are safest when it's checked against being out-of-bounds
+  - ex. leftPointers should stop when they hit array.length, rightPointers when they hit index -1
+
 LATEST stupid discovery
 
 - When using recursion, make sure to remind yourself that primitive values are passed in by VALUE so does not update through all the recursion stacks, but arrays and objects WILL update. This means primitive answers like a number or boolean will usually use closure and need a 2nd IIFE to generate something
