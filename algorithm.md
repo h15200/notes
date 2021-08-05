@@ -12,6 +12,36 @@ What is a data structure and algorithm and how do they relate?
 An algorithm is a set of instructions to solve a problem with logic.
 Data structure is a way to organize data, utilized inside algos.
 
+# basic operation costs
+
+## Arrays
+
+Time complexities:
+
+Init => O(n)
+Get => O(1)
+Set => O(1)
+Delete => O(n)
+Traverse => O(n) ex. loop
+Copy => O(n)
+Insert at end (appending) => O(n) for static arrays. O(1) for dynamic arrays (tho technically it might need to copy and replicate, in which case it's O(n))
+Pop (remove last ele) => O(1)
+
+any insert not at the end / any pop not at the end => O(n)
+
+## Linked Lists
+
+Getting, Setting in LLs aren't efficient since the idea of indices isn't a ting
+Init => O(n)
+Get => O(i) i being the index
+Set => O(i)
+Copy => O(n)
+Traverse => O(n)
+
+Insert at beginning => O(1) Faster than arrays because no need to re-index
+Insert anywhere else => O(i) for traversal, then O(1) for insertion itself.
+Delete => O(i) for finding the node, but O(1) for deleting
+
 ## Algorithmic thinking, Peak Finding
 
 ## solve 24 solve24('1234') // "(1+2+3)\*4"
