@@ -42,6 +42,63 @@ Insert at beginning => O(1) Faster than arrays because no need to re-index
 Insert anywhere else => O(i) for traversal, then O(1) for insertion itself.
 Delete => O(i) for finding the node, but O(1) for deleting
 
+## Hash Tables
+
+A key value pair. Uses a dynamic array of linked lists for collision:
+
+example -
+
+```
+[
+  0: (value1, key1) => null // no colliosion
+  1: (value2, key2) => (value3, key3) // collision dealt by linked list
+]
+```
+
+Set => O(1)
+Find (if key is known) => O(1)
+Delete => O(1)
+
+if it's an exceptionally bad hashing algorithm, it will be O(n) because it'll just have one bucket with a long linked-list.
+
+## Stacks
+
+Insert / Delete is O(1) ST
+
+basically a dynamic array that only adds/deletes at the end of the array with pop() and push()
+
+## Queues
+
+Insert / Delete is O(1) ST
+
+Implemented with a linked list so enqueue will add a node and move the head, dequeue will remove tail and move the tail back one node
+
+In an algo problem that uses a queue, you can probably just do `const queue = []` and use shift() and unshift() as shorthand
+
+## Strings
+
+Stored as integars via ASCII
+
+traverse => O(n)
+copy => O(n)
+get => (1)
+insert Immutable in js, so impossible. Must copy first, then append
+
+string += "3" => this is O(n), NOT O(1)
+so if you have to add something more than 2 times, it is actually better to .split(), make a bunch of constand mutations, and .join()
+
+## Graphs
+
+Vertices (Nodes)
+Edges - the path between
+Direction - if directed, it's one way. If undirected, it goes both ways
+Cycle - 3+ vertices that can be revisited
+Connected / Unconnected - is a set of verties visitable
+
+Creation - Space O(v + e) where v is number of vertices and e is number of edges
+Traversal - O(v + e) for both breadth-first and depth-first
+Insertion/Deletion is specific to the circumstance and there is no general blanket T or S complexity value
+
 ## Algorithmic thinking, Peak Finding
 
 ## solve 24 solve24('1234') // "(1+2+3)\*4"
