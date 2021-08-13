@@ -159,6 +159,8 @@ clients => path based LB => weighted RR LB x 2 => servers
 
 ### Hashing
 
+Concept of an algorithm that takes input and returns an item in an alloted number of buckets.
+
 Hashing becomes VERY important if your system uses any kind of in-memory server side caching because your client needs to request to the SAME server every time to avoid cache misses.
 
 Anything that makes in data, and returns an integer that points to an index of a sample size. IP address, username, any data can be hashed.
@@ -232,7 +234,7 @@ if it's stored in memory, a server outage will not keep that info
 
 solution: store the queue in a database, each server sends a NOTIFIER a heartbeat every 10 seconds. If a server dies, the notifier consults the db and reroutes unfinished tasks to another server.
 
-### Databases
+### Databases (relational, non-relational)
 
 Reasons for:
 Relational - ACID complicance. data is structured and unchanging
@@ -241,6 +243,26 @@ Non-Relational - large volumes of data that require little to no structure, make
 A relational database that supports SQL (most of them) has the power of running SQL directly without having to load the data in memory.
 
 If you want to use a script (js, python) on data, you have to first put that in memory which is probably impossible with large dbs
+
+### Other specialized Storage Paradigms
+
+- Blob Store is used to store an arbitrary unstructured source of data (video, image, audio, binary). A relational db can't store blobs. Usually functions like a key-value store, but a blob store is optimized for big unstructured data. A key-value store is optimized for simple value. Examples - `GCS (google cloud storage)` `S3 (amazon)`
+
+- Time Series - used for monitoring by storing timestamps. Can be set so certain events can trigger read/write. example `InfluxDb`, `Prometheus`
+
+- Graph db - SQL and no SQL dbs rely on a table format. But if the data has a ton of relationships with individual data points, a graph may be a better representation. Social Networks are a good use case. Ex - `Neo4j`. The language used to parse graph databases is `cypher`. Cipher queries make finding graph connections much easier
+
+- Spatial db optimized for spatial data like locations on a map. Queries based on locations can not be optimized based on column indexing like with regular data. Doing queries like "locations in the vicinity of x" is done much better using tree data structures. Usually uses a `quad tree` algorithm
+
+quad trees are trees that have 0 or 4 children used to do location searches used to index two-dimensional spatial data (like longitude, latitude)
+
+```
+         (node)
+            |
+(node) (node) (node) (node)
+ null    nulll  |      null
+        4 more nodes
+```
 
 #### Optimizing queries
 
@@ -268,3 +290,7 @@ Vertical partitioning separates columns (categories)
 - joins can be expensive over different shards
 
 #### Redundancy and Replication - remove single points of failure by having replicas or backups of a db or server.
+
+```
+
+```
