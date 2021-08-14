@@ -272,25 +272,55 @@ background - a sorted record can be searched with binary log2 N time, but an uns
 
 Indexing will create another data structure which holds the field value and a pointer to the record, allowing binary searches to be performed. Like a table of contents.
 
-Doewside is that these index structures will require more disk space, so you are sacrificing space for time.
+Downside is that these index structures will require more disk space, so you are sacrificing space for time.
 
 Also this will yield significantly faster read time, but slightly slower write time
 
+### database failures
+
+#### Replication - preventing an outage with
+
+- prevent a single point of failure by replicating a db to a backup in case the main fails.
+- the replica must be `synced` have the exact info the main db has. As such, if any write function fails to the Replica, it should NOT be done to the main at all
+  - this is not the case with most regional databases. Ex. if a facebook db server in north america is updated, then a db in asia doesn't need to have Immediate sync. It can update async such that a fb user in Asia receives an updated feed slightly after North American users.
+  - this strategy of NOT syncing regional dbs will give you better latency to avoid the round trip syncing immediately.
+- if set up correctly, a main db failure will seamlessly be taken over by the replica until the main is back online again. once it's back, the main will resume as the primary db
+
 #### Sharding - Data partitioning over multiple databases
 
-Break up a big db into many smaller parts.
+- if scaling horizontally (adding machines) with servers, all you need is to copy the business logic. sometimes if you have a in-memory key-value storage like Redis for caching, you need to worry about hash strategies (use `consistent hashing` or `rendezvous hashing`). with dbs, there's an extra layer as it carries data
 
-Horizontal partitioning separates rows (users a-j, j-z)
+- it's not efficient for all dbs to have the same data. Better to break up a big db into many smaller parts.
+- this logic is usually written in a reverse-proxy (on behalf of the db) so that certain data goes to a particular shard
 
-Vertical partitioning separates columns (categories)
+`Partitioning` or `sharding` will decrease latency, increase throughput and can be done in 2 ways:
 
-- avoids failures
-  CONS
-- can be tricky to determine HOW to shard efficiently without slowing down queries.
-- joins can be expensive over different shards
+- Horizontal partitioning separates (users a-j, j-z) into smaller shards (or partitions) of the same columns
 
-#### Redundancy and Replication - remove single points of failure by having replicas or backups of a db or server.
+- Vertical partitioning separates columns (categories) into shards (or partitions) for ex when a column is rarely used, it is stored elsewhere.
 
-```
+- when sharding, just like in servers and load balancers, must take into account hot spots and aim for an even distribution by using a good hashing function that gurentees uniformity.
 
-```
+- Pros and Cons
+
+  - Pros: avoids failures
+  - Cons: Must take into account hot spots (if partitioning by region, are certain regions hot spots?)
+    can be hard to determine HOW to shard efficiently
+    joins can be expensive over different shareds
+
+- different for SQL vs NO-SQL dbs.
+
+### Leader Election
+
+- for example if you have a subscription service like Netflix, when using a 3rd party service like paypal to process payments, you don't want that 3rd party service to have direct access to your UsersDb.
+
+- Usually there is a service that sits between your db and the 3rd party service that has access to your db and checks the status of `payments` or something, and communicates with the payment service. When you have important logic like payment, you want passive redundancies of this middle service so that only one "leader" takes care of the logic and the others are on standby.
+
+- The logic of multiple machines agreeing on a leader can be very complicated. The act of sharing this state of knowing who the leader is done with a `consensus algorithm`, specifically like `Paxos` & `Raft`
+
+- example of apps that use a consensus algo under the hood - `zookeeper`, `Etcd` (EtsyDee) are both strongly consistent and highly available key-value storeage that's often used to implement leader election
+
+### Consistency, Availability
+
+- availability is measured by `9s`. Five 9s means there are outages of seconds over a year
+- Strong Consistency means data is rarely stale. Eventual consistency means the data will sync over a period of time (seconds or minutes) when the network traffic is low.
