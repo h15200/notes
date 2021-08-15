@@ -324,3 +324,70 @@ Also this will yield significantly faster read time, but slightly slower write t
 
 - availability is measured by `9s`. Five 9s means there are outages of seconds over a year
 - Strong Consistency means data is rarely stale. Eventual consistency means the data will sync over a period of time (seconds or minutes) when the network traffic is low.
+
+### Peer-to-peer networks
+
+- used often in file distribution systems
+
+- when big data needs to be transferred to many clients or peers
+
+```
+         one machine with stuff
+                  |
+      1,000 peers who needs the stuff
+```
+
+- transferring the big chunk to each peer will take a very long time
+- sharding the info into several servers will divide the time by the number of servers, but it's still extra resources
+
+- Solution: Keep using that one machine, but divide the data into 1,000 pieces and send those 1/1000 data to each peer. Then, each peer will share with each other in parallel (ex. peer 1 <-> peer 2 while peer3 <-> peer4 etc.. )
+
+- implementation: Each peer needs to know the order of what peer to talk to via `gossip protocol` or `epidemic protocol` where the peers talk amongst themselves to figure out what peers to talk to each other based on current data fragments. Under the hood thre is a distributed hash table that tracks the progress of each peer and its data fragment.
+
+- ex. `Kraken` used by uber
+
+### Polling and Streaming
+
+- when a client needs to request data that is continuously being updated like the weather or the status or something, the standard request model is not optimal
+- to see regularly updated pieces of data, `polling` or `streaming` can be used
+
+- Polling - the client simply sends a request based on a set interval. ex. client checks the status every 5 seconds. This could work for something that has regular changes, but not great for specific event change updates like a text message as data will be stale between the interval `n`. This can be mitigated by lowering the poll interval but it comes with extra load on the server.
+
+- Streaming - connects the client and server with a socket for a continuous link. The client listens to the server for any data that it may push. This works better for something like chat apps that only pushes data when a new text is pushed. In this case, the server is not looking for a request but must proactively push data to the client.
+
+- One is not necessarily better than the other. If the data needs instantaneous updating, use streaming. If the data only needs to be updated at an interval, use polling. Implmentation of polling is a lot easier
+
+- websockets use TCP connections
+
+- both of these concepts work in a simple setup, but a publish/subscribe pattern will be needed with persistent data in a large scale distributed system
+
+### PubSub Model
+
+- very similar to message queues, except the message can be received by MULTIPLE subscribers
+
+- an expention of the concept of streaming. Streaming works with a simple connection, but what if we need a large scale distributed system (micro services system) where the data message needs to be persisted in the event of outages.
+
+- a pubsub model consists of 4 entities
+
+  - Publisher - servers that emit messages to topics
+  - Topic - where the messages are stored based on channels of specific information
+  - Subscriber - listens to specific topics for messages
+  - Message - the set of operations transferred from publishers -> topics which will also go from topics -> subscribers
+
+- unlike the streaming websocket model, the publishers and subscribers don't know and don't care about each other. The topic is the storage of the operations and handles receiving data from publisher and sending data to subscribers
+
+- PubSub models will often come with powerful guarantees like `at-least-once-delivery`, `persistent storage`, `ordering` of messages. Note that it's impossible to guarantee `ONLY-once-delivery` and the same message could be sent multiple times if a connection is dropped because of the way message receipts work. ex. - topic 1 sends a message to subscriber1. subscriber1 gets the data but the network is disconnected right before it sends a "received" receipt, so when the network is back, it receives message1 again as a duplicate
+
+- Keeping the above concept of the possibility of getting the same operation message multiple times, it's important to set up PubSub models with `Idempotent Operations` where the outcome is the same whether an operation is done once or multiple times.
+
+- Popular solutions `Apache Kafka`, `Google Cloud Pub/Sub`
+
+### Rate limiting
+
+- DoS (Denial of Service) attacks involve spamming a server with requests to damage or take down the service.
+
+- this can be thwarted by Rate Limiting which returns an error code `429` "Too many requests" on a request based on parameters like ip address / user, number of requests per minute, region
+
+- DDoS (DISTRIBUTED DoS) attacks are done from multiple client sources, and is harder to prevent with a smiple rate limiting on ip address / user.
+
+- Implementation can be done with a key-value in memory store like `redis`. The server gets a request, then asks redis "hey are we doing ok with rate limiting?" before responding

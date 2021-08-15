@@ -38,7 +38,9 @@ i8View.byteLength // returns 6
 // but you can't use some methods like .pop, .push, Array.isArray().
 ```
 
-## Sets
+## Sets - subset of hashtable
+
+- since it's implmented with a hashtable, get, set, add operations are all O(1)
 
 ES6 object object is like an array but it can't have duplicate values.
 It can have different types of data as long as they are unique.
@@ -53,7 +55,7 @@ and a .add method to add items.
 `set1.add(5)`
 .add will do nothing if the item you're trying to add is already in the set
 
-.size method does <strong>NOT</strong> use parens similar to length
+.size method is a getter and does <strong>NOT</strong> use parens. follows similar syntax to array.length
 `set1.size`  
 note that .size will not count undefined or null
 NO length, so no forloops based on length
