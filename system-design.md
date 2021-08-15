@@ -128,7 +128,7 @@ If there are only 2 microservices, it's a sign you should just use a monlithic s
 
 - Reverse proxy also sits in the SAME place as a forward proxy, in between the client and server but on behalf of the SERVER. It can log, cache, load balance or do anything as an additional step before the original client request reaches the server.
 
-ex- Nginx
+ex- `Nginx` is a popular reverse proxy used for load balancing
 
 ### Load balancers
 
@@ -391,3 +391,87 @@ Also this will yield significantly faster read time, but slightly slower write t
 - DDoS (DISTRIBUTED DoS) attacks are done from multiple client sources, and is harder to prevent with a smiple rate limiting on ip address / user.
 
 - Implementation can be done with a key-value in memory store like `redis`. The server gets a request, then asks redis "hey are we doing ok with rate limiting?" before responding
+
+### MapReduce
+
+- processing data set over multiple machines (as a result of horizontal scaling) is challenging
+- a framework that allows processing of very large data in a distributed system quickly
+  2 main steps:
+
+map - take the dataset and map to key-value pairs, then shuffle them to organize these pairs such that the pairs of the same key are routed to the same machine
+
+reduce - reduce the shuffled key-value pair and transform them into more meaningful data.
+
+- this allows for a `distributed file system`, an abstraction over a cluster of machines that allows them to act like one large file system. implementations incude `Google File System` and `Hadoop Distributed File System`. Files are split into chunks of a certain moderate size < Gb and those chunks are sharded across a cluster of machines.
+
+- MapReduce algos have fault tolerance by using Idempotent Operations in both the Map and Reduce steps to shield against outages
+
+### Security http and https
+
+- an IP (internet protocol) packet is the base level of network communication
+- TCP (transmission control protocol) is a protocol that sits on top of IP to ensure delivery in order (early email would send fragmented) by establishing a handshake and keeping the connection open. Websockets use TCP
+- Http (hyper text transfer protocol) sits on top of TCP and has additional info with a Head and Body
+
+Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
+
+- `SSL` (secure sockets layer) is the older framework that http can sit on top of to ensure a secure connection. The modern version of this is `TLS` (transport layer security) and http that sits on top of `TLS` is called `https`
+
+- While `SSL` is not used often anymore, the `SSL certificate` is still a part of the TLS flow.
+
+- a `https` (s stands for security) protocol sits on top of`tls`, which means the protocol will encrypt the message to avoid `man-in-the middle` attacks using either a `symmetric` (1 key) or `asymmetric` (2 keys) encryption along with an `SSL` certificate. Tls handshakes are similar to tcp handshakes, but it has a strict encryption / decryption step.
+
+- `AES` (advanced encryption standard) is a widely used symmetric key encryption algorithm and is considered the gold standard of encryption.
+
+### Api Design
+
+- distinct from systems design. it is not a subset of system design, but a sibling of it
+- apis are important for all companies, but some like Stripe will have an entire business which is selling access to one api.
+- designing api is important as it becomes extremely hard to edit / remove an api once it is used by services and users.
+- large companies will require a rigorous review process before creating a new api.
+
+The final product of "design Stripe Api" should look like a proto file like this:
+
+```
+# Entity Definitions:
+
+## User
+- id: uuid
+- name: string
+- email: string
+- card: Card[]
+- charge: Charge[]
+
+## Card
+- id: uuid
+- customer_id: uuid (User.id)
+- number: string
+
+## Charge
+- id: uuid
+- customer_id: uuid (User.id)
+- amount: number
+- currency: enum
+- status: enum ["cleared", "pending", "failed"]
+
+# APIs
+
+## User
+CreateUser(user: User) returns User
+GetSingleUser(uuid) returns User
+ListUsers(uuid[]) returns User[]
+UpdateUser(uuid, updatedUser:User) returns User
+DeleteUser(uuid) returns deleted User
+
+## Card
+Create
+Get
+Update
+Delete
+
+## Charge
+Create
+Get
+Update
+
+
+```
