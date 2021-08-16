@@ -9,6 +9,25 @@ Can be broken down to 3 main categories.
 2. sketching
 3. identifying bottlenecks
 
+## fact sheet
+
+Reading 1MB fastest to slowest:
+
+- RAM (.25ms)
+- SSD (1ms)
+- Network (10ms)
+- HDD (20ms)
+- Inter-continental round trip (150ms)
+
+so sending 1GB over the network would take 10 seconds
+
+9's outage time per year
+
+- two 9s: 90 hours
+- three 9s: 9 hours
+- four 9s: 1 hour
+- five 9s: 5 minutes
+
 ## Scoping the problem
 
 1. Understand the question
@@ -381,6 +400,10 @@ Also this will yield significantly faster read time, but slightly slower write t
 - Keeping the above concept of the possibility of getting the same operation message multiple times, it's important to set up PubSub models with `Idempotent Operations` where the outcome is the same whether an operation is done once or multiple times.
 
 - Popular solutions `Apache Kafka`, `Google Cloud Pub/Sub`
+
+### CDN or CDA
+
+- content delivery network is a group of servers around the world that can lower latency, add redundancies and fault-tolerence when deliverying static data
 
 ### Rate limiting
 
