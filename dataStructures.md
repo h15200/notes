@@ -6,6 +6,18 @@ signed char, unsigned char, int, long int, unsigned int, float, long float, etc.
 
 When an array is declared with 4 elements, it creates 4 consecutive bytes in memory. When an additional item is needed, you have to reassign a brand new array in a different, 5 consecutive byte location in memory. In JS, this is all happening under the hood when you push a new element to an existing array.
 
+## strings
+
+- `ASCII` (either 128 for standard, or 256 for extended) which is mapped to an int and only includes english alphabet and special chars. Uses 1 byte (8 bits) to store
+
+- `Unicode` is a superset of ASCII, so the first 128 chars correspond one-to-one with ASCII.
+  - UTF (8, 16, 32) refers to Unicode Encoding.
+    - UTF-8 will use 1 - 4 bytes
+    - UTF-16 2 - 4 bytes
+    - UTF-32 will always use 4 bytes
+  - The vast majority uses Utf-8, meaning it uses 8 bits (1 bytes) for encoding. about 97% of chars used on the web are utf-8 encoded.
+  - utf-8 encoding is compatible with ASCII, so ascii chars are technically also utf-8.
+
 ## TYPED ARRAYS - You can declare arrays with exact bytes like in C
 
 Int16Array needs 2 bytes (16 bits) of memory PER item.

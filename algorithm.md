@@ -24,7 +24,7 @@ Set => O(1)
 Delete => O(n)
 Traverse => O(n) ex. loop
 Copy => O(n)
-Insert at end (appending) => O(n) for static arrays. O(1) for dynamic arrays (tho technically it might need to copy and replicate, in which case it's O(n))
+Insert at end (appending) => O(n) for static arrays. O(1) even for dynamic arrays as the frequency amortized is still O(1) even though re-allocation is technically O(n)
 Pop (remove last ele) => O(1)
 
 any insert not at the end / any pop not at the end => O(n)
