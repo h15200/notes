@@ -41,4 +41,54 @@ ex. 100000101011111010
   - `1` = `0001`
 - concat those to make `1110100001`
 
+## js bit manipulation
+
+- JS convert all operands to 32 bit signed integers, meaning the 32 bit (a binary with 32 digits or bits) will be negative after a certain point.
+- as the binary gets bigger, it goes 0 => biggest postivie => biggest negative => smallest negative
+
+0 => 0
+the max is 2,147,483,647 (011111111111111111111111111111110) up to 31st bit
+THE min is -2,147,483,647 (10000000000000000000000000000000) as you hit the last bit, turn sign from + to -
+-1 => (11111111111111111111111111111111) all bits flipped "on" is -1
+
+So specifically in terms of javascript bitwise operations, converting from decimal => binary will include negative numbers.
+To do this:
+
+- decimal => binary conversion is exactly the same unless the 32nd bit exists as `1`
+- on the 32nd bit (the last digit on the left), instead of increasing by another multiple of 2 (4 billion and chnage), just flip the previous bit (2 billion) to NEGATIVE 2 billion something
+- if the 32nd bit exists, all other subsequent bits will be +(4 billion ish / 2)
+
 ## Bitwise Operators
+
+- OR `|` take two binaries, and all bits that have 1 OR 2 ones turn into one.
+  ex. 25 | 4
+  first convert to binaries and put them vertically
+  compare each bit (digit) and if at least one of the two is a `1`, the new bit is also 1
+  11001 |
+  00100
+  11101 = 29
+- AND `&` if both bits are 1, then it's 1. otherwise 0
+  ex. 25 & 4
+  11001 &
+  00100
+  00000 = 0
+- XOR `^` if only ONE bit is 1 and the other is 0, then 1
+  ex. 25 ^ 21
+  11001 ^
+  10101
+  01100 = 12
+- NOT `~` inverts one binary based on its bits. all 32 bits are represented in this case (trailing 0s)
+  because js uses 32 signed int, it will always be -(decimal number + 1)
+  ex ~5 = -6
+- Zero fill left shift `<< ${n}` add zeros on the left most bit, let left bit(s) fall off
+  ex 5 << 2 = 20
+  101 add two zeros on right
+  10100 = 20
+- signed right shift `>> ${n}` adds the same bit as the current left most bit to the left, let the right bit(s) fall off
+  note! This will only be significant if the 32nd power bit is a `1`. if not, then it's the same as the next operation, `>>>` as it will just add zeros
+  ex. -170 >> 2 = -43
+  1000000000000000000000000000000000 (add `1` x 2 to the left digit, two `0`s fall off from the right) = 11100000000000000000000000000000 = -43
+- zero fill right shift `>>> ${N}` adds zero on left, right falls off
+  ex. -170 >>> 31 = 1
+  10000000000000000000000000000000
+  = 000...etc1 = 01 = 1
