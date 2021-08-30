@@ -51,12 +51,16 @@ the max is 2,147,483,647 (011111111111111111111111111111110) up to 31st bit
 THE min is -2,147,483,647 (10000000000000000000000000000000) as you hit the last bit, turn sign from + to -
 -1 => (11111111111111111111111111111111) all bits flipped "on" is -1
 
-So specifically in terms of javascript bitwise operations, converting from decimal => binary will include negative numbers.
+### JS Number type and binaries
+
+specifically in terms of javascript arithmetic operations, converting from decimal => binary will include negative numbers.
 To do this:
 
 - decimal => binary conversion is exactly the same unless the 32nd bit exists as `1`
 - on the 32nd bit (the last digit on the left), instead of increasing by another multiple of 2 (4 billion and chnage), just flip the previous bit (2 billion) to NEGATIVE 2 billion something
 - if the 32nd bit exists, all other subsequent bits will be +(4 billion ish / 2)
+
+ultimately this doensn't matter for vector arrays if you don't have to print out a given int
 
 ## Bitwise Operators
 
@@ -92,3 +96,94 @@ To do this:
   ex. -170 >>> 31 = 1
   10000000000000000000000000000000
   = 000...etc1 = 01 = 1
+
+## common bit manipulation usage
+
+- making a binary with only one `1` at a specific bit, `n`
+  `1 << n`  
+  1 << 0 = 0001 // set only 0th bit to 1
+  1 << 1 = 0010 // set only 1st bit to 1
+  1 << 2 = 0100
+  helpful in doing other methods
+
+- the inverse of the above, a binary with only one `0` is helpful as well
+
+  - ex. 4th bit is 0, all other bits are 1 `~(1 << 4)` = `~(010000)` = `101111`
+
+- SET a bit
+
+  - use the tool above, `1 << n` and combine with 0 OR
+    `0 | 1 << 2` - logic. find the right side of `|` first, which is 0001 => 0010, then OR with 0, which turns ON the 3rd bit from the right only
+    0000 => 0100
+
+- GET (find out in a given number if a specific bit is "on", or `1`)
+  again, using `1 << n` this time with `&`
+
+  - given number num, does the 2nd bit exist?
+    first build the comporator, which is `1 << 2` (0100) on the target bit
+    then compare to given num with AND operator
+    `num & (1 << 2)`
+    since the right side will be zeroes except ONE bit, (explicitly, 0000000000etc...0000100), then the return will be zero UNLESS that target bit is `1` for both, meaning
+    if (num & (1 << 2)) is not 0, then the bit exists. If zero, then no
+
+- DELETE
+  - clearing all bits = looking at `&`, we see that setting any number & 0 = 0
+  - setting any number `n` & 1111x32, also known as `~0` or the decimal value `-1` in js will just return the number `n` because
+    - n 11001
+    - ~0 11111
+    - returns 11001 (same as original)
+    - using the `~`, we can build a binary with exactly 1 `0` and `AND` it to a number to reset specific bit
+    - ex. for given number n, clear just the 3rd bit.
+      - make bit that looks like `1111111etc..0111` = `~(1 << 3)`
+      - `AND` it with `n & (~(1 << 3))`
+
+## bit vector (bit array)
+
+- when you need to make a hash map or array of booleans say, for some string algo, you usually do something like:
+  {a: true, b: false, c: true} (for arrays, [true, false, false])
+  These will take up at least 1 byte (8 bits) per bucket
+- if the total number of indicies are less or equal to 32, you can use a single variable as a bit vector and use bit manipulation to save space O(N) => O(1))
+- simply `let bitVector = 0` and use the getter, setter, and clear with bit manipulation
+
+## example algos
+
+- given an array of numbers (can assume there is no overflow of 2.4billion +) that are all duplicated except one, return the unique number [3,3,5,5,6,99,99]
+
+  - since anyNum `XOR` anyNum = 0, you can initialize a bitArray to 0 and simply keep XORing
+
+  ```
+    let bitArray = 0;
+    for (let i = 0; i < arr.length, i++) {
+      bitArray = bitArray ^ array[i] (or shorthand ^=)
+    }
+    return bitArray
+  ```
+
+- given a string (not cased), return true any chars are repeated more than once
+  'abcdeff' -> true
+  'bde' => false
+
+  - this can be done with a vectorArray as the alphabet has less than 32 combintions
+
+  ```
+  // input string
+  let bitArray = 0;
+  for (let i = 0; i < string.length; i++) {
+    // make 0 index
+    const bitIndex = string.charCodeAt(i) - 'a'.charCodeAt(0); // a = 0, b = 1 etc..
+
+    // add to bitArray using SET and GET bit methods. a = 0th bit, b = 1st bit etc..
+
+    // if bit already exists, return true
+    // if not, set the bit
+
+    if (bitIndex & (1 << bitIndex) != 0) {
+      return true;
+    }
+    bitIndex |= (1 << bitIndex)
+
+  }
+  return false;
+
+
+  ```
