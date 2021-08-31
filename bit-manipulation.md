@@ -127,8 +127,10 @@ ultimately this doensn't matter for vector arrays if you don't have to print out
     if (num & (1 << 2)) is not 0, then the bit exists. If zero, then no
 
 - DELETE
+
   - clearing all bits = looking at `&`, we see that setting any number & 0 = 0
   - setting any number `n` & 1111x32, also known as `~0` or the decimal value `-1` in js will just return the number `n` because
+
     - n 11001
     - ~0 11111
     - returns 11001 (same as original)
@@ -136,6 +138,12 @@ ultimately this doensn't matter for vector arrays if you don't have to print out
     - ex. for given number n, clear just the 3rd bit.
       - make bit that looks like `1111111etc..0111` = `~(1 << 3)`
       - `AND` it with `n & (~(1 << 3))`
+
+  - another good tool is the abiity to check if at MOST 1 bit is `1` and rest are 0
+    - take a random binary, `0001000`
+    - substract 1 `0001000 - 1` = `0000111` (all bits to the right flip to 1)
+    - those two will NEVER coincide if there were only 1 bit to begin with `0001000` & `0000111` = 0
+    - so if num & (num - 1) === 0, then num has only 1 bit. very useful for string algos with palindromes in conjuction with XOR
 
 ## bit vector (bit array)
 
