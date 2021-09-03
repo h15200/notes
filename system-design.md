@@ -237,15 +237,13 @@ solution:
 
 ### Message Queue / Brokers
 
-a COMBINATION of services that include having a NOTIFIER that keeps track of which servers are healthy (heartbeat sent to notifier)
-
-The notifier also has access to a db that keeps a queue of asynchronous tasks
-
-queues are used to effectively manage requests in a large-scale distributed system to allow us to decouple our processes and distribute/throttle processing load.
-
-The notifier also acts as a load balancer to distribute requests.
-
-ALL OF THESE services are handled by a message queue.
+- very similar to load balancing (with health server heartbeat checks) but the main difference being message queues are ASYNCHRONOUS for time consuming tasks and load balancing is SYNCHRONOUS
+- a COMBINATION of services that include having a NOTIFIER that keeps track of which servers are healthy (heartbeat sent to notifier)
+- The notifier also has access to a db that keeps a queue of asynchronous tasks to persist tasks
+- queues are used to effectively manage requests in a large-scale distributed system to allow us to decouple our processes and distribute/throttle processing load.
+- because it's async, it frees up the requester from the process
+- The notifier also acts as a load balancer to distribute requests.
+- ex. `RabbitMQ`
 
 #### Methods of storing message queue
 
