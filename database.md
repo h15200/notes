@@ -143,3 +143,14 @@ model Houses id, name, user_id (which equals the Users id)
 The id is the primary key for Users
 The id is the primary key for Houses
 The user_id is the FOREIGN key for Houses that links to Users.
+
+## optimizing
+
+### Indexing
+
+- index on a field to speed up READ process
+- often an easier solution than sharding, so look at this first
+
+### Sharding
+
+- A SINGLE database can be sharded to multiple servers to distribute load

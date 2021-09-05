@@ -263,7 +263,7 @@ If you want to use a script (js, python) on data, you have to first put that in 
 
 ### Other specialized Storage Paradigms
 
-- Blob Store is used to store an arbitrary unstructured source of data (video, image, audio, binary). A relational db can't store blobs. Usually functions like a key-value store, but a blob store is optimized for big unstructured data. A key-value store is optimized for simple value. Examples - `GCS (google cloud storage)` `S3 (amazon)`
+- BLOB (Binary Large Object) Store is used to store an arbitrary unstructured source of data (video, image, audio, binary). A relational db can't store blobs. Usually functions like a key-value store, but a blob store is optimized for big unstructured data. A key-value store is optimized for simple value. Examples - `GCS (google cloud storage)` `S3 (amazon)`
 
 - Time Series - used for monitoring by storing timestamps. Can be set so certain events can trigger read/write. example `InfluxDb`, `Prometheus`
 
@@ -378,6 +378,8 @@ Also this will yield significantly faster read time, but slightly slower write t
 
 - both of these concepts work in a simple setup, but a publish/subscribe pattern will be needed with persistent data in a large scale distributed system
 
+- XMPP is a peer-to-peer protocol unlike the usual client-server model. It can be used for chat like websockets. Websockets are faster but less secure
+
 ### PubSub Model
 
 - very similar to message queues, except the message can be received by MULTIPLE subscribers
@@ -442,6 +444,22 @@ Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
 - a `https` (s stands for security) protocol sits on top of`tls`, which means the protocol will encrypt the message to avoid `man-in-the middle` attacks using either a `symmetric` (1 key) or `asymmetric` (2 keys) encryption along with an `SSL` certificate. Tls handshakes are similar to tcp handshakes, but it has a strict encryption / decryption step.
 
 - `AES` (advanced encryption standard) is a widely used symmetric key encryption algorithm and is considered the gold standard of encryption.
+
+### Common points
+
+- storing static data
+
+if the data is small (5 pictures for a dating site), then you have the choice of storing in a Distributed File System (pics are saved to machines directly) where the pros are faster, cheaper, easier to implement. Cons are not secure or consistent
+
+a blog store like S3 is NOT ACID compliant, but it's more secure and persistent and can store bigger data.
+
+If the static data is large (songs, videos) or is sensitive, then a blob store is probably better
+
+Both distributed file systems and blob storage will be governed by a service that has its own table with userId, imageId, and a reference to the DFS/blob table with an image URL.
+
+- auth / gateway service
+
+in most systems with a user that requires a profile via email/password, always make the point to send that info as a hashed token (instead of the password itself) and that the client will always connect to gateway service that takes care of auth. If authenticated, the gateway will then forward the request to the correct micro service. Then it will also forward the response back to the client.
 
 ### Api Design
 

@@ -159,9 +159,11 @@ The next element of a node is initialized to null until it's set.
 
 The first item is called the head
 
-Implementation - to add a new node, you have to recursively look for a node where the next value is null and assign the new node to that. You can't use indexes, you must always start at the head and continue calling next until the next value is 'null', which means it's the end of the linked list
+Implementation - to add a new node, you can interatively look for a node where the next value is null and assign the new node to that. You can't use indexes, you must always start at the head and continue calling next until the next value is 'null', which means it's the end of the linked list
 
 to remove an element, you have to start at the head, and rather than deleting that node, you simply link the previous node to the node 2 links in front and exclude the current.
+
+- common algo tool. Use recursion to count the size (go to end, return -1 or 0, then add 1). As a side effect of that function, return or delete the node
 
 ```
 function LinkedList() {
