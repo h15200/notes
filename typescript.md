@@ -3,7 +3,22 @@
 Interface - a type for objects
 Type Guard - for multiple types, remind ts by writing if type of this value is something, then this
 
-generics - `<T>` - args for classes and class methods
+generics - `<T>` to declare unknown type T that can be implemented by the caller
+
+ex
+
+```
+// input is an unknown type at function author time.
+
+function print<T>(input: T): void {
+  console.log(input);
+}
+
+// the caller of the func must specificy the type
+print<number>(4);
+```
+
+args for classes and class methods
 can be extended from an interface by `<T extends interfaceName>`
 `<K extends keyof T>` - any of the keys of T
 
@@ -1027,7 +1042,7 @@ return this.collection[index];
 
 const test = new ArrayOfAnything<boolean>([true, false, false]);
 
-// however, type inference will kick in so you don't even need to specify <> when calling an intance
+// however, type inference will kick in so you don't even need to specify <> when calling an instance
 
 // this is ok
 const test = new ArrayofAnything([true,false,false])
@@ -1065,7 +1080,7 @@ console.log(arr[0]\_)
 ## Generic Contraints in functions
 
 Sometimes, you need something specific from a generic for future use, like a method on that.
-To do that, you must put a contrainst on the generic with an interface and extending.
+To do that, you must put a contraint on the generic with an interface and extending.
 
 ```
 
@@ -1166,37 +1181,35 @@ class printAnyValue<T> {
 
 Logic work flow
 
-1. Make one mega class `class Window which has height, shape, weight`
-2. Extract logic out by category into another class `WindowWeight class, a WindowShape class, a WindowHeight class`
-3. Implement a way to connect the main class to those other classes DEPENDING ON THE PROJECT!
-   Methods to connect classes (#3 option from above)
+1.  Make one mega class `class Window which has height, shape, weight`
+2.  Extract logic out by category into another class `WindowWeight class, a WindowShape class, a WindowHeight class`
+3.  Implement a way to connect the main class to those other classes DEPENDING ON THE PROJECT!
+    Methods to connect classes (#3 option from above)
 
-   1. You can add a contructor arg to the main class, which requires an instance of the task-class.
+    1.  You can add a contructor arg to the main class, which requires an instance of the task-class.
 
-      ```
-       // MainClass takes in TaskClass instance
+        ```
+         // MainClass takes in TaskClass instance
 
-      class MainClass {
-        constructor (public dataToMakeMain, instanceOfTaskClass) {}
-      }
+        class MainClass {
+          constructor (public dataToMakeMain, instanceOfTaskClass) {}
+        }
 
-       // First make an instance of TaskClass.
-       // Then pass that instanceinto the Main on top of whatever constructors.
+         // First make an instance of TaskClass.
+         // Then pass that instanceinto the Main on top of whatever constructors.
 
-       const task = new TaskClass(dataToMakeTask)
-       const main = new Main(dataToMakeMain, task)
+         const task = new TaskClass(dataToMakeTask)
+         const main = new Main(dataToMakeMain, task)
 
-      ```
+        ```
 
+             This is easy to read, but can be cumbersome if there are many taskClasses that need to be instantiated, then passed on to the MainClass. This method has the most flexibility if you want a vast variety of instances of TaskClass, as you have full control when you are making a new TaskClass
 
-           This is easy to read, but can be cumbersome if there are many taskClasses that need to be instantiated, then passed on to the MainClass. This method has the most flexibility if you want a vast variety of instances of TaskClass, as you have full control when you are making a new TaskClass
+             This can be improved by using a default in the constructor like
+             `constructor (public dataTomakeMain, instanceOfTaskClass = new TaskClass()) {}`
+             So that an empty arg will automatically create the default new TaskClass and pass it in.
 
-           This can be improved by using a default in the constructor like
-           `constructor (public dataTomakeMain, instanceOfTaskClass = new TaskClass()) {}`
-           So that an empty arg will automatically create the default new TaskClass and pass it in.
-
-
-    2. Define a static class method (a method you can call on the class itself without creating an intance) to do boilerplating of method 1 internally. The static class is used to make a new instance INSTEAD of using new MainClass()
+    2.  Define a static class method (a method you can call on the class itself without creating an intance) to do boilerplating of method 1 internally. The static class is used to make a new instance INSTEAD of using new MainClass()
 
         ```
         // Inside MainClass, change the constructor to JUST taking in the task class
@@ -1215,18 +1228,18 @@ Logic work flow
         Thie method is good if you are only planning to use 1 or 2 different instances of taskClass, as each would need to be a separate static method inside the main class. Saves lines of code so you don't have to write out many new classes.
         ```
 
-    3. hard code class instances as props of main
+    3.  hard code class instances as props of main
 
-      ```
-      class Main {
-        task: new TaskClass();
+    ```
+    class Main {
+      task: new TaskClass();
 
-        constructor(public data: StuffForMain) {}
-      }
-      ```
+      constructor(public data: StuffForMain) {}
+    }
+    ```
 
-      A new Main class automatically comes with the default class as a prop. Not flexible in terms of getting a variety of
-      instances of taskClass, but if it's always the same one, the easiest to implement.
+    A new Main class automatically comes with the default class as a prop. Not flexible in terms of getting a variety of
+    instances of taskClass, but if it's always the same one, the easiest to implement.
 
 ## Strict Mode - Optional Properties
 
