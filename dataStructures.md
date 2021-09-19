@@ -466,6 +466,73 @@ Every child is bigger than the parent.
 
 It is the REMOVE method of the min heap that allows for all items coming OUT of the heap to be in exact order from least to greatest.
 
+```
+class MaxHeap {
+  heap: number[] = [];
+  add(val: number): void {
+    // add to first available (last of array)
+    // if added node is bigger than parent, swap
+    this.heap.push(val);
+    let newIndex = this.heap.length - 1; // intitialize i of new node
+    let parentIndex = Math.floor((newIndex - 1) / 2 ); // initialize parent of new node
+    // edge case if len is 1, do nothing
+    while (parentIndex >= 0 && parentIndex !== newIndex) {
+      if (this.heap[parentIndex] < this.heap[newIndex]) {
+        [this.heap[parentIndex], this.heap[newIndex]] = [this.heap[newIndex], this.heap[parentIndex]];
+        newIndex = parentIndex;
+        parentIndex = Math.floor(newIndex / 2);
+      }
+    }
+  }
+  remove(): number | null {
+    if (!this.heap.length) return null;
+    const removed = this.heap[0];
+    if (this.heap.length === 1) return removed; // don't do anything if 1 index as it will pop and push the same ele
+    // swap first and last, then remove last
+    [this.heap[0], this.heap[this.heap.length - 1]] = [this.heap[this.heap.length - 1], this.heap[0]]
+    this.heap.pop();
+    // compare curr (1st index) with children. if any are bigger than curr, swap with bigger child. repeat
+    let currIndex = 0;
+    let leftChild = currIndex * 2 + 1;
+    let rightChild = currIndex * 2 + 2;
+    while (currIndex < this.heap.length && (this.heap[rightChild] || this.heap[leftChild])) {
+      if (this.heap[currIndex] < Math.max(this.heap[leftChild], this.heap[rightChild])) {
+        if (this.heap[leftChild] > this.heap[rightChild]) {
+          // swap with leftChild
+          [this.heap[currIndex], this.heap[leftChild]] = [this.heap[leftChild],this.heap[currIndex]]
+          currIndex = leftChild;
+          leftChild = currIndex * 2 + 1;
+          rightChild = currIndex * 2 + 2;
+        } else {
+          // swap with rightChild
+             [this.heap[currIndex], this.heap[rightChild]] = [this.heap[rightChild],this.heap[currIndex]]
+          currIndex = rightChild;
+          leftChild = currIndex * 2 + 1;
+          rightChild = currIndex * 2 + 2;
+        }
+      }
+    }
+    return removed;
+  }
+}
+
+const heap = new MaxHeap();
+heap.add(5);
+console.log(heap.heap)
+heap.add(6);
+console.log(heap.heap)
+heap.add(7);
+console.log(heap.heap)
+heap.add(10);
+console.log(heap.heap)
+heap.remove();
+console.log(heap.heap)
+
+  // [5] => [6, 5] => [7, 5, 6] => [10, 7, 6, 5] => [7,5,6]
+```
+
+- a priority queue is implemented WITH a heap. It's basically the same code as above, but instead of using the `value` as the parameter, it will take another data structure like node which will have a value and priority (or weight). the logic will just use `node.priority` and make a minHeap based on priority (if priority 0 is considered greatest) or maxHeap (if higher weight means higher priority)
+
 ## Graph
 
 A graph is usually used to show a network.
