@@ -149,6 +149,77 @@ same index.
 So it might be better if you just store an object at index [hash('color')] of the array so it's more like
 [ {}, {}, {}, {color: 'blue', anotherKey: 'hello' }]
 
+```
+
+// [ 0: [[], [],], 1 [[key, val], [key, val] ]]
+
+class Hash<T> {
+  size = 53;
+  table: [string, T][][] = new Array(this.size);
+  protected hash(key: string) {
+    let total = 0;
+    for (let i = 0; i < Math.min(key.length, 100); i++) {
+      const salt = 13;
+      total = (total + key.charCodeAt(i) * salt) % this.size;
+    }
+    return total;
+  }
+  set(key: string, val:T): void {
+    // console.log('this.table', this.table)
+    const idx = this.hash(key);
+    // console.log('hash is', idx)
+    // console.log('this.table[idx]', this.table[idx])
+    this.table[idx] ? this.table[idx].push([key, val]) : this.table[idx] = [[key, val]] ;
+    console.log('this.table', this.table)
+
+  }
+
+
+  get(key: string): T | null {
+
+    const hash = this.hash(key);
+    for (const [itemKey, itemVal] of this.table[hash]) {
+      if (itemKey === key) return itemVal;
+    }
+    return null;
+}
+
+keys(): string[]{
+  const output = new Set();
+  for (let i = 0; i < this.table.length; i++) {
+    if (this.table[i]) {
+    for (let j = 0; j < this.table[i].length; j++) {
+      output.add(this.table[i][j][0])
+    }
+
+    }
+  }
+  return Array.from(output as Set<string>);
+}
+
+values(): T[] {
+    const output = new Set();
+  for (let i = 0; i < this.table.length; i++) {
+    if (this.table[i]) {
+    for (let j = 0; j < this.table[i].length; j++) {
+      output.add(this.table[i][j][1])
+    }
+
+    }
+  }
+  return Array.from(output as Set<T>);
+}
+
+}
+
+
+const hash = new Hash();
+hash.set("pink", "23409234")
+
+hash.set("orange", "539482")
+console.log(hash.values())
+```
+
 ## Linked List
 
 Is a linear collection of nodes that go in one direction.
@@ -675,6 +746,8 @@ If not reachable, it defaults to Infinity
 A breath first search will explore the root and all of its neighbor roots, and then those neighbors
 A depth first search will explore one neighbor all the way until it reaches a leaf
 
+- depth first can be done recursively or iteratively with a stack. these two methods will have different ordering of visited vertices, but will both be valid depth first searches.
+
 // breadthFirst(graph, 1) - what is the distance form this root to all nodes in this graph
 // returns something like { 0:1, 1:0, 2:infinity, 3:3 }
 
@@ -692,6 +765,134 @@ Steps
    doneList, push() them to the queue
 3. After you've added all neighbor nodes, shift() the queue INTO the doneList
 4. Recursively go into the new queue[0]
+
+- code implmentation example
+
+```
+class Graph {
+  adjacencyList: {[key: string]: string[]}  = {};
+  // O(1)
+  addVertex(vertex: string): null | void {
+    // if vertex already exists, null
+    if (this.adjacencyList[vertex] !== undefined) return null;
+    this.adjacencyList[vertex] = [];
+  }
+  // O(1)
+  addEdge(vertexA: string, vertexB: string): null | {[key: string]: string[]} {
+    // not found
+    if (this.adjacencyList[vertexA] === undefined || this.adjacencyList[vertexB] === undefined) return null;
+    if (!this.adjacencyList[vertexA].includes(vertexB)) this.adjacencyList[vertexA].push(vertexB);
+    if (!this.adjacencyList[vertexB].includes(vertexA)) this.adjacencyList[vertexB].push(vertexA);
+    return this.adjacencyList;
+  }
+  // O(E) for splice
+  removeEdge(vertexA: string, vertexB: string): null | void {
+    if (this.adjacencyList[vertexA] === undefined && this.adjacencyList[vertexB] === undefined) return null;
+    if (this.adjacencyList[vertexA]) this.adjacencyList[vertexA] = this.adjacencyList[vertexA].filter(edge => edge !== vertexB)
+    if (this.adjacencyList[vertexB]) this.adjacencyList[vertexB] = this.adjacencyList[vertexB].filter(edge => edge !== vertexA)
+  }
+  // O(1) for removing hash key, O(V + E) for deleting edge
+  removeVertex(deleteVertex: string): boolean {
+    // not found
+    if (this.adjacencyList[deleteVertex] === undefined) return false;
+    // loop through the delete vertex for all edges (works only for undirected graphs) OR just loop through entire graph like here
+    for (const vertex in this.adjacencyList) {
+      if (this.adjacencyList[vertex].includes(deleteVertex)) this.removeEdge(vertex, deleteVertex)
+      }
+    delete this.adjacencyList[deleteVertex];
+    return true;
+  }
+
+  // dfs in graph - checkout the node, then all of it's neighbors
+  dfsRecursive(vertex: string): null | string[] {
+    if (!vertex) return null; // edge case
+    const visitHash:{[key: string]: boolean} = {};
+    // for this dummy logic just store all the vertex vals
+    const valuesList: string[] = [];
+    recurse(vertex, this.adjacencyList);
+      function recurse(vertex:string, list:{[key: string]: string[]}):void {
+        valuesList.push(vertex);
+        visitHash[vertex] = true;
+        list[vertex].forEach((neighbor: string) => {
+          if (!visitHash[neighbor]) recurse(neighbor, list)
+        })
+      }
+  return valuesList;
+  }
+  // use a stack and collect data backwards for each neighbor
+  dfsIterative(vertex: string): null | string[] {
+    if (!vertex) return null;
+    const visitHash: {[key: string]: boolean} = {};
+    const valuesList: string[] = [];
+    const stack: string[] = [vertex];
+
+  while (stack.length) {
+    const curr = stack.pop();
+    // curr will always exist, so use post !
+    valuesList.push(curr!);
+    visitHash[curr!] = true;
+    for (let i = this.adjacencyList[curr!].length - 1; i >= 0; i--) {
+      if (!visitHash[this.adjacencyList[curr!][i]]) {
+        visitHash[this.adjacencyList[curr!][i]] = true;;
+        stack.push(this.adjacencyList[curr!][i]);
+      }
+    }
+  }
+  return valuesList;
+  }
+// only iterative for breadth first
+  bfs(vertex: string): null | string[] {
+    if (!vertex) return null;
+    const visitHash: {[key: string]: boolean} = {[vertex]: true};
+    const valuesList: string[] = [];
+    const queue: string[] = [vertex]; // shorthand queue. pretend shift is O(1)
+    while (queue.length) {
+      const curr = queue.shift();
+      valuesList.push(curr!); // ! after value means value definitely exists
+      this.adjacencyList[curr!].forEach(neighbor => {
+        if (!visitHash[neighbor]) {
+          visitHash[neighbor] = true;
+          queue.push(neighbor);
+        }
+      })
+
+    }
+    return valuesList;
+  }
+}
+
+const graph = new Graph;
+graph.addVertex("a");
+graph.addVertex("b");
+graph.addVertex("c");
+graph.addVertex("d");
+graph.addVertex("e");
+graph.addVertex("f");
+graph.addEdge("a", "b");
+graph.addEdge("a", "c");
+graph.addEdge("b", "d");
+graph.addEdge("c", "e");
+graph.addEdge("d", "e");
+graph.addEdge("e", "f");
+
+      /*
+
+              a
+            /   \
+          b       c
+          |       |
+          d   -   e
+           \     /
+              f
+      */
+
+
+console.log(graph.dfsRecursive("a"))
+console.log(graph.dfsIterative("a"))
+console.log(graph.bfs("a"))
+
+
+```
 
 ## Sorts
 
