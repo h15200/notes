@@ -404,11 +404,6 @@ new structure is
                     15         30
                 13
 
-## Merge Sort Time complexity
-
-A merge sort is O(NlogN) because if you break down the tree into halves,
-you get levels of N, N/2, N/4, N/8 and on each level, you are "stitching" them. Stitching each level have different amounts of items to sort (only 2 at the bottom level, the entire N at the top level) but average out to N. Since you're stitching on every level of the tree, there are logN levels of the tree, so it's N on each logN level.
-
 ## Trie
 
 A Trie is another type of tree
@@ -894,16 +889,6 @@ console.log(graph.bfs("a"))
 
 ```
 
-## Sorts
-
-### Bubble sort - just keep swapping and iterating
-
-to optimize, use a didSwap boolean and only run it if the previous iteration had a swap
-
-### Insertion sort - use pointer,
-
-loop left to right, but for every time something is unsorted, sort that element ALL the way to the left using pointer j. Same time complexity as bubble sort, but can be done in one loop
-
 ## Getting the midpoint of a linked list
 
 The most efficient way is to make two pointers
@@ -918,4 +903,94 @@ while (j !== null && j.next !==null) {
 return i;
 ```
 
+## Sorts
+
+### Bubble sort - just keep swapping and iterating T: O(N^2), S: O(1)
+
+to optimize, use a didSwap boolean and only run it if the previous iteration had a swap
+
+### Insertion sort - use pointer, T: O(N^2), S: O(1)
+
+loop left to right, but for every time something is unsorted, sort that element ALL the way to the left using pointer j. Same time complexity as bubble sort, but can be done in one loop
+
+- note how this will be optimal to sort data that keeps adding to an already sorted data. Selection sort will not have this advantage as the whole thing needs to run every time a new element is introduced.
+
 Basically have the second pointer tragerse twice as fast.
+
+### Selection sort T: O(N^2), S: O(1)
+
+- get the min of entire array, swap with first index. repeat for 2nd index
+
+### Merge Sort T: O(n logn), S: O(n) for extra array
+
+A merge sort is O(NlogN) because if you break down the tree into halves,
+you get levels of N, N/2, N/4, N/8 and on each level, you are "stitching" them. Stitching each level have different amounts of items to sort (only 2 at the bottom level, the entire N at the top level) but average out to N. Since you're stitching on every level of the tree, there are logN levels of the tree, so it's N on each logN level.
+
+### Quick sort T: O(n logn), S: O(1)
+
+- like merge sort, usually implemented with recursion
+- same base case.. if arr.len is <= 1, it's sorted
+- pick a random pivot point (usually at index 0). put all numbers less than pivot such that the array is
+  [...all nums below pivot, pivot, ...all nums above pivot]
+- key! Do it in PLACE for O(1) space. keep track of pivotIndex
+- return the concat array of 1. recurse(arr.slice(0, pivotIndex)), 2. arr[pivotIndex] (this is in place) 3. recurse(arr.slice(pivotIndex + 1))
+
+ex- logic is good, but space is O(n) since we are passing in different arrays in each stack
+
+```
+function quickSort(arr: number[]): number[] {
+
+    if (arr.length <= 1) return arr;
+    // order the array IN PLACE so it's [less than pivot unordered, pivot, greater than pivot unordered]
+    // then split that into left [less than pivot], arr[pivotIndex] (this is sorted!), [greater than pivot] and run recursively on both and add
+
+    // [3, 4, 6, 1] keep track of pivot index, 0;
+
+    const pivotVal = arr[0];
+    let pivotIndex = 0;
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i] < pivotVal) {
+        let curr = i;
+        while (curr !== pivotIndex) {
+          // if a num is less than pivotIndex (3 in this case), swap until the element is ONE left of current pivot (the curr pivotIndex position), increase pivotIndex
+          [arr[curr], arr[curr - 1]] = [arr[curr - 1], arr[curr]]
+          curr--;
+        }
+        pivotIndex++;
+      }
+    }
+
+    return [...quickSort([...arr.slice(0, pivotIndex)]), arr[pivotIndex],...quickSort([...arr.slice(pivotIndex + 1)])]
+}
+
+console.log(quickSort([5,17,1,7,0, 3, -3]))
+```
+
+- better optimizatino to just use indices
+
+```
+function quickSort(arr: number[], left: number = 0, right: number = arr.length - 1): number[] {
+  // same as before, but now only pass in indices to make space O(1)
+    if (left < right) {
+      const pivotVal = arr[left];
+      let pivotIndex = left;
+      for (let i = left + 1; i <= right; i++) {
+        if (arr[i] < pivotVal) {
+          let curr = i;
+          while (curr !== pivotIndex) {
+            [arr[curr], arr[curr - 1]] = [arr[curr - 1], arr[curr]]
+            curr--;
+          }
+          pivotIndex++;
+        }
+      }
+      console.log('left', left, 'pi', pivotIndex)
+      quickSort(arr, left, pivotIndex -1); // not a return statement. just mutating left side
+      quickSort(arr, pivotIndex + 1, right);
+    }
+    return arr; // because of top level conditional, this will only run after all arrays have been sorted
+
+}
+
+console.log(quickSort([5,17,1,7,0, 3, -1]))
+```
