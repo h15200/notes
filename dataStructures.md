@@ -926,7 +926,10 @@ Basically have the second pointer tragerse twice as fast.
 A merge sort is O(NlogN) because if you break down the tree into halves,
 you get levels of N, N/2, N/4, N/8 and on each level, you are "stitching" them. Stitching each level have different amounts of items to sort (only 2 at the bottom level, the entire N at the top level) but average out to N. Since you're stitching on every level of the tree, there are logN levels of the tree, so it's N on each logN level.
 
-### Quick sort T: O(n logn), S: O(1)
+### Quick sort T: O(n logn), S: O(log n)
+
+- best case TIME is nLogn but worst case is n^2 since pivot point can yield no left or right subarray
+- in the same logic, best case SPACE is O(logN) for recursion stack but could be O(n) if pivot is unbalanced
 
 - like merge sort, usually implemented with recursion
 - same base case.. if arr.len is <= 1, it's sorted
@@ -966,7 +969,7 @@ function quickSort(arr: number[]): number[] {
 console.log(quickSort([5,17,1,7,0, 3, -3]))
 ```
 
-- better optimizatino to just use indices
+- better optimization to just use indices. now the space complexity will just be (logN) at best to account for the recursive call stack
 
 ```
 function quickSort(arr: number[], left: number = 0, right: number = arr.length - 1): number[] {
@@ -994,3 +997,19 @@ function quickSort(arr: number[], left: number = 0, right: number = arr.length -
 
 console.log(quickSort([5,17,1,7,0, 3, -1]))
 ```
+
+## Radix Sort T: O(n + k (length of numbers)), S: O(n + k)
+
+- All of the previous sorts (bubble, insertion, selection, merge, quick) are grouped under `Comparison Sorts` Comparison Sorts will at best have a time complexity of O(n Log(n)). In THEORY, can be faster although under the hood it may not be an improvement on quick sort.
+
+- if bound by certain contrainsts (only integars), other sorting algorithms can be faster by using an alternate method and NOT comparing values
+
+- in a radix sort, you just repeatedly do O(n + k) operations.
+
+  - first, make 10 buckets from 0 - 9
+  - go to the righter most bit (digit), and place then in buckets of queues
+  - dequeue items out of the buckets in order to re-order array
+  - do the same for 2nd digit (10's column), putting all single digit numbers in the 0 bucket
+  - repeat until highest digit is sorted
+
+- it never makes a value to value comparison, but simply hashes them into buckets per pass, making it digits x n time complexity, and O(1) space (10 buckets is a constant, so slash to 1)
