@@ -889,6 +889,119 @@ console.log(graph.bfs("a"))
 
 ```
 
+### Dijkstra shortests path
+
+- make 3 storages for isVisited, shortestPath, and previousVertex
+- initiate shortestPath to 0 for starting node
+
+- pick the node that has the shortest path to visit AND is not visited yet
+  - in that node, see if the neighbors are visited
+  - if not, check the new shortest distance using current node's shortest and add new edge
+    - if this is a new shortest path, update it and also update previousVertex
+  - once all neighbors are visited, mark this node as visited
+- when the node with the shortest path IS the destination, break out of loop
+
+- shortestPath data structure should be some kind of min heap priority queue
+
+```
+class N {
+  connections: N[] = [];
+  constructor(public value: string) {}
+}
+
+class Graph {
+  collection: {[key: string]: {node: string, weight: number}[]} = {};
+
+  addVertex(val: string): void {
+    this.collection[val] = [];
+  }
+
+  addEdge(nodeA: string, nodeB: string, weight: number): void {
+    if (this.collection[nodeA] && this.collection[nodeB]) {
+      this.collection[nodeA].push({node: nodeB, weight});
+      this.collection[nodeB].push({node: nodeA, weight})
+    }
+  }
+}
+
+const graph = new Graph();
+graph.addVertex("a")
+graph.addVertex("b")
+graph.addVertex("c")
+graph.addVertex("d")
+graph.addVertex("e")
+graph.addVertex("f")
+graph.addEdge("a", "b", 4)
+graph.addEdge("a", "c", 2)
+graph.addEdge("b", "e", 3)
+graph.addEdge("c", "d", 2)
+graph.addEdge("c", "f", 4)
+graph.addEdge("d", "e", 3)
+graph.addEdge("d", "f", 1)
+graph.addEdge("e", "f", 1)
+
+console.log(dijkstraShortest('a', "e", graph))
+
+function dijkstraShortest(startVal: string, endVal: string, graph: Graph): string[] {
+  // initiate three objects
+  const isVisited: {[key: string]: boolean} = {};
+  const shortestPath: {[key: string]: number} = {}
+  const previousNode: {[key: string]: string} = {};
+
+  for (const key in graph.collection) {
+    if (key === startVal) {
+      shortestPath[key] = 0; // starting point will have distance of 0
+    } else {
+    shortestPath[key] = Infinity;
+    }
+  }
+
+  /*
+  - pick the node with shortestDistance to visit first
+    - for each of this node's neighbor (that's not visited yet), see if the shortestPath can be updated
+      - if yes, also update the previous table
+    - add to isVisitedNode, repeat by choosing new node to visit based on shortestDistance
+  - stop when the smallest unvisited node in shortestDistance is the destination
+  */
+
+  while (true) {
+    let nodeToVisit: string;
+    let minDist = Infinity;
+    for (const key in shortestPath) {
+      if (!isVisited[key] && shortestPath[key] < minDist) { // make sure they are unvisited
+        minDist = shortestPath[key];
+        nodeToVisit = key;
+      }
+    }
+    if (nodeToVisit! === endVal) {
+      break;
+    }
+    for (const {node, weight} of graph.collection[nodeToVisit!]) {
+      // if not visited, measure the neighbors
+      !isVisited[node] && measureAndUpdate(nodeToVisit!, node, weight);
+    }
+    isVisited[nodeToVisit!] = true;
+  }
+    // return a shortest path
+    const path = [endVal];
+    let prev = previousNode[endVal]
+    while (prev) {
+    path.push(prev);
+    prev = previousNode[prev];
+    }
+    return path.reverse();
+
+
+
+  function measureAndUpdate(originNode: string, destinationNode: string, weight: number): void {
+    if (weight + shortestPath[originNode] < shortestPath[destinationNode]) {
+      shortestPath[destinationNode] = weight + shortestPath[originNode];
+      previousNode[destinationNode] = originNode;
+    }
+  }
+}
+```
+
 ## Getting the midpoint of a linked list
 
 The most efficient way is to make two pointers
