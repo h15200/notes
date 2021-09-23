@@ -891,17 +891,15 @@ console.log(graph.bfs("a"))
 
 ### Dijkstra shortests path
 
-- make 3 storages for isVisited, shortestPath, and previousVertex
-- initiate shortestPath to 0 for starting node
-
-- pick the node that has the shortest path to visit AND is not visited yet
-  - in that node, see if the neighbors are visited
-  - if not, check the new shortest distance using current node's shortest and add new edge
-    - if this is a new shortest path, update it and also update previousVertex
-  - once all neighbors are visited, mark this node as visited
-- when the node with the shortest path IS the destination, break out of loop
-
-- shortestPath data structure should be some kind of min heap priority queue
+- make 3 storages for priorityQueue (use a Heap that always puts the min distance to head), shortestPaths, and previousVertex
+- initiate shortestPath to 0 for starting node, Infinity for all others
+- put that shortestPath info { node, weight } to priorityQueue
+- while priority queue length exists, loop:
+  - dequeue the priority list which should be the closest unvisited node (origin node)
+  - make sure the shortestPaths for that is not Infinity
+  - if node is the destination, done. break out and build a reverse path using previousVertex
+  - in that node, try to update the shortest for all neighbors
+    - if neighbor shortestPath gets updated, also update previous and push that new nodeInfo to queue
 
 ```
 class N {
