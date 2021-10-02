@@ -93,3 +93,37 @@ int main() {
 }
 
 ```
+
+## same else, else if, switch, for loop, keyword "break", "continue" etc.. syntax as js
+
+## do while
+
+```
+int price = 300;
+do {
+  std::cout << "Too expensive!";
+} while (price > 500);
+```
+
+## for each syntax (list-like structures)
+
+```
+int myList[5] = {0, 1, 1, 2, 3};
+for (int number : myList) {
+  std::cout << number;
+}
+```
+
+## if the array item type is not identifiable, use keyword auto
+
+```
+int myList[5] = {0, 1, 1, 2, 3};
+for (auto item : myList) {
+  std::cout << item;
+}
+```
+
+## overload
+
+- functions can be named the same thing if the parameters are named differently
+- c++ will pick the correct func based on the args
