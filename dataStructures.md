@@ -470,9 +470,11 @@ This array with the null in the top BEFORE the root is often how a max heap or m
 
 ### time complexity
 
-MAKING a max or min-heap from an array is O(n) because you start from n/2 (all n/2 + 1 to n-1 have no children). At the lowest branch level (with children), it's constant time swapping because you only compare against direct children and there are no more grandchildren. At the highest level n, you have logN levels to compare to children, grandchildren, grandgrandchildren etc...
+MAKING a max or min-heap from an array is O(n) because of MATH. In detail, you start from the LAST parent by getting the parent of the last index. THat already cuts out the work to about n/2 (all n/2 + 1 to n-1 have no children). At the lowest branch level (with children), it's constant time swapping because you only compare against direct children and there are no more grandchildren. At the highest level n, you have logN levels to compare to children, grandchildren, grandgrandchildren etc...
 
-When you count each row, this adds up to linear time mathmatically.
+When you add count each row time complexity, this adds up to linear time.
+
+Just remember HOW to build a heap from an unsorted array (loop backwards from the last parent, siftDown for each) and that it's O(n) time
 
 To finish the sort, we extract min from a min-heap N times
 
