@@ -562,3 +562,50 @@ given an array of integers return an array with the duplicates removed [1,2,3,3,
 ### invertBinaryTree
 
 given a binary tree, reverse all of the nodes {8}->{5}{10}-> {2}{6}{7}{12} ==>{8}->{10}{5}-> {12}{7}{6}{2}
+
+### permutations
+
+backtracking!
+swapping instead of array methods will shave off time and space to `O(n * n!)` from `O(n * n * n!)`
+
+```
+export function getPermutations(array: number[]): number[][] {
+	if (!array.length) return [];
+	return recurse(array);
+	// helper recursion
+	function recurse(array: number[]): number[][] {
+		if (array.length === 1) return [array]; // [[4]]
+		const head = array[0];
+		const perms = recurse(array.slice(1));
+		const output: number[][] = [];
+		// loop for outer
+		for (const perm of perms) {
+			// loop inner item length + 1
+			for (let i = 0; i <= perm.length; i++) {
+				// perm is [3] for ex.
+				const rest = [...perm];
+				rest.splice(i, 0, head);
+				output.push(rest);
+			}
+		}
+		return output;
+	}
+}
+```
+
+/walk through
+
+[1,2,3] swapCount = 0
+
+first, swap swapCount with i. The first iteration is a no-op, as they are equal to each other
+[1,2,3] (no swap), but increment swapCount to 1
+next, same but increment again swapCount to 2
+[1,2,3] now that swapCount is len - 1, push that copy as a permutation
+
+backtrack ONE level to count = 1 and image [1,2,3]
+now we can swap to [1,3,2] , increment 1 and save image
+backtrack to the UNSWAP, [1,2,3] again
+backtrack to first level, now swap to [2,1,3] count is 1
+[2,1,3] do the first swap (doesn't change) and count is 2, save
+[2,3,1] now do a swap, save, and unswap [2,1,3]
+back to 1st level, unswap again to original [1,2,3] .. now do final swap between 1 and 3 and repeat
