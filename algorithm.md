@@ -565,8 +565,7 @@ given a binary tree, reverse all of the nodes {8}->{5}{10}-> {2}{6}{7}{12} ==>{8
 
 ### permutations
 
-backtracking!
-swapping instead of array methods will shave off time and space to `O(n * n!)` from `O(n * n * n!)`
+- this first way works, but takes more time `O(n * n * n!)`
 
 ```
 export function getPermutations(array: number[]): number[][] {
@@ -593,7 +592,35 @@ export function getPermutations(array: number[]): number[][] {
 }
 ```
 
-/walk through
+- better method
+- backtracking! (unswap to restore original state)
+- swapping instead of array methods will shave off time and space to `O(n * n!)` from `O(n * n * n!)`
+
+```
+export function getPermutations(array: number[]) {
+  if (!array.length) return [];
+	const output: number[][] = [];
+	helper(0, array)
+  return output;
+	function helper(swapCount: number, array: number[]): void {
+		if (swapCount === array.length - 1) output.push([...array]);
+		// if swapping is done, push the image
+		else {
+			// swapcount starts at 0.
+			for (let i = swapCount; i < array.length; i++) {
+				// swap
+				[array[swapCount], array[i]] = [array[i], array[swapCount]]
+				// call with i + 1 and new array
+				helper(swapCount + 1, array);
+				// swap back
+				[array[swapCount], array[i]] = [array[i], array[swapCount]]
+			}
+		}
+	}
+}
+```
+
+walk through
 
 [1,2,3] swapCount = 0
 
