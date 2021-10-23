@@ -48,3 +48,8 @@
 - `runtime` describes software instructions that are executed WHILE your main program is running. Runtime code is not in the main program itself, but is needed for execution of the main program.
 - context is usually within programming languages. for example, a C runtime is library code that is needed to implement the features of C itself.
   - ex. node is a runtime of js. .js code can't be executed without node library code.
+
+## Platform
+
+- general term for a BIG piece of software that contains various smaller programs. a system that contains many programs
+- ex. an OS is a platform
