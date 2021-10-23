@@ -53,3 +53,10 @@
 
 - general term for a BIG piece of software that contains various smaller programs. a system that contains many programs
 - ex. an OS is a platform
+
+## Library files
+
+- .dll in Windows, .so in Linux/Unix are both shared library code
+- they are not run by themselves, but other programs use them by linking at runtime
+- they can be shared by multiple programs
+- they are binaries but are not executable on their own
