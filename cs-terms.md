@@ -41,7 +41,14 @@
   - `Application` is a subset of program which specifically interfaces with a user to perform tasks. It is designed to be installed and managed by users.
     - ex. VSCode is an application downloaded by users to write code.
   - `Service` is a program that does not involve the user but managed by systems
-    - a background process that runs on startup is launched by a `program`, but since the user never interacts with that logic, it is not an `application` but a `service`. In this case specifically a `background service`
+    - a background process that runs on startup is launched by a `program`, but since the user never interacts with that logic, it is not an `application` but a `service`. With Windows systems, a `Windows Service` or `Windows Background Service` refers to a specific program that runs in the background. In Macs, they are called `agents` or `daemons`
+
+## Server
+
+- servers provide services. Services (see above for details) are just programs that don't interface with users
+- servers can exist in the same machine or can be else where, for ex web servers.
+- a web server is a specific type of servers that communicate data via RPCs
+- a Windows background server is a service that runs in the same machine
 
 ## Runtime
 
