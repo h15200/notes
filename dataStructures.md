@@ -404,6 +404,10 @@ new structure is
                     15         30
                 13
 
+### Time Complexities
+
+- search, insert, and delete operations all have time complexity O(height) which is the same as O(log n)
+
 ## Trie
 
 A Trie is another type of tree

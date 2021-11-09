@@ -67,3 +67,17 @@
 - they are not run by themselves, but other programs use them by linking at runtime
 - they can be shared by multiple programs
 - they are binaries but are not executable on their own
+
+## Architecture, System Architecture
+
+- a very high level view of the entire system
+- if a small system, may consist of classes
+- if a big system, will consist of other sub-systems
+
+## Routine
+
+- what is generally known as functions
+- divided into 2 types
+  - `function` - a routine that returns a value
+  - `procedure` - a routine that doesn't return anything
+- can be inside classes (class routines) or outside
