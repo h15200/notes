@@ -2,12 +2,30 @@
 
 - superset of C
 
+## directives
+
+- #include and other preprocessor instructions are called `directives`
+- all other code that calls for action are called `statements`
+
 ## basic syntax
 
 - start with C lib with brackets<>, then C++ lib with brackets <>, then dev lib (file) with quotes ""
+- all quotes in directives and strings must be DOUBLE quotes, not single
+- all CHARS (data type with only one char) must be SINGLE quotes
 - use namespace std by `using namespace std;` if you don't want to keep typing `std::cout`.
 - all files must have a main func
 - files must be compiled with g++ into executables before being run
+
+## compiler
+
+- a compiler turns `source code` into `object code`. This process varies by language as some languages don't ever get compiled (interpreted languages like JS don't use compilers)
+- in the case of C++, source code usually has extension .cpp or .h (header files) and the compiler will turn it into `.obj` (on Windows) or `.o` (on Unix) files. Note that the object code is not portable in different operating systems. An object code compiled from a Windows environment will not be the smae as one in a Unix environment
+
+## linker
+
+- a linker takes the `object code` (compiled from `source code`) and by combining some C++ library code turn it into an executable. Like object code, the OS will dictate the executable file for that specific OS, and they are not portable.
+
+- g++ is a compiler AND a linker, so it takes source code, links it internally, and spits out the executable without the middle `.obj / .o` file creation step.
 
 ```
 #include <iostream>
