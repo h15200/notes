@@ -2,6 +2,12 @@
 
 - superset of C
 
+## upgrades from C
+
+- built-in Boolean and Enumerated types in C++. Those had to be created by user in C
+- strings in C were difficult. 2 different ways (as a pointer and as an array of chars). The latter was preferred if there were no space concerns, but still hard to manipulate
+- ability to pass in by reference in C++ but not in C. Far easier to reason than using pointers for everything
+
 ## directives
 
 - #include and other preprocessor instructions are called `directives`
