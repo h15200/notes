@@ -103,3 +103,33 @@
 //   STRING s = "Goodbye, cruel world!";
 //   cOut << S << '\n';
 // }
+
+//! drill
+#include <iostream>
+#include <stdexcept>
+
+using namespace std;
+int main() {
+  cout << "Enter the person you want to write to and press return.\n";
+  string firstName;
+  cin >> firstName;
+  cout << "\n \n Dear " << firstName << ", \n";
+  cout << "   " << "How's it going? I hope you're doing well.\n I miss you. I'm writing this from the living room, right outside your office.\n\n";
+  string yourFriend;
+  cout << "Please enter friend's name and press enter. \n";
+  cin >> yourFriend;
+  char yOrN;
+  cout << "Please enter y and press enter if your friend is a cat.\n";
+  cin >> yOrN;
+  if (yOrN == 'y') {
+    cout << "Please tell " << yourFriend << " to meow.\n";
+  }
+  int age;
+  cout << "What is your age?\n";
+  cin >> age;
+  if (age < 0 || age > 110) {
+    throw invalid_argument("You're kidding!");
+  };
+  cout << age << " is a great age!\n" << "I have to make breakfast for us, bye!\n\n";
+  cout << "Yours sincerely,\n" << "Hideaki\n"; 
+}
