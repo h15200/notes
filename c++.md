@@ -18,7 +18,8 @@
 - start with C lib with brackets<>, then C++ lib with brackets <>, then dev lib (file) with quotes ""
 - all quotes in directives and strings must be DOUBLE quotes, not single
 - all CHARS (data type with only one char) must be SINGLE quotes
-- use namespace std by `using namespace std;` if you don't want to keep typing `std::cout`.
+- NEVER use `using namespace x` as libraries get updated and you'll need multiple sets of code. There might be an std::something and diffPackge:something.
+
 - all files must have a main func
 - files must be compiled with g++ into executables before being run
 
@@ -151,3 +152,46 @@ for (auto item : myList) {
 
 - functions can be named the same thing if the parameters are named differently
 - c++ will pick the correct func based on the args
+
+## constants
+
+- there are 2 types of constants in C++ v.11
+  - `const` is used like you would imagine
+  - `constexpr` is used at compile time to avoid magic numbers:
+  - any variables formed with constant expressions are also constant expressions themselves.
+    - `constexpr int ONE = 1; ONE + 2 // ONE + 2 is a constant expression`
+    - where as `int val = 10; val + 2 (this is not a constant expression)`
+
+```
+constexpr int max = 100;
+
+void use(int n) {
+  constexpr int c1 = max + 7;  // fine
+  constexpr int c2 = max + 9
+  // error: we don't know the value of n at compile time. n is only revealed at run time.
+  // for int c2, const should be used instead of constexpr
+}
+```
+
+## type conversion and beware of math
+
+- 9/4 -> 2, not 2.25. To do that, do 9.0 / 4 to coerce a double float
+
+- to coerce a type, use syntax `type{thing}`
+  - ex. int{'a'} + 1 // turn char 'a' into int and add one
+
+## switch
+
+- only types `int`, `char`, or `enum` types can be used as the comparer
+- values inside each `case` must be constant expressions (constexpr) and not variables
+- you can chain multiple cases to do common things:
+  ```
+  switch(char) {
+    case 'a': case 'b': case 'b':
+      // do stuff
+      break;
+    case 'd': case 'e': case 'f':
+      // do other stuff
+      break;
+  }
+  ```

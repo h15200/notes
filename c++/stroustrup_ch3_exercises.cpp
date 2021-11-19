@@ -185,3 +185,118 @@
 
 //   return 0;
 // }
+
+//! exercise 9
+
+// #include<iostream>
+// #include<string>
+
+// int main() {
+//   std::cout << "Please enter a number between 0 and 4.\n";
+//   int num;
+//   std::cin >> num;
+
+//   std::string translatedStr;
+//   switch(num) {
+//     case 0: 
+//       translatedStr = "zero";
+//       break;
+//     case 1:
+//       translatedStr = "one";
+//       break;
+//     case 2:
+//       translatedStr = "two";
+//       break;
+//     case 3:
+//       translatedStr = "three";
+//       break;
+//     case 4: 
+//       translatedStr = "four";
+//       break;
+//     default: 
+//       translatedStr = "That is not a valid number.";
+//   }
+//   std::cout << translatedStr << "\n";
+//   return 0;
+// }
+
+//! exercise 10
+
+// #include<iostream>
+// #include<string>
+
+// int main() {
+//   std::cout << "Enter an operation (+, -, *, or /) and 2 numbers.\n";
+//   std::string op;
+//   double float1;
+//   double float2;
+//   std::cin >> op >> float1 >> float2;
+  
+//   if (op != "+" && op != "-" && op != "*" && op != "/") {
+//     std::cout << "Invalid op!\n";
+//   } else if (op == "+") {
+//     std::cout << float1 + float2 << "\n";
+//   } else if (op == "-") {
+//     std::cout << float1 - float2 << "\n";
+//   } else if (op == "*") {
+//     std::cout << float1 * float2 << "\n";
+//   } else if (op == "/") {
+//     std::cout << float1 / float2 << "\n";
+//   }
+//   return 0;
+// }
+
+//! exercise 11
+
+#include <iostream>
+#include <string>
+
+int main() {
+  std::cout << "How many pennies do you have?\n";
+  int pennyCount;
+  std::cin >> pennyCount;
+  std::cout << "How many nickels do you have?\n";
+  int nickelCount;
+  std::cin >> nickelCount;
+  std::cout << "How many dimes do you have?\n";
+  int dimeCount;
+  std::cin >> dimeCount;
+  std::cout << "How many quarters do you have?\n";
+  int quarterCount;
+  std::cin >> quarterCount;
+  std::cout << "How many half dollars do you have?\n";
+  int halfDollarCount;
+  std::cin >> halfDollarCount;
+
+  if (pennyCount != 1) {
+    std::cout << "You have " << pennyCount << " pennies.\n";
+  } else if (pennyCount == 1) {
+    std::cout << "You have 1 penny.\n";
+  }
+  if (nickelCount != 1) {
+    std::cout << "You have " << nickelCount << " nickels.\n";
+  } else if (nickelCount == 1) {
+    std::cout << "You have 1 nickel.\n";
+  }
+  if (dimeCount != 1) {
+    std::cout << "You have " << dimeCount << " dimes.\n";
+  } else if (dimeCount == 1) {
+    std::cout << "You have 1 dime.\n";
+  }
+  if (quarterCount != 1) {
+    std::cout << "You have " << quarterCount << " quarters.\n";
+  } else if (quarterCount == 1) {
+    std::cout << "You have 1 quarter.\n";
+  }
+  if (halfDollarCount != 1) {
+    std::cout << "You have " << halfDollarCount << " half dollars.\n";
+  } else if (halfDollarCount == 1) {
+    std::cout << "You have 1 half dollar.\n";
+  }
+
+  double totalCents = pennyCount + nickelCount * 5 + dimeCount * 10 + quarterCount * 25 + halfDollarCount * 50;
+
+  std::cout << "The value of all of your coins is $" << totalCents / 100 << "!`\n";
+
+  return 0;
+}
