@@ -2,6 +2,20 @@
 
 - superset of C
 
+## VSC setup
+
+- to change intellisense config, command palette "Edit Configurations" -> C_Cpp.default.cppStandard to whatever version
+
+- to compile using certain versions use flag at end like `-std=c++11`
+
+## google style guide
+
+https://google.github.io/styleguide/cppguide.html#General_Naming_Rules
+
+- use lower_snake_case for variables
+- use kCamelCase for `const` (start with lower k then camelCase)
+- use MixedStartingWithCapital for function and class names
+
 ## upgrades from C
 
 - built-in Boolean and Enumerated types in C++. Those had to be created by user in C
@@ -20,7 +34,7 @@
 - all CHARS (data type with only one char) must be SINGLE quotes
 - NEVER use `using namespace x` as libraries get updated and you'll need multiple sets of code. There might be an std::something and diffPackge:something.
 
-- all files must have a main func
+- all files must have a main func. 'main' needs to be in lowercase, breaking the convention of starting functions with a capitalized letter
 - files must be compiled with g++ into executables before being run
 
 ## compiler
@@ -177,8 +191,12 @@ void use(int n) {
 
 - 9/4 -> 2, not 2.25. To do that, do 9.0 / 4 to coerce a double float
 
-- to coerce a type, use syntax `type{thing}`
+- to coerce a literal into a type, use syntax `type{thing}`
+
   - ex. int{'a'} + 1 // turn char 'a' into int and add one
+
+- to coerce a variable, use ()
+  - int my_num = 97; char(my_num) // is 'a'
 
 ## switch
 
@@ -195,3 +213,39 @@ void use(int n) {
       break;
   }
   ```
+
+## vector
+
+- use `#include <vector>`
+- declare and init by `vector<int> v = {3, 4, 5, 2};`
+- declare size and init DEFAULT vals `vector<std::string> v(4);` a string vector of size 4 that are all ""
+- `vector<int> v(4);` // int vector all assigned to 0
+
+### methods
+
+- all vectors have a size method `v.size();`
+
+  - unlike JS, you must add () after size
+
+- `.push_back()` same as push. appends an element to end of vector
+
+## default values
+
+- strings ""
+- int 0
+
+## range for loop
+
+- the c++ version of a for-of loop in vectors
+
+```
+vector<int> v = {2,3,4,4};
+for (int val: v) {
+  // val is element for each iteration
+}
+```
+
+## terminating an input loop
+
+- to stop an int or double loop (a for loop with a std::cin for example), type in "|"
+- to stop a string loop, use control + D for Unix and Ctrl + Z for windows
