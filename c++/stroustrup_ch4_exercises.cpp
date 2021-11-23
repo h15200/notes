@@ -350,3 +350,168 @@
 //   }
 //   return 0;
 // }
+
+//! ex 13, then 14 Sieve of Eratosthenes
+
+// #include <vector>
+// #include <algorithm>
+// #include <iostream>
+
+// std::vector<bool> GetPrimes(int num) {
+//   std::vector<bool>prime_v{};
+//   for (int i = 0; i <= num; i++) {
+//     prime_v.push_back(true);
+//   }
+//   prime_v[0] = false;
+//   prime_v[1] = false;
+//   // all nums are in array
+//   for (int i = 2; i * i < num; i++) {
+//     if (prime_v[i] == true) {
+//       for (int j = 2; j * i <= num; j++) {
+//         prime_v[i * j] = false;
+//       }
+//     }
+//   }
+//   return prime_v;
+// }
+
+// int main() {
+//   std::cout << "Primes to 100 \n";
+//   std::vector<bool>primes_v = GetPrimes(100);
+//   for (int i = 0; i < primes_v.size(); i++) {
+//     if (primes_v[i] == true) {
+//       std::cout << i << " \n";
+//     }
+//   }
+// }
+
+//! ex 15 find n num primes
+
+// all primes between 1 and 100
+// first prime is 2
+
+// #include <vector>
+// #include <iostream>
+
+// std::vector<int> FindNPrimesTo(int n) {
+//   std::vector<int>primes_v{};
+//   if (n < 1) return primes_v;
+//   primes_v.push_back(2);
+//   int i = 3;
+//   while (primes_v.size() < n) {
+//     bool isPrime = true;
+//     for (int prime: primes_v) {
+//       if (i % prime == 0) {
+//         isPrime = false;
+//         break;
+//       }
+//     }
+//     if (isPrime == true) {
+//       primes_v.push_back(i);
+//     }
+//     i += 2; 
+//   }
+  
+//   return primes_v;
+// }
+
+// int main() {
+//   int n = 1;
+//   std::vector<int>primes_v = FindNPrimesTo(10);
+//   std::cout << "Printing primes: \n";
+//   for (int prime : primes_v) {
+//     std::cout << prime << "\n";
+//   }
+//   return 0;
+// }
+
+//! ex 16
+
+// #include <iostream>
+// #include <unordered_map>
+
+// int main() {
+//   std::unordered_map<int, int> hash = {};
+//   std::cout << "Enter a bunch of numbers and terminate with \"|\"\n";
+//   for (int input_int; std::cin >> input_int;) {
+//     if (hash.find(input_int) != hash.end()) {
+//       ++hash[input_int];
+//     } else {
+//       hash[input_int] = 1;
+//     }
+//   }
+
+//   int running_max_frequency = 0;
+//   int running_num = 0;
+//   // this is the while version, which works too
+
+//   // std::unordered_map<int, int>::iterator it = hash.begin();
+//   // while (it != hash.end()) {
+//   //   if (it->second > running_max_frequency) {
+//   //     running_max_frequency = it->second;
+//   //     running_num = it->first;
+//   //   }
+//   //   it++;
+//   // }
+
+//   // this for loop version might be easier to read as the declaration is clear
+//   for (auto it = hash.begin(); it != hash.end(); it++) {
+//     if (it->second > running_max_frequency) {
+//       running_max_frequency = it->second;
+//       running_num = it->first;
+//     }
+//   }
+//   std::cout << running_num << " appeared " << running_max_frequency << " times, the most!\n";
+//   return 0;
+// }
+
+//! ex 17
+
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <limits>
+
+int main() {
+  std::cout << "Enter a bunch of strings and terminate by pressing control + \"d\" twice.\n";
+  std::unordered_map<std::string, int> hash {};
+  for (std::string input_string; std::cin >> input_string;) {
+    if (hash.find(input_string) != hash.end()) {
+      // found
+      hash[input_string]++;
+    } else {
+      hash[input_string] = 1;
+    }
+  }  
+
+  std::string longest_string;
+  int running_max_length = std::numeric_limits<int>::lowest();
+  std::string shortest_string; 
+  int running_min_length = std::numeric_limits<int>::max();
+  std::string most_frequent_string;
+  int running_max_frequency = 0;
+
+  for (auto it = hash.begin(); it != hash.end(); it++) {
+
+    // wrap the size() in int as it's returning something else
+    if (int(it->first.size()) > running_max_length) {
+      running_max_length = it->first.size();
+      longest_string = it->first; 
+    } 
+    if (int(it->first.size()) < running_min_length) {
+      running_min_length = it->first.size();
+      shortest_string = it->first; 
+    } 
+    if (it->second > running_max_frequency) {
+      running_max_frequency = it->second;
+      most_frequent_string = it->first;
+    }
+  }
+
+  std::cout << "\n\n";
+  std::cout << "Longest string is " << longest_string << "\n";
+  std::cout << "Shortest string is " << shortest_string << "\n";
+  std::cout << "Most frequent string is " << most_frequent_string << ", appearing " << running_max_frequency << " times!\n";
+
+  return 0;
+}
