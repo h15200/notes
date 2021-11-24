@@ -28,7 +28,7 @@
 //     distances.push_back(distance);
 //   }
 //   double total_distance = 0.0;
-//   double largest_distance = std::numeric_limits<double>::min();
+//   double largest_distance = std::numeric_limits<double>::lower();
 //   double smallest_distance = std::numeric_limits<double>::max();
 //   for (double d : distances) {
 //     if (d > largest_distance) largest_distance = d;

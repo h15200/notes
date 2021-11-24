@@ -249,3 +249,8 @@ for (int val: v) {
 
 - to stop an int or double loop (a for loop with a std::cin for example), type in "|"
 - to stop a string loop, use control + D for Unix and Ctrl + Z for windows
+
+## return type gotchas
+
+- string.size() returns an `unsigned int`, not an int so a comparison with another int will not work properly unless you wrap it with int()
+  - when you accidentally compare a signed int with an unsigned int, the compiler will convert the signed int into an unsigned int, which usually makes it much much bigger.
