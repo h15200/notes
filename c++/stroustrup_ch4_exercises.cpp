@@ -467,51 +467,136 @@
 
 //! ex 17
 
+// #include <iostream>
+// #include <string>
+// #include <unordered_map>
+// #include <limits>
+
+// int main() {
+//   std::cout << "Enter a bunch of strings and terminate by pressing control + \"d\" twice.\n";
+//   std::unordered_map<std::string, int> hash {};
+//   for (std::string input_string; std::cin >> input_string;) {
+//     if (hash.find(input_string) != hash.end()) {
+//       // found
+//       hash[input_string]++;
+//     } else {
+//       hash[input_string] = 1;
+//     }
+//   }  
+
+//   std::string longest_string;
+//   int running_max_length = std::numeric_limits<int>::lowest();
+//   std::string shortest_string; 
+//   int running_min_length = std::numeric_limits<int>::max();
+//   std::string most_frequent_string;
+//   int running_max_frequency = 0;
+
+//   for (auto it = hash.begin(); it != hash.end(); it++) {
+
+//     // wrap the size() in int as it's returning something else
+//     if (int(it->first.size()) > running_max_length) {
+//       running_max_length = it->first.size();
+//       longest_string = it->first; 
+//     } 
+//     if (int(it->first.size()) < running_min_length) {
+//       running_min_length = it->first.size();
+//       shortest_string = it->first; 
+//     } 
+//     if (it->second > running_max_frequency) {
+//       running_max_frequency = it->second;
+//       most_frequent_string = it->first;
+//     }
+//   }
+
+//   std::cout << "\n\n";
+//   std::cout << "Longest string is " << longest_string << "\n";
+//   std::cout << "Shortest string is " << shortest_string << "\n";
+//   std::cout << "Most frequent string is " << most_frequent_string << ", appearing " << running_max_frequency << " times!\n";
+
+//   return 0;
+// }
+
+//! ex 18 quadratic formula
+
+// #include <iostream>
+// #include <cmath>
+
+// int main() {
+//   std::cout << "Enter 3 numbers\n";
+//   double a;
+//   double b;
+//   double c;
+//   std::cin >> a >> b >> c;
+//   std::cout << std::sqrt(25) << std::endl;
+//   std::cout << std::sqrt(24) << std::endl;
+
+//   double x1 = (-b + std::sqrt(std::pow(b, 2) - (4 * a * c))) / (2 * a);
+//   double x2 = (-b - std::sqrt(std::pow(b, 2) - (4 * a * c))) / (2 * a);
+//   std::cout << "Solution 1: " << x1 << std::endl;
+//   std::cout << "Solution 2: " << x2 << std::endl;
+  
+
+//   return 0;
+// }
+
+//! ex 19, then 20, then 21
+// name pairs [, , , , "NoName"]
+// score      [ , , , , 0]
+// use 2 vectors
+// return error if repeated name
+
 #include <iostream>
 #include <string>
-#include <unordered_map>
-#include <limits>
+#include <vector>
 
 int main() {
-  std::cout << "Enter a bunch of strings and terminate by pressing control + \"d\" twice.\n";
-  std::unordered_map<std::string, int> hash {};
-  for (std::string input_string; std::cin >> input_string;) {
-    if (hash.find(input_string) != hash.end()) {
-      // found
-      hash[input_string]++;
-    } else {
-      hash[input_string] = 1;
+  
+  std::cout << "Enter a bunch of names and a score. ctr + d twice to stop\n";
+  
+  std::vector<std::string>name_vector{};
+  std::vector<int>score_vector{};
+  std::string name;
+  int score;
+  while (std::cin >> name >> score) {
+    if (name == "noname") break;
+    for (std::string name_item : name_vector) {
+      if (name == name_item) {
+        std::cout << "\nYou entered the same name twice.\n";
+        return 1;
+      }
     }
-  }  
+    name_vector.push_back(name);
+    score_vector.push_back(score);
+  }
+  
+  
+  std::cout << "\n Enter a name or score to get info.\n";
+  std::string name_or_num;
+  std::cin >> name_or_num;
 
-  std::string longest_string;
-  int running_max_length = std::numeric_limits<int>::lowest();
-  std::string shortest_string; 
-  int running_min_length = std::numeric_limits<int>::max();
-  std::string most_frequent_string;
-  int running_max_frequency = 0;
-
-  for (auto it = hash.begin(); it != hash.end(); it++) {
-
-    // wrap the size() in int as it's returning something else
-    if (int(it->first.size()) > running_max_length) {
-      running_max_length = it->first.size();
-      longest_string = it->first; 
-    } 
-    if (int(it->first.size()) < running_min_length) {
-      running_min_length = it->first.size();
-      shortest_string = it->first; 
-    } 
-    if (it->second > running_max_frequency) {
-      running_max_frequency = it->second;
-      most_frequent_string = it->first;
+  if (std::isdigit(name_or_num[0])) {
+    bool score_found = false;
+    for (int i = 0; i < score_vector.size(); i++) {
+      if (score_vector[i] == std::stoi(name_or_num)) {
+        std::cout << name_vector[i] << std::endl;
+        score_found = true;
+      }
     }
+    if (score_found == false) {
+      std::cout << "Nobody had that score\n";
+    }
+      return 0;
+  } else {
+    for (int i = 0; i < name_vector.size(); i++) {
+      if (name_vector[i] == name_or_num) {
+        std::cout << score_vector[i] << std::endl;
+        return 0;
+      }
+      
+    }
+    std::cout << "That name was not found\n";
+    return 0;
+
   }
 
-  std::cout << "\n\n";
-  std::cout << "Longest string is " << longest_string << "\n";
-  std::cout << "Shortest string is " << shortest_string << "\n";
-  std::cout << "Most frequent string is " << most_frequent_string << ", appearing " << running_max_frequency << " times!\n";
-
-  return 0;
 }
