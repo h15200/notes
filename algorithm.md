@@ -636,3 +636,96 @@ backtrack to first level, now swap to [2,1,3] count is 1
 [2,1,3] do the first swap (doesn't change) and count is 2, save
 [2,3,1] now do a swap, save, and unswap [2,1,3]
 back to 1st level, unswap again to original [1,2,3] .. now do final swap between 1 and 3 and repeat
+
+### Quick Sort
+
+```
+export function quickSort(array: number[]) {
+  // using index 0 as pivot is usually the simplest
+	  // otherwise you need one extra flip to position the pivot pointer to 0
+
+	return pivot(array, 0, array.length - 1);
+
+
+	function pivot(array: number[], start: number, end: number): number[] {
+		if (start >= end) return array;
+		const pivotIdx = start;
+		let leftIdx = pivotIdx + 1;
+		let rightIdx = end;
+		while (leftIdx <= rightIdx) {
+			if (array[leftIdx] < array[pivotIdx]) {
+				leftIdx++;
+			}
+			else {
+				if (array[rightIdx] < array[pivotIdx]) {
+					[array[leftIdx], array[rightIdx]] = [array[rightIdx], array[leftIdx]];
+					leftIdx++;
+					rightIdx--;
+				}
+				else {
+					rightIdx--;
+				}
+			}
+		}
+		[array[pivotIdx], array[rightIdx]] = [array[rightIdx], array[pivotIdx]];
+		pivot(array, start, rightIdx - 1)
+		pivot(array, rightIdx + 1, end);
+		return array;
+	}
+}
+
+```
+
+### Trie (let curr)
+
+```
+// EXERCISE in Merging Objects
+
+interface TrieNode {
+  [key: string]: TrieNode | boolean;
+}
+
+// Do not edit the class below except for the
+// populateSuffixTrieFrom and contains methods.
+// Feel free to add new properties and methods
+// to the class.
+export class SuffixTrie {
+  private root: TrieNode;
+  private endSymbol: string;
+
+  constructor(string: string) {
+    this.root = {};
+    this.endSymbol = '*';
+    this.populateSuffixTrieFrom(string);
+  }
+
+  private populateSuffixTrieFrom(string: string): void {
+    for (let i = 0; i < string.length; i++) {
+			this.insertToTrie(i, string);
+		}
+  }
+
+	private insertToTrie(index: number, string: string): void {
+		let curr: TrieNode = this.root;
+		for (let i = index; i < string.length; i++) {
+			const char = string[i]
+			if (!(char in curr)) {
+				curr[char] = {};
+			}
+			curr = curr[char] as TrieNode;
+		}
+		curr[this.endSymbol] = true;
+	}
+
+  public contains(string: string): boolean {
+    let node: TrieNode = this.root;
+		for (let i = 0; i < string.length; i++) {
+			const char = string[i];
+			if (!(char in node)) return false;
+			node = node[char] as TrieNode;
+		}
+    return (this.endSymbol in node) && node[this.endSymbol] === true;
+  }
+}
+
+```
