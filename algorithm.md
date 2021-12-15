@@ -729,3 +729,60 @@ export class SuffixTrie {
 }
 
 ```
+
+### get digit value (Radix Sort)
+
+- this is the meat of the radix sort
+- to start the logic, remember that mod 10 will ALWAYS give you the one's column. To get the other columns, you must first divide and floor by a divider, which is `10 ** {whateverDigit}`
+
+```
+let num = 1234;
+
+let divider = 10 ** digit
+// digit here is 0 for 1s column, 1 for 10s, 2 for 100s
+
+const digitValue = Math.floor(num / divider) % 10;
+
+```
+
+### quick sort
+
+- remember to use the first index as the pivot, then lp which is pivot + 1 and rp which is end
+- recursive will pass in startIdx and EndIdx using the same array repeatedly
+- the pivot will swap with the right index at the end of the while loop
+
+```
+export function quickSort(array: number[]) {
+  // using index 0 as pivot is usually the simplest
+	  // otherwise you need one extra flip to position the pivot pointer to 0
+
+	return pivot(array, 0, array.length - 1);
+
+
+	function pivot(array: number[], start: number, end: number): number[] {
+		if (start >= end) return array;
+		const pivotIdx = start;
+		let leftIdx = pivotIdx + 1;
+		let rightIdx = end;
+		while (leftIdx <= rightIdx) {
+			if (array[leftIdx] < array[pivotIdx]) {
+				leftIdx++;
+			}
+			else {
+				if (array[rightIdx] < array[pivotIdx]) {
+					[array[leftIdx], array[rightIdx]] = [array[rightIdx], array[leftIdx]];
+					leftIdx++;
+					rightIdx--;
+				}
+				else {
+					rightIdx--;
+				}
+			}
+		}
+		[array[pivotIdx], array[rightIdx]] = [array[rightIdx], array[pivotIdx]];
+		pivot(array, start, rightIdx - 1)
+		pivot(array, rightIdx + 1, end);
+		return array;
+	}
+}
+```
