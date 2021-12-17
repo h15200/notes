@@ -254,3 +254,40 @@ for (int val: v) {
 
 - string.size() returns an `unsigned int`, not an int so a comparison with another int will not work properly unless you wrap it with int()
   - when you accidentally compare a signed int with an unsigned int, the compiler will convert the signed int into an unsigned int, which usually makes it much much bigger.
+
+## header files and module organization
+
+- a typical set up will have a header file called `something.h`, a .cpp file with the header definitions, and another cpp file that is using the header
+  - in this case the header file is included in both the definition and usage files
+
+## keyword `extern`
+
+- to avoid duplicate variables in header files, use `extern`
+- the extern is just a declaration and will need to be initiated or declared again inside the definition file
+
+ex:
+
+```
+(in test.h)
+
+extern int my_int;
+void SomeFunc();
+
+(in test.cpp)
+
+#include "test.h"
+int my_int;
+
+void SomeFunc() {
+  return;
+}
+
+(in app.cpp)
+
+#include "test.h"
+
+int main() {
+  my_int = 3; // this won't work if the re-declaration in test.cpp is missing
+}
+
+```
