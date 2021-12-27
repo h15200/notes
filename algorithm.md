@@ -786,3 +786,13 @@ export function quickSort(array: number[]) {
 	}
 }
 ```
+
+### merge range
+
+- in most range stitching logic, first make ONE list of things based on first value`[1, 3], [2, 4], [2, 3], [4, 2]`
+- make a new stack
+- loop through the 1 sorted array. If stack is empty, push and increment. Otherwise get top of stack, compare if the currStart is in range, and merge by getting the max of two ends or just push a new value to stack
+
+### time math
+
+- with time and other non mod 10 numbering systems, take the greatest common value (minutes or seconds) instead of trying to separate hours and minutes and seconds.
