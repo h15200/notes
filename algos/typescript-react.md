@@ -66,3 +66,115 @@ export function TestProps({
   );
 }
 ```
+
+## common pattern with fetching, isMounted, and component error handling
+
+```
+import React, { useState, useEffect } from "react";
+import "./practice.css";
+import { Practicelist } from "./Practicelist";
+
+
+
+export function ErrorComp({ msg }: { msg: string }) {
+  return <div style={{ color: "red" }}>{`${msg}`}</div>;
+}
+
+export interface User {
+  email: string;
+  id: number;
+}
+
+async function fetchHelper(url: string): Promise<User[]> {
+  let res;
+  try {
+    res = await fetch(url);
+  } catch (e) {
+    console.log("Error on fetch: ", e);
+    throw Error("Something went wrong during fetch");
+  }
+  let userData: User[];
+  try {
+    userData = await res.json();
+  } catch (e) {
+    console.log("Erorr on json()", e);
+    throw Error("Something went wrong during json()");
+  }
+
+  return userData;
+}
+
+export function Practice() {
+  const [data, setData] = useState<null | User[]>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+    setIsLoading(true);
+
+    (async () => {
+      let userData: User[];
+      try {
+        userData = await fetchHelper(
+          "https://jsonplaceholder.typicode.com/users",
+        );
+      } catch (e: any) {
+        if (isMounted) {
+          setErrorMsg(e.message);
+        }
+        return;
+      }
+      // success
+      if (isMounted) {
+        setData(userData);
+      }
+    })();
+    if (isMounted) setIsLoading(false);
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  function increment(): void {
+    setNum(num + 1);
+  }
+
+  return (
+    <div className="container">
+      <div>{num}</div>
+      <div>
+        <button onClick={increment}>Increment</button>
+      </div>
+      {isLoading || data === null ? (
+        <div>Loading...</div>
+      ) : errorMsg ? (
+        <ErrorComp msg={errorMsg} />
+      ) : (
+        <Practicelist users={data} />
+      )}
+    </div>
+  );
+}
+```
+
+```
+import React from "react";
+import "./practiceList.css";
+import { User } from "./Practice";
+
+export function Practicelist({ users }: { users: User[] }) {
+  return (
+    <div className="user-list">
+      {users.map((user) => {
+        return (
+          <ul key={user.id} className="user">
+            <li>Name - {user.email}</li>
+            <li>Id - {user.id}</li>
+          </ul>
+        );
+      })}
+    </div>
+  );
+}
+```

@@ -6,7 +6,7 @@
 - Binaries are read byte by byte. Small "problems" in a binary will corrupt the entire file.
 - Text includes ALL non binary files
 - Binaries are sometimes used interchangeably as executables, but this is technically not correct
-- example of binaries include in windows .dll files
+- example of binaries that are NOT executables include windows .dll files
 
 ## Executables vs Binaries (most of the time)
 
