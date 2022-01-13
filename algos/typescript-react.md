@@ -47,3 +47,22 @@ function MyComponent({data}: {data: User}) {
 
 
 ```
+
+## typing separate props with default values
+
+```
+export function TestProps({
+  num = 0,
+  str = "N/A",
+}: {
+  num?: number; // must be optional if defautls are used
+  str?: string; // same
+}) {
+  return (
+    <div>
+      <div>{num}</div>
+      <div>{str}</div>
+    </div>
+  );
+}
+```
