@@ -363,14 +363,21 @@ Also this will yield significantly faster read time, but slightly slower write t
 
 - ex. `Kraken` used by uber
 
-### Polling and Streaming
+### Polling (continuous res-res loop at an interval) and Streaming (event driven)
 
 - when a client needs to request data that is continuously being updated like the weather or the status or something, the standard request model is not optimal
 - to see regularly updated pieces of data, `polling` or `streaming` can be used
 
 - Polling - the client simply sends a request based on a set interval. ex. client checks the status every 5 seconds. This could work for something that has regular changes, but not great for specific event change updates like a text message as data will be stale between the interval `n`. This can be mitigated by lowering the poll interval but it comes with extra load on the server.
 
-- Streaming - connects the client and server with a socket for a continuous link. The client listens to the server for any data that it may push. This works better for something like chat apps that only pushes data when a new text is pushed. In this case, the server is not looking for a request but must proactively push data to the client.
+- Http Streaming - client makes a req to server, then the server sends back data indefinitely. After the initial req, the server proactively continues sending data on event changes
+
+- Two ways of implementing HTTP streaming. Chunked and Server-Sent-Events.
+
+  - the server sends data as "Chunked" meaning incomplete and indefinitely keeps sending data back to client
+
+  - Can stream over simple http.
+  - not good for bidirectional communication
 
 - One is not necessarily better than the other. If the data needs instantaneous updating, use streaming. If the data only needs to be updated at an interval, use polling. Implmentation of polling is a lot easier
 
@@ -378,7 +385,25 @@ Also this will yield significantly faster read time, but slightly slower write t
 
 - both of these concepts work in a simple setup, but a publish/subscribe pattern will be needed with persistent data in a large scale distributed system
 
-- XMPP is a peer-to-peer protocol unlike the usual client-server model. It can be used for chat like websockets. Websockets are faster but less secure
+- XMPP is a peer-to-peer protocol unlike the usual client-server model. It can be used for chat as well as an alternative to websockets, but is slower and more secure.
+- Websocket (faster, TCP, less secure). XMPP (peer-to-peer, slower, more secure)
+
+### in the context of network types
+
+- polling uses req-res communication, but at a fixed interval
+- streaming doesn't require a request, but is event based. Event driven communication includes Streaming, WebHooks, WebSockets.
+
+### Webhooks
+
+- you register a server with an event (typically a single event) and a callback URL
+- when the event gets updated, send POST reqest to callback URL
+- good for specific events. Multiple events can be noisy and server will have to handle a lot of traffic
+
+### WebSockets
+
+- Client and Server handshakes initially (http), then switches to a bidirectional TCP.
+- is low latency communication and less overhead compared to http since you're not dealing with headers.
+- hard to scale and not secure
 
 ### PubSub Model
 
