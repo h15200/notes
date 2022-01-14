@@ -526,3 +526,7 @@ Height: 100%;
 Width: 100%;
 Object-fit: cover
 }
+
+### v4
+
+- when using gatsby-plugin-image, MAKE SURE that it's added to the config file. GatsbyImage will STILL WORK for some reason even if you forget to add it, but act weird
