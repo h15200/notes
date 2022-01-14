@@ -119,7 +119,6 @@ export function Practice() {
         userData = await fetchHelper(
           "https://jsonplaceholder.typicode.com/users",
         );
-      } catch (e: any) {
         if (isMounted) {
           setErrorMsg(e.message);
         }
