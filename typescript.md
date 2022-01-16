@@ -37,21 +37,14 @@ Typescript transpiles (compiling is going from human code to machine code) to re
 
 ## Setup and compiling
 
-To install typescript, `npm i -g typescript ts-node`
-To see if you already have it, `tsc -v` which stands for typescrip compiler
+- To install typescript, start a new project and `npm i -g typescript ts-node`
+- `tsc --init --sourceMap --rootDir src --outDir build` // sourceMap is for debugging, make entry point src and output build in case you want to build js files
 
-Inside your project dir, make a projectName.ts file
-After writing ts, remember it won't just with `node filename.js` like with regular js. You need to compile it first.
+- After writing ts, remember it won't just with `node filename.js` like with regular js. You need to compile it first.
 
-In the terminal, you can `tsc filename.ts` to create a filename.js file in the same dir
-OR
-use `ts-node filename.ts` which skips building index.js and just runss the ts
-
-Best practice to have a src dir with the ts file (which you write)
-and a build dir with the compiled js file (which tsc biulds automatically which you don't touch)
-
-To do so, make a tsconfig.file by running on the terminal
-`tsc --init` inside the ROOT dir, not the src or build subdirs.
+- In the terminal, you can `tsc filename.ts` to create a filename.js file in the same dir
+  OR
+- use `ts-node filename.ts` which skips building index.js and just runss the ts
 
 ## Setting up a TS project JUST IN NODE
 
