@@ -147,13 +147,16 @@ If there are only 2 microservices, it's a sign you should just use a monlithic s
 
 - Reverse proxy also sits in the SAME place as a forward proxy, in between the client and server but on behalf of the SERVER. It can log, cache, load balance or do anything as an additional step before the original client request reaches the server.
 
+- all load balancers are also reverse-proxies. you can have a reverse-proxy even if you only have 1 service to do things like config, routing, optimization for faster first paint etc...
+
 ex- `Nginx` is a popular reverse proxy used for load balancing
 
 ### Load balancers
 
-Hardware vs Software
-Hardware load balancers are actual structures.
-Software load balancers are USUALLY what systems design interviews are refering to. Software is more flexible in what you can do.
+- Hardware vs Software
+
+  - Hardware load balancers are actual structures.
+  - Software load balancers are USUALLY what systems design interviews are refering to. Software is more flexible in what you can do.
 
 - is a type of reverse proxy (most of the time) as a reverse proxy sits in between the client and server on behalf of the server.
 - can be set for the database, or even on the dns layer (google.com has many IPs and the DNS roundrobin will assign a requeset to the correct dns server to respond with a domain name)
@@ -283,15 +286,13 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 #### Optimizing queries
 
-#### Indexing
+#### Indexing (read-optimization)
 
-background - a sorted record can be searched with binary log2 N time, but an unsorted one will require linear time.
+- a sorted record will allow binary search O(log2 N), but an unsorted one will require linear time.
 
-Indexing will create another data structure which holds the field value and a pointer to the record, allowing binary searches to be performed. Like a table of contents.
+- indexing will create another data structure which holds the field value and a pointer to the record, allowing binary searches to be performed. Like a table of contents.
 
-Downside is that these index structures will require more disk space, so you are sacrificing space for time.
-
-Also this will yield significantly faster read time, but slightly slower write time
+- Downside is that these index structures will require more disk space, so you are sacrificing space for time. ALSO, this will optimize for read, but slow down write operations slightly
 
 ### database failures
 
