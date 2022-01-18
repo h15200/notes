@@ -48,6 +48,11 @@ function MyComponent({data}: {data: User}) {
 
 ```
 
+## NOTE with fetch
+
+- fetch does NOT throw an error when a url is wrong
+- the way to handle error is to manually throw or use error state by checking the response.ok. If `!response.ok`, then something went wrong
+
 ## typing separate props with default values
 
 ```
@@ -87,12 +92,13 @@ export interface User {
 
 async function fetchHelper(url: string): Promise<User[]> {
   let res;
-  try {
+
     res = await fetch(url);
-  } catch (e) {
-    console.log("Error on fetch: ", e);
+  if (!res.ok) {
+    console.log("Error on fetch: ", );
     throw Error("Something went wrong during fetch");
   }
+
   let userData: User[];
   try {
     userData = await res.json();
