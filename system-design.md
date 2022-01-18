@@ -257,12 +257,18 @@ solution: store the queue in a database, each server sends a NOTIFIER a heartbea
 ### Databases (relational, non-relational)
 
 Reasons for:
-Relational - ACID complicance. data is structured and unchanging
-Non-Relational - large volumes of data that require little to no structure, makes the most of cloud computing and storage for horizontal scaling
 
-A relational database that supports SQL (most of them) has the power of running SQL directly without having to load the data in memory.
+#### Relational db (sql)
 
-If you want to use a script (js, python) on data, you have to first put that in memory which is probably impossible with large dbs
+- ACID complicance. data is structured and unchanging, strong consistency
+- A relational database that supports SQL (most of them) has the power of running SQL directly without having to load the data in memory.
+
+#### Non relational db (no sal)
+
+- is essentially a hash table. constant time operations
+- has less structure and less querying power
+- makes the most of cloud computing and storage for horizontal scaling.
+- may not offer strong consistency, but eventual consistency as it is not acid compliant
 
 ### Other specialized Storage Paradigms
 
@@ -292,7 +298,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - indexing will create another data structure which holds the field value and a pointer to the record, allowing binary searches to be performed. Like a table of contents.
 
-- Downside is that these index structures will require more disk space, so you are sacrificing space for time. ALSO, this will optimize for read, but slow down write operations slightly
+- Downside is that these index structures will require more disk space, so you are sacrificing space for time. ALSO, this will optimize for read, but slow down write operations slightly because you'd have to write to the normal db, then write to the index as well
 
 ### database failures
 
