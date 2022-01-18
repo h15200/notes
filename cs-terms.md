@@ -82,7 +82,7 @@
   - `procedure` - a routine that doesn't return anything
 - can be inside classes (class routines) or outside
 
-## threads, locks, race condition, and mutex
+## threads, locks, race condition, and mutex (can be also called gate or guard)
 
 - in multi-threaded languages, a `race condition` will occur if multiple threads are trying to mutate global data, which cause unexpected issues. The solution to this problem is to LOCK the write access to this while one thread is working onit
 - the mechanism of locking/unlocking is handled by a mutex (mutual exclusive).
