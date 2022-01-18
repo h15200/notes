@@ -268,7 +268,10 @@ Reasons for:
 - is essentially a hash table. constant time operations
 - has less structure and less querying power
 - makes the most of cloud computing and storage for horizontal scaling.
-- may not offer strong consistency, but eventual consistency as it is not acid compliant
+
+- key-value store dbs (the majority of non-relational dbs) are used often to cache
+- examples DynamoDb, Redis (in-memory storage only, often used for rate-limiting), Etcd (used for leader election), ZooKeeper (used for leader election)
+- some may offer strong consistency, but since no sql dbs are not ACID compliant, some may only offer eventual consistency (usually with a trade-off of having faster performance)
 
 ### Other specialized Storage Paradigms
 
@@ -302,6 +305,10 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 ### database failures
 
+- two main ways of ensuring backup
+  - replicating, or duplicating the main db. The backup will take over if the main goes down.
+  - sharding (splitting up) a db will increase throughput by lessening the load and distributing
+
 #### Replication - preventing an outage with
 
 - prevent a single point of failure by replicating a db to a backup in case the main fails.
@@ -312,7 +319,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 #### Sharding - Data partitioning over multiple databases
 
-- if scaling horizontally (adding machines) with servers, all you need is to copy the business logic. sometimes if you have a in-memory key-value storage like Redis for caching, you need to worry about hash strategies (use `consistent hashing` or `rendezvous hashing`). with dbs, there's an extra layer as it carries data
+- if scaling horizontally (adding machines) with state-less servers, all you need is to copy the business logic. sometimes if you have an in-memory key-value storage like Redis for caching, you need to worry about hash strategies (use `consistent hashing` or `rendezvous hashing`). with dbs, there's an extra layer as it carries data
 
 - it's not efficient for all dbs to have the same data. Better to break up a big db into many smaller parts.
 - this logic is usually written in a reverse-proxy (on behalf of the db) so that certain data goes to a particular shard
@@ -336,7 +343,12 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 ### Leader Election
 
-- for example if you have a subscription service like Netflix, when using a 3rd party service like paypal to process payments, you don't want that 3rd party service to have direct access to your UsersDb.
+- the same idea of threads and locks but in a distributed system
+- used when only 1 of the replicated nodes should be reponsible fo something
+
+  - for example if you have a subscription service like Netflix, when using a 3rd party service like paypal to process payments, you don't want that 3rd party service to have direct access to your UsersDb.
+
+  - another example is repliacted dbs. Only the main active one should be in charge of writing so data is consistent
 
 - Usually there is a service that sits between your db and the 3rd party service that has access to your db and checks the status of `payments` or something, and communicates with the payment service. When you have important logic like payment, you want passive redundancies of this middle service so that only one "leader" takes care of the logic and the others are on standby.
 
