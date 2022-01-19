@@ -249,8 +249,10 @@ solution:
 
 ### Message Queue / Brokers
 
+- a message queue is used by a service to just say "ok we got the request, but we won't try to do it now and will instead put it on a todo list". This ensures that the servcer doesn't get overloaded and the requests are never lost, for the price of delayed processing
 - very similar to load balancing (with health server heartbeat checks) but the main difference being message queues are ASYNCHRONOUS for time consuming tasks and load balancing is SYNCHRONOUS
 - a COMBINATION of services that include having a NOTIFIER that keeps track of which servers are healthy (heartbeat sent to notifier)
+- a variety of ways that this can be handled. For example, you can just tell the client "ok we did it!" while in reality it's happening a little after
 - The notifier also has access to a db that keeps a queue of asynchronous tasks to persist tasks
 - queues are used to effectively manage requests in a large-scale distributed system to allow us to decouple our processes and distribute/throttle processing load.
 - because it's async, it frees up the requester from the process
@@ -391,10 +393,11 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - ex. `Kraken` used by uber
 
-### Polling (continuous res-res loop at an interval) and Streaming (event driven)
+### Polling (continuous req-res loop at an interval) and Streaming (event driven)
 
 - when a client needs to request data that is continuously being updated like the weather or the status or something, the standard request model is not optimal
 - to see regularly updated pieces of data, `polling` or `streaming` can be used
+- `streaming` is also called `pushing`
 
 - Polling - the client simply sends a request based on a set interval. ex. client checks the status every 5 seconds. This could work for something that has regular changes, but not great for specific event change updates like a text message as data will be stale between the interval `n`. This can be mitigated by lowering the poll interval but it comes with extra load on the server.
 
@@ -415,6 +418,10 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - XMPP is a peer-to-peer protocol unlike the usual client-server model. It can be used for chat as well as an alternative to websockets, but is slower and more secure.
 - Websocket (faster, TCP, less secure). XMPP (peer-to-peer, slower, more secure)
+
+- pub/sub and streaming are the same "category" of techniques as the client signs up to a topic. Polling is not, as it's just a repeated http request
+
+- `long polling` keeps the connection alive so that some parsing steps can be skipped over after the initial req. it is a technique used to make polling more efficient
 
 ### in the context of network types
 
@@ -464,7 +471,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - this can be thwarted by Rate Limiting which returns an error code `429` "Too many requests" on a request based on parameters like ip address / user, number of requests per minute, region
 
-- DDoS (DISTRIBUTED DoS) attacks are done from multiple client sources, and is harder to prevent with a smiple rate limiting on ip address / user.
+- DDoS (DISTRIBUTED DoS) attacks are done from multiple client sources, and is harder to prevent with a smiple rate limiting on ip address / user. In a distributed system, the rate limiting will need to be checked against another entity that connects to ALL replicas of the server like a redis server
 
 - Implementation can be done with a key-value in memory store like `redis`. The server gets a request, then asks redis "hey are we doing ok with rate limiting?" before responding
 
