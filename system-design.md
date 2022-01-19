@@ -141,6 +141,15 @@ CONS
 
 If there are only 2 microservices, it's a sign you should just use a monlithic structure.
 
+## protocols
+
+- `ip/tcp` (ensures delivery with handshakes and ackknowledgements).
+  - websockets are built with ip/tcp
+- `http` built on top of ip/tcp with encryption and identify verification
+- `smpp` (short message texting) twilio
+- `udp` (no ackknowledgement flow, so FASTER but some packets will be lost) video, voice
+- `xmpp` peer network (peer-to-peer networks can be built with xmpp or with tcp)
+
 ### Proxies
 
 - Forward (default) proxies sit between the client and server on behalf of the CLIENT. It can be used as a cache, add/remove headers. It masks the client IP to the server. Most notable example is a VPN (Virtual Private Network).
@@ -364,7 +373,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 ### Peer-to-peer networks
 
 - used often in file distribution systems
-
+- built with tcp/ip
 - when big data needs to be transferred to many clients or peers
 
 ```
