@@ -144,11 +144,15 @@ If there are only 2 microservices, it's a sign you should just use a monlithic s
 ## protocols
 
 - `ip/tcp` (ensures delivery with handshakes and ackknowledgements).
+  - tcp have built in encryption using TLS
   - websockets are built with ip/tcp
+  - is not a strict client-server model. Data can go both ways in any order
 - `http` built on top of ip/tcp with encryption and identify verification
+  - is a client-server model. The client must first request, and the server replies
 - `smpp` (short message texting) twilio
 - `udp` (no ackknowledgement flow, so FASTER but some packets will be lost) video, voice
 - `xmpp` peer network (peer-to-peer networks can be built with xmpp or with tcp)
+  - `xmpp` is slower but more secure than `tcp` websocket. It has additional encryption logic on top of TLS, which TCP also has
 
 ### Proxies
 
@@ -520,6 +524,14 @@ Both distributed file systems and blob storage will be governed by a service tha
 - auth / gateway service
 
 in most systems with a user that requires a profile via email/password, always make the point to send that info as a hashed token (instead of the password itself) and that the client will always connect to gateway service that takes care of auth. If authenticated, the gateway will then forward the request to the correct micro service. Then it will also forward the response back to the client.
+
+### blob db vs distributed file system
+
+- a blob store can be relational or non-relational key-value pair
+  - if it's relational, it is ACID complient.
+  - use a blob store if the info is unstructured and sensitive
+- a distributed file system is usually cheaper and faster. should be first choice
+  - you still need a db to map the imageId or dataId to FileUrl
 
 ### Api Design
 
