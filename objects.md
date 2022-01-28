@@ -1,135 +1,134 @@
-key in object
+## key in object syntax
 
-the inverse of
-`if (key in object)`
-
-needs to be parenthesized like so
-`if (!(key in object))`
+- the inverse of `if (key in object)`needs to be parenthesized like so
+  `if (!(key in object))`
 
 ## Property Descriptor
 
-All object properties (including accessors and methods) have a property descriptor object that shows 4 thigns
+- All object properties (including accessors and methods) have a property descriptor object that shows 4 things
 
 1. writable - can value be overwritten?
 2. enumerable - will key/value show up in a for - in loop?
 3. value - the value attached
 4. configuarable - can property definition be changed?
 
-To access it in JS,
+- To access it in JS,
 
 `Object.getOwnPropertyDescriptor(obj, key;`
 
-To CHANGE the property descriptor,
+- To CHANGE the property descriptor,
 
 `Object.defineProperty(obj, key, { writable: false })`
 // now you've changed the property such that its value can't be updated!
 
 ## YDKJS
 
-Reminder - when using Object.create( <prototype to model after>, {additional props} }
+- when using Object.create( <prototype to model after>, {additional props} }
 
-For the additional props, you must use another object with keyword ‘value’!
+- For the additional props, you must use another object with keyword ‘value’!
 
-    { name:
-         { value: ‘Patti },
-      age:
-        { value: 32 } }
+  { name:
+  { value: ‘Patti },
+  age:
+  { value: 32 } }
 
 Now the new object.name is equal to ‘Patti’
 
-Keyword “in”
+- Keyword “in” console.log( “prop/keyName” in obj) // will return true or false based on property
 
-console.log( “prop/keyName” in obj) // will return true or false based on property
+- Objects can hold functions simply by the function name as key and omitting : and the value if the function was declared before. - Ex. func whatever(){};
+  let obj = {name:”Patti”, whatever} // whatever is the key and the function itself is the value attached
 
-Objects can hold functions simply by the function name as key and omitting : and the value if the function was declared before.
+## this
 
-Ex. func whatever(){};
-let obj = {name:”Patti”, whatever} // whatever is the key and the function itself is the value attached
+- “this”binding is determined by HOW and WHERE the function was called, aka CALL-SITE
+- Always used in a function.
+- simply get the left hand of the . notation `[something].method` => `this` inside method refers to something object. If it's nested, only the DIRECT object will work. Otherwise, it will just refer to global window object
+- Call-site - location in code where the function is CALLED (not declared! NOT lexical)
 
-“this”binding is determined by HOW and WHERE the function was called, aka CALL-SITE
-Always used in a function.
-Call-site - location in code where the function is CALLED (not declared!)
-(The site where it’s declared is all about lexical scope and closures)
-4 Rules of “this” and call-sites
-Default Binding - If no other binding rules apply, this is the default. If a function is called in global, “this” in a function refers to the global scope. Does NOT WORK if function is declared in “strict mode”. Usually not used
+- 4 Rules of “this” and call-sites
 
-    function func() {
+  1.  Default Binding - If no other binding rules apply, this is the default. If a function is called in global, “this” in a function refers to the global scope. Does NOT WORK if function is declared in “strict mode”. Usually not used
 
-console.log (this.a)
-}
-Var a = 4;
-func(); // bad usage of “this” , but would print “4” in non-strict mode.
+  - ex
 
-      2.  Implicit Binding - if function call-site has a context object
+  ```function func() {
+  console.log (this.a)
+  }
+  Var a = 4;
+  func(); // bad usage of “this” , but would print “4” in non-strict mode.
+  ```
 
-obj.func() OR obj [func]
+  2.  Implicit Binding - if function call-site has a context object
 
-function useThis() {
-console.log(this.a); }
+  - works with bothdot or bracket notation. obj.func() OR obj [func]
+  - ex
 
-           let obj = {a: 2,
+    ```
+    function useThis() {
+    console.log(this.a); }
 
-func: null};
-
+    let obj = {a: 2, func: null};
     obj.func = useThis;
 
-          obj.func();  // function useThis() call site. Indicates there IS context object - called via obj
+    obj.func();  // function useThis() call site. Indicates there IS context object - called via obj
 
-dot or bracket notation.
+        // prints 2 because “this.a” in this binding refers to obj.a
+    ```
 
-    // prints 2 because “this.a” in this binding refers to obj.a
+    - Only the most recent chain matters. obj1.obj2.obj3.obj4.func(); //”this” points to obj4
 
-    Only the most recent chain matters. obj1.obj2.obj3.obj4.func();  //”this” points to obj4
+    - In order to implicitly (indirectly) bind “this”, you have to create and mutate an object and use the property function reference to call the function.
 
-In order to implicitly (indirectly) bind “this”, you have to create and mutate an object and use the property function reference to call the function.
+3.  Explicit Binding - Just like strings and arrays, functions also have methods that are built in.
 
-If you don’t want to do that...
+    - function.name; // gets the original name when the function was declared
+    - function.length; // gets number of parameters function calls for
+    - function.toString(); // returns the function definition
 
-     3.   Explicit Binding - Just like strings and arrays, functions also have methods that are built in.
-    function.name; // gets the original name when the function was declared
-    function.length; // gets number of parameters function calls for
-    function.toString(); // returns the function definition
+    - function.call(someObj, arg1, arg2) //used to call the function AS A PROPERTY of the arg object
+    - funciton.apply(someObj, [arg1, arg2]) // same as call but the args can be inside one array as the 2nd arg
+    - function.bind(someObj) // creates a new function with the new binding of `this`
 
-    function.call() //used to bind “this” to reference to object in parameter
+      - for bind, the args can also be added. uses the .call syntax so each one must be a separate arg
+      - Hard Binding - if you set a function to use func.call(obj) and call the function, then the “this” will always be bound to that particular obj.
 
-Hard Binding - if you set a function to use func.call(obj) and call the function, then the “this” will always be bound to that particular obj.
+    - NOTE - “this” does not bind inside functions that are arrow functions. You can use function expressions (const a = function () {}) or declarations (function a() {}), but NOT arrow functions.
 
-NOTE - “this” does not bind inside functions that are arrow functions. You can use expressions or declarations, but no arrow functions.
+    - ex.
 
-function() { console.log(this.name);};
+    ```
+    function() { console.log(this.name);};
+    const h = {name: "Hideaki", age: 37};
+    func(); // would raise error as “this” is using default binding rule, and there is no var name
+        in global, and we are in strict mode anyway so it wouldn’t work.
 
-let h = {name: "Hideaki", // declared object h with the name property
-age: 37};
-func(); // would raise error as “this” is using default binding rule, and there is no var name
-in global, and we are in strict mode anyway so it wouldn’t work.
+    func.call(h); // GOOD! (h) parameter specifies which object “this” should refer to. returns “Hideaki”
 
-func.call(h); // GOOD! (h) parameter specifies which object “this” should refer to. returns “Hideaki”
+    ```
 
-    To use function methods, just use the name of the same function. // function.name
+    - <invokeThisFunctionName>.call(<theObjectToBind”this”>, additional arguments);
 
-Review:
-<invokeThisFunctionName>.call(<theObjectToBind”this”>, additional arguments);
-
-You can also use
-function.bind(obj) // returns an updated function with the (obj) already explicitly bound to function.
+    - You can also use function.bind(obj) which returns an updated function with the (obj) already explicitly bound to function.
 
     4. “New” binding
 
-    In JavaScript, there is no connection between using the word “new” and class-oriented functionality. In JS, constructors are just FUNCTIONS that are called with “new” in front of them and they are not attached to classes. There aren’t even constructor functions, technically. There are only constructor CALLS of functions.
+    - In JavaScript, there is no connection between using the word “new” and class-oriented functionality. In JS, constructors are just FUNCTIONS that are called with “new” in front of them and they are not attached to classes. There aren’t even constructor functions, technically. There are only constructor CALLS of functions.
 
-When a function is invoked with “new” (aka constructor call), these things happen:
+    - When a function is invoked with “new” (aka constructor call), these things happen:
 
-A new object is created out of thin air
-The newly constructed object is [[Prototype]] linked (more on this later)
-The newly constructed object is set as the “this” binding for that function call
-Unless the function returns its own alternate obj, this constructor call will return the newly constructed object.
+      - A new object is created out of thin air
+      - The newly constructed object is [[Prototype]] linked
+      - The newly constructed object is set as the “this” binding for that function call
+      - Unless the function returns its own alternate obj, this constructor call will return the newly constructed object.
 
-New binding takes precedence over explicit, then implicit.
+    - New binding takes precedence over explicit, then implicit.
 
-Exception: returned arrow functions will bind “this” based on lexical scope of when it was called.
+    - Exception: returned arrow functions will bind “this” based on lexical scope of where it was called.
 
-A LOT OF built in methods (for example, array methods) have a built in additional parameter to bind a certain obj to the “this” of the function.
+    - A LOT OF built in methods (for example, array methods) have a built in additional parameter to bind a certain obj to the “this” of the function.
 
+```
 function foo(el) {
 console.log( el, this.id );
 }
@@ -140,8 +139,32 @@ id: "awesome"
 
 // when you pass in a second argument to forEach, it will bind the object to the function and allow “this” inside the function
 [1, 2, 3].forEach( foo, obj ); // 1 awesome 2 awesome 3 awesome
+```
 
-    		OBJECTS
+## Lexical Scope VS Dynamic Scope
+
+- Lexical is `authored` location. Used to determine VARIABLE and local execution context and closure
+- Dynamic scope is the `call` location. Used to determine `this` context
+- Historically, `this` being dynamically scoped while almost every other aspect of JS being lexically scoped has been confusing. Arrow functions will solve this issue by using lexical scoping instead
+
+## bind() as function cloner, currying
+
+- bind is primarily used to bind a new `this` context and return a function clone, but the cloning part is also useful for currying
+- ex.
+
+```
+function multiply(a, b) {
+    return a * b
+};
+
+const multiplyBy2 = multiply.bind(null, 2);  // since we're just using it to clone a function, the first arg doesn't matter since multiply doesn't even use `this`
+
+// makes a clone with the "a" arg already filled out as 2
+
+multiplyBy2(4) => returns 8
+```
+
+## OBJECTS
 
 Objects - Built in objects such as numbers, boolean, string, object, function, array, date, regexp, error can all be used to construct a new instance of these
 
@@ -339,8 +362,8 @@ Object.create(<prototypeObj>) // returns an object based on another Obj. Will ha
 
 So let obj = {a:2};
 
-let anotherObj = Object.create(obj);  
-console.log (anotherObj); // returns an empty object {}  
+let anotherObj = Object.create(obj);
+console.log (anotherObj); // returns an empty object {}
 console.log(anotherObj.a); // prints “2” because prototype of anotherObj, obj has property “a”
 
 A for...in loop will also iterate the keys of the prototype (if enumerable property is true).
@@ -400,8 +423,10 @@ better to store in dunder proto, `__proto__`
 ### Object.create()
 
 ```
+
 const factory = {greet: () => 'hi'}
 Object.create(factory); // returns an object that has a `__proto__` with the greet function
+
 ```
 
 ### using new with functions
@@ -411,31 +436,47 @@ functions can have prototypes that is used as ingredients to form `__proto__` up
 even better is to use a factory function.
 
 ```
+
 function UserCreator(name, score) {
-    this.name = name;
+this.name = name;
 }
 
-UserCreator.prototype.greet = function () { 'hi' }  // this CAN NOT BE an arrow function!
+UserCreator.prototype.greet = function () { 'hi' } // this CAN NOT BE an arrow function!
 
 const user = new UserCreator;
 
 // now user has `__proto__` based on prototype
 user.greet // returns 'hi'
+
 ```
 
 ### using classes (syntax difference only)
 
 ```
+
 class UserCreator {
-    constructor (name) {
-        this.name = name
-    }
-    greet () {
-        console.log('hi')
-    }
+constructor (name) {
+this.name = name
 }
+greet () {
+console.log('hi')
+}
+}
+
 ```
 
 adding a method to a class is actually adding UserCreator.prototype.greet.
 
 const user = new UserCreator;
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
