@@ -87,3 +87,13 @@
 - in multi-threaded languages, a `race condition` will occur if multiple threads are trying to mutate global data, which cause unexpected issues. The solution to this problem is to LOCK the write access to this while one thread is working onit
 - the mechanism of locking/unlocking is handled by a mutex (mutual exclusive).
 - in terms of code, each thread should call mutex.lock() before making changes to global data, then only after the op is done, call mutex.unlock(). While the data is locked, other threads will have to wait until it is unlocked
+
+## statically typed vs dynamically typed
+
+- dynamic means there's no type declarations
+- js is dynamically typed, typescript is statically typed
+
+## strongly typed vs weakly typed
+
+- weakly means you can combine types "hello" + 3 = "hello3". 3 is a num but is coerced into a string
+- JS is weakly typed and Python is strongly typed. Both are dynamically typed
