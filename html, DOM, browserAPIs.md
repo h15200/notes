@@ -20,6 +20,24 @@ ALL things in the dom are basically objects with built-in methods
 2. DOM is exposed to javascript via `document`
 3. Browser loads the js script LAST
 
+## selecting a dom element
+
+- generally, best to just use `document.querySelector("div")`
+- it is versatile and can be used for classes `document.querySelector(".header_1")` and ids as well `document.querySelector("#top")`
+
+## creating
+
+- `document.createElement('div')`
+
+## deleting
+
+- 2 main ways to delete
+
+1. get element, then just that element.remove()
+2. from parent, parent.removeChild(childEle)
+
+- select the element
+
 ## Rendering additional html from js
 
 `<template>` elements can render strings like `<div>hi</div>`
@@ -120,13 +138,6 @@ templateElement.innerHTML = `<div> <h1 class="header-primary">Hi</h1> </div>`;
 
 ```
 
-## DOM
-
-You need to go to the parent to remove a node, as the only way to do it is to remove the child
-removeChild() needs to be called with the element so the syntax is
-
-`parentElement.removeChild(theChildToRemove)`
-
 ## fetch()
 
 Remember it's async and that you need to use response.json() (not json.parse), which is also sync
@@ -163,9 +174,53 @@ if (navigator.geolocation) {
 In html, you can use `&lt;`
 but if you want to render it through javascript on an event, use hexcode.
 
-## to set attributes
+## get / set / delete attributes
 
-If you want to dynamically change the src of an image tag
+- if there is a <div id="hi">Hi</div>
+
+- ways to get the attribute:
+
+  - `const div = document.querySelector("span")`
+    `div.getAttribute("id");`
+  - also you can get it directly `div.id`
+
+- If you want to dynamically change the src of an image tag
+
+```
+const img = document.querySelector("img");
+img.setAttribute("src", "123");
+
+OR JUST
+img.src = "123";
+
+
+```
+
+- removing an attribute
+  - `ele.removeAttribute("src");`
+
+## data set
+
+- you can add any custom attribute to dom elements with name `data-[anything]`
+- <div data-my-age="40"></div>
+- this can be accessed by `dataset` in js `myEle.dataset` => {
+  myAge: 40
+  }
+- you can remove/add/edit like any other attribute
+  - `myEle.dataset.newName = "Patti"; (automatically converts from camelcase to hyphen case)
+
+## classes
+
+- given <div class="h1"></div>'
+  - ele.classList.add('new-class');
+  - ele.classList.remove('h1');
+- you can use `classList.toggle` to either remove it if it already exists, or add if it's missing
+  - ele.classList.toggle('show');
+
+## directly modifying styles
+
+- use camelCase in js for the css equivalent
+- span.style.backgroundColor = "red"
 
 ## NodeList is NOT a JS array
 
@@ -184,6 +239,10 @@ Executes a provided function once per NodeList element, passing the element as a
 Returns an iterator, allowing code to go through all the keys of the key/value pairs contained in the collection. (In this case, the keys are numbers starting from 0.)
 `NodeList.values()`
 Returns an iterator allowing code to go through all values (nodes) of the key/value pairs contained in the collection.
+
+## Event listeners
+
+- always remove to avoid memory leaks
 
 ## STOP PROPAGATION
 
