@@ -14,6 +14,16 @@
 
 ALL things in the dom are basically objects with built-in methods
 
+## linking syntax
+
+in <head>,
+
+<link rel="stylesheet" href="/path"> // don't need to close
+
+at end of body
+
+<script defer type="text/javascript" src="/path"></script> // close tag
+
 ## steps
 
 1. HTML page loads, browser creats a Document Object Model

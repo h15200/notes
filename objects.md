@@ -465,18 +465,4 @@ console.log('hi')
 
 ```
 
-adding a method to a class is actually adding UserCreator.prototype.greet.
-
-const user = new UserCreator;
-
-```
-
-```
-
-```
-
-```
-
-```
-
-```
+- adding a method to a class is the same as adding UserCreator.prototype.greet.

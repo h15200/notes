@@ -205,3 +205,111 @@ cleaner code to have
 you can increment to the current value or 0 by doing something like
 
 `tally[val] = (tally[val] || 0) + 1`
+
+## IIFE and npm modules
+
+- older npm libraries like jQuery was just a script that ran one huge IIFE. This was to avoid contaminating the global namespace
+
+- the following code just creates a global object, `hideaki` which contains all library methods. This way calling `hideaki.fetch()` does not collide with the normal fetch web api
+
+```
+const hideaki = (() => {
+    function test () {
+console.log('npm test');
+    }
+
+function slice() {
+console.log('my slice!');
+}
+
+function fetch() {
+console.log('fetch me a pizza, please!')
+}
+
+return {
+  test,
+slice,
+fetch
+}
+})()
+```
+
+## 2 pillars of js
+
+- `closure` and `prototypes` give javascript unique functionality
+- a closure is an exception to garbage collecting when a function is using a variable from a parent scope. In this case, the parent stack is popped off but any variables being used in the inner function stays in the heap.
+- closures can keep data private, persist info in memory, and memoize
+
+- all js data inherits all properties based on its `__proto__`.
+- you can manually change the proto by doing something like this, but DON'T EVER DO THIS! bad performance, bad practice, etc.. use classes or `Object.create([obj to inherit])`
+
+```
+const car = {
+  color: "blue",
+  getColor: function () {
+    return this.color
+  },
+}
+
+const myCar = {
+  color: "red";
+}
+
+myCar.__proto__ = car;
+
+myCar.getColor() // returns "red"
+
+```
+
+- the `class` keyword was added so you can manuever around prototypal inheritance as if they were class inheritance
+- `[someObj].hasOwnProperty(propName)` will check if the property is on the actual object as opposed to the prototype object. It will exclude prototype props.
+
+- all js data has a `.__proto__` property which eventually leads to the "base" object. If you ask for the `__proto__` of that base obj, it will return null as it's the base prototype
+
+### WEIRD Proto stuff
+
+- all js data types have a `__proto__` property
+- ONLY FUNCTIONS have `prototype`
+- since classes are functions, built-in JS objects with capital letters `Date`, `String`, `Object` ARE functions since they are constructors.
+- you can add built-in prototype like
+
+```
+Array.prototype.myMethod = function () {
+  for (let i = 0; i < this.length; i++) {
+    console.log('poop');
+  }
+  }
+  }
+}
+```
+
+### difference between `__proto__` and prototype in function
+
+- `__proto__` is the reference of what a child used to inherit from the parent. It's the parent's properties
+- `prototype` is the object that's used to inherit for a CHILD of the current object. What's going to be passed down
+
+  - if a child function inherits from a parent, `child.__proto__ === parent.prototype`
+
+- code example:
+
+```
+class Car {
+  color = 'red'
+  getColor() {
+    return this.color;
+  }
+}
+
+const myCar = new Car();
+
+myCar.__proto__ === Car.prototype // true
+```
+
+## functional vs OOP
+
+- in js, functions are 1st class citizens. Under the hood, functions are objects.
+
+## ecma 2020
+
+- nullish coalesce: `const thing = obj?.prop1 ?? "no prop"`
+- it is similar to `||` which tests for truthy / falsey, but `??` tests only for if data is `undefined / null`. If the left hand side of `??` is EITHER null or undefined, it will use the right hand side option
