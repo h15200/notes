@@ -282,3 +282,28 @@ html
 
 react
 `return <img src={props.src} onError={someFuncToRunIfThereIsError}></img>`
+
+## most dom apis work on each element
+
+- const section = document.querySelector(".section");
+  section.querySelectorAll(".input") // get all .input class elements INSIDE this section
+
+## child
+
+- to get child element, use `.childElement` instead of `.childNode.`. Generally, use the api that has teh word `element` and not node
+
+## sibling
+
+- to get next sibling, use `ele.nextElementSibling`
+
+- previous sibling is `ele.previousElementSibling`
+
+## closest
+
+- the opposite of querySelector is `closest`. Gets the first match that is the ancestor (as opposed to child) of the `this` element that's calling the method.
+
+`child.closest(".input")` // gets 1st parent ele that has class of "input"
+
+## Array.from()
+
+- some queries return a list that is not a nodeList, but a collection that doesn't have a .forEach method. If that's the case, just wrap it in Array.from

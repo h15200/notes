@@ -313,3 +313,15 @@ myCar.__proto__ === Car.prototype // true
 
 - nullish coalesce: `const thing = obj?.prop1 ?? "no prop"`
 - it is similar to `||` which tests for truthy / falsey, but `??` tests only for if data is `undefined / null`. If the left hand side of `??` is EITHER null or undefined, it will use the right hand side option
+
+## Map
+
+- maps are ordered, so they can be helpful in certain algos
+- syntax is more c++ esque with iterators
+
+- `const orderedMap = new Map()`
+- orderedMap.set('myKey', 'myVal');
+- orderedMap.get('myKey') // returns val
+- orderedMap.delete('myKey') // deletes and returns bool
+- const iterator = orderedMap.keys();
+  iterator.next().value // returns the key of the first key value. if ran again, the 2nd item
