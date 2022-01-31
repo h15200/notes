@@ -325,3 +325,75 @@ myCar.__proto__ === Car.prototype // true
 - orderedMap.delete('myKey') // deletes and returns bool
 - const iterator = orderedMap.keys();
   iterator.next().value // returns the key of the first key value. if ran again, the 2nd item
+
+## OOP vs Functional Programming
+
+- the 2 main paradigms of how to organize code
+- current trend (2021) leans slightly towards FP
+
+- the main philosophical difference is in OOP, the data and behaviors are packaged into one object, or class
+- in FP, the behavior is separated from the data
+
+### OOP
+
+- two main ways of having an OOP paradigm
+
+1. class based (c++)
+2. prototype based (js)
+
+- prototype checking is tricky. better to use `thingA instanceof thingB` to check for instantiated classes
+
+- 4 pillars of OOP
+
+1. Encapsulation - both members and methods are in one place
+2. Abstraction - controlling complexity at the appropriate data level. Devs don't need to know about the inner works
+3. Inheritance - Avoiding memory space and redundant coding
+4. Polymorphism - Ability to overload methods inside subclass implementation
+
+### Functional Programming (FP)
+
+- functional programming concepts work well in a distributed system
+- relevant concepts include HOF, closure, memoization, currying
+- data and functions are SEPARATED (as opposed to OOP classes where it's combined)
+- goals are the same as OOP. clear, maintainable, well performing, non repetitive coding
+
+- `HOF` higher order functions either:
+
+  1. takes in a function as an arg
+  2. returns a function
+
+- `currying` technique of turning a function with multiple params into separate functions which all take exactly 1 param.
+
+  - similar to OOP classes. Used as a factory function
+
+- `Partial Application` is an adjacent technique to `currying`. In partial application, you pre-fill some of the multiple params using the bind method
+
+  - ex.
+
+  ```
+    function addThree(a, b, c) {
+    return a + b + c;
+    }
+
+  // Partial Application
+  const partialAdd = addThree.bind(null, 10); // a defaults to 10
+  partialAdd(1, 2) // -> 13
+  ```
+
+- basic idea of pure functions (immutable, no side-effects, no shared state, does one thing, returns something)
+- idea of same input always having the same output = `Referential Transparency`
+
+- pure functions are predictable and easy to test
+
+- in OOP, data is privatized by the keyword `private` and public getters. In FP, it's done with closure
+
+## imperative vs declaritive
+
+- machines require imperative code. step-by-step
+- declarative is more human. "get me this"
+  ex. of Imperative code (for loops, vanilla js)
+  ex. of Declarative code (array methods like forEach, react)
+
+- declarative code needs to be compiled down to more imperative, machine code eventually
+
+## Inheritance vs Composition
