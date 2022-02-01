@@ -253,10 +253,20 @@ Returns an iterator allowing code to go through all values (nodes) of the key/va
 ## Event listeners
 
 - always remove to avoid memory leaks
+- if only triggered once, use the option {once: true}
+
+## Capture vs Bubble
+
+- when the DOM checks for event listeners, it does 2 passes. Once going down from the document to children (Capture) and another pass going UP (bubble)
+
+- all event listeners and callbacks are executed during the bubbling phase as the default. to change this, add the third arg option like so:
+  - `btn.addEventListener('click', (e) => console.log('clicked'), {capture: true})`
 
 ## STOP PROPAGATION
 
-Stop the event from going up the DOM tree. For example, if a btn is inside a div and they both have onclick functions that outputs a message, you will ONLY get “div was clicked” even when you click on the button. This is because the event will propagate UP the dom tree and “button was clicked” will be immediately overridden by “div was clicked”. To prevent this, add `stopPropagation()` on the event.
+- Stop the event from going down (if during capture phase) or up (if during bubbling phase) the DOM tree. For example, if a btn is inside a div and they both have onclick functions that outputs a message, you will ONLY get “div was clicked” even when you click on the button. This is because the event will propagate UP the dom tree and “button was clicked” will be immediately overridden by “div was clicked”. To prevent this, add `stopPropagation()` on the event.
+
+### Some events do NOT bubble up (focus, blur, load)
 
 const nestedBtnClick = event => {
 document.querySelector(message).textContent=”button clicked!”

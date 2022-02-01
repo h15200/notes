@@ -387,6 +387,8 @@ myCar.__proto__ === Car.prototype // true
 
 - in OOP, data is privatized by the keyword `private` and public getters. In FP, it's done with closure
 
+- currying, composition is used in FP. It's best to have a low arity (number of args) of pure funcs chained together
+
 ## imperative vs declaritive
 
 - machines require imperative code. step-by-step
@@ -397,3 +399,26 @@ myCar.__proto__ === Car.prototype // true
 - declarative code needs to be compiled down to more imperative, machine code eventually
 
 ## Inheritance vs Composition
+
+- in fp, composition and piping is used
+
+  - composition and piping is the same concept, but just ordered differently
+  - compose(func1, func2, func3) means you're running in the order 3,2,1
+  - piping is the opposite. goes func1, 2, 3
+
+  ```
+  function compose = (func1, func2) {
+    return function (data) {
+      return func1(func2(data))
+    }
+  }
+
+  function pipe = (func1, func2\) {
+    return function (data) {
+      return func2(func1(data))
+    }
+  }
+  ```
+
+- OOP is great when data relationships are clear in the planning stages.
+- FP is great if there are no tight couplings between data structures
