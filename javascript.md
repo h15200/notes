@@ -425,6 +425,12 @@ myCar.__proto__ === Car.prototype // true
 
 ## Promise.all() es9
 
+- Promise.all allows a pseudo-parallel or concurrent resolution waiting for multiple Promises.
+
+- Promise.all will ONLY work if all promises resolve. If there is even 1 reject value, it will throw
+
+- if given 3 Promises, it starts to resolve Promise[0], then if it's time intensive, will move on and start Promise[1], etc..
+
 - as a parameter, takes in an array of PROMISES! Not callbacks (functions), but actual function invocations in the case of fetch, as the function fetch itself is just a function the return of fetch() is a promise.
 
 - promise syntax ex
@@ -483,9 +489,9 @@ console.log(dataArr[1]);
 })()
 ```
 
-## await for (alternative to Promise.all)
+## await for (NOT an alternative to Promise.all, but just sequential syntax)
 
-- a newer, even cleaner way to do multiple promise resolutions
+- a newer way to do `SEQUENTIAL` async calls
 - `for await` if a for of loop for promise arrays, which is the param of a Promise.all
   1. create an async func
   2. inside, make an arr of promises (remember, not functions but function returns from a promise)
@@ -513,3 +519,89 @@ const urls = [url1, url2, ...];
 }
 })()
 ```
+
+## asyc pseudo-parallel (or concurrent) VS sequential,
+
+- when resolving multiple promises, the slowest way is to do them sequentially while blocking each action
+
+  - if you await code, it is blocking so it's running in `sequence`. ex
+
+  ```
+  const a = await fetch(a);
+  // fetch a (connect via http), get the result, then finally start fetching b
+  const b = await fetch(b);
+  // same
+  const c = await fetch(b);
+
+  ```
+
+- `for await` calls are also sequential because you can have logic for each finished promise in the order of the array, but ONLY in the order of the array. You usually don't know which promise will settle first, so this still does not control or execute in the order that a promise was settled
+
+- `await Promise.all([...promises])` will return only when all promises have settled, but all promises are working in `pseudo-parallel` or `concurrently`. If a promise isn't resolved, it can move on to the next Promise and start evaluating. In fetch, this is possible because you can have multiple http connections to endpoints, so you can fetch[0], and while waiting for the reuslt, start fetch[1], etc.. This is faster than awaiting each call
+
+## Promise.race()
+
+- when you need to return ONLY the 1st Promise that settles out of an array, use Promise.race();
+- `await Promise.race()` takes in an array of Promises, but will return the resolve of ONLY the 1st promise that finishes.
+
+```
+return dataOfFirstPromiseResolve = await Promise.race([fetch[urla], fetch[urlb]]);
+
+// will return as soon as EITHER urlA or urlB data is received
+```
+
+## Promise.allSettled() es2020
+
+- `Promise.all` is most useful when you know all Promises in the array will resolve. If any one of them rejects, then it will short circuit. For example, in a promiseArray [promiseA, promiseB, promiseC] and calling await Promise.all([...array]), if promiseC rejects, you will NOT see the resolve values of promiseA or promiseB.
+
+- `Promise.allSettled()` is a variation on Promise.all. It will return an array of both resolved AND rejected values.
+
+- use Promise.all if the application needs the data from all Promises to continue.
+
+- if even one Promise can fail and still be "normal", use Promise.allSettled()
+
+## module history
+
+1. When js files were directly attached to the html, devs just attached one file.
+
+- when multiple files became necessary as apps got bigger, variable collision became an issue.
+- Solution -> `module pattern` or `module scope`
+
+2. Module scope was created using an IIFE so that instead of a global var, each script had a script1.variable that was different from script2.variable
+
+- used by libraries like jQuery
+- pros: all scripts can refer to each other IF it was imported AFTER
+- cons: global space is still being polluted by the module name. Script ordering can be hard to track if there are hundreds of them
+
+- solution -> `CommonJS` and `AMD` (asynchronous module)
+
+3. CommonJS, AMD
+
+- each NODE (not browser) file in commonJS just uses keyword `require` to import/export
+  - `const thing = require(./someOtherFile.js);`
+  - `module.exports = { exportedThing: someFunc}`
+- also became possible to share node modules with other people through npm
+
+- pros: files can refer to each other in NODE
+- cons: it was a synchronous operation. Not available on browser
+
+- as commonJS got popular, there was a desire for the browser to also use import/export syntax. solution -> `browserify`
+
+- AMD was another browser-side solution to handle imports/exports. Was used by the RequireJS package (which confusingly did not use CommonJS, but AMD)
+
+4. Browserify
+
+- the first bundler. Took js scripts with commonJS and bundled it into ONE js file so the ordering of the script import does not matter
+- handled variable collusion
+- lead to the development of rollup, parcel, webpack etc..
+
+- con: still an external package that is handling browser moduling.
+  solution -> the first native browser module system, `es6 modules`
+
+5. native ES6 modules
+
+- if importing in an html file, you must indicate `type="module"` (instead of the old type="text/javascript") and open in a server
+- import/export statements
+- browsers can now just read import/export statements from multiple js files
+- pros: global namespace is no longer polluted. The modules will just now run, but there will be no additional properties or methods inside the window object
+- as of node 13, ES6 modules are supported server side as well
