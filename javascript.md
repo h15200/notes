@@ -413,7 +413,7 @@ myCar.__proto__ === Car.prototype // true
     }
   }
 
-  function pipe = (func1, func2\) {
+  function pipe = (func1, func2) {
     return function (data) {
       return func2(func1(data))
     }
@@ -422,3 +422,94 @@ myCar.__proto__ === Car.prototype // true
 
 - OOP is great when data relationships are clear in the planning stages.
 - FP is great if there are no tight couplings between data structures
+
+## Promise.all() es9
+
+- as a parameter, takes in an array of PROMISES! Not callbacks (functions), but actual function invocations in the case of fetch, as the function fetch itself is just a function the return of fetch() is a promise.
+
+- promise syntax ex
+
+- remember, Promises use .then and .catch which both take a callback. In async await try/catch, the catch itself is `try (e) { // actions }`
+
+```
+const urls = ['https://jsonplaceholder.typicode.com/users', url2, url3 ];
+
+async function myFetch(url) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw Error;
+    return await res.json();
+  } catch(e) {
+    throw Error(e);
+  }
+}
+
+Promise.all(urls.map(url => {
+  return myFetch(url);
+})).then(dataArr => {
+  console.log(dataArr[0])
+  console.log(dataArr[1])
+}).catch(e => console.log(e))
+
+// the urls.map is building 3 fetch requests
+
+
+```
+
+- same thing above with async/await IIFE
+- promiseAll gets very
+
+```
+const urls = [url1, url2, url3];
+
+async function myFetch(url) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw Error;
+    return await res.json();
+  } catch(e) {
+    throw Error(e);
+  }
+}
+// IIFE
+(async function () {
+ let dataArr;
+  try {
+  dataArr = await Promise.all(urls.map(url => asyncFetch(url)))
+} catch(e) {console.log(e)}
+console.log(dataArr[0]);
+console.log(dataArr[1]);
+
+})()
+```
+
+## await for (alternative to Promise.all)
+
+- a newer, even cleaner way to do multiple promise resolutions
+- `for await` if a for of loop for promise arrays, which is the param of a Promise.all
+  1. create an async func
+  2. inside, make an arr of promises (remember, not functions but function returns from a promise)
+  3. for await (const var of promiseArr) {
+     // make await calls with try/catch
+     }
+
+```
+// IIFE
+
+const urls = [url1, url2, ...];
+
+(async function() {
+  const promiseArr = urls.map(url => fetch(url))
+  for await (const res of promiseArr) {
+    if (!res.ok) throw Error;
+    try {
+    const data =  await res.json();
+    console.log(data);
+}  catch(e) {
+  console.log('error', e);
+}
+
+
+}
+})()
+```
