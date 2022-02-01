@@ -605,3 +605,61 @@ return dataOfFirstPromiseResolve = await Promise.race([fetch[urla], fetch[urlb]]
 - browsers can now just read import/export statements from multiple js files
 - pros: global namespace is no longer polluted. The modules will just now run, but there will be no additional properties or methods inside the window object
 - as of node 13, ES6 modules are supported server side as well
+
+## Error handling
+
+### throw
+
+- the `throw` keyword will stop the current execution.
+- you can throw anything `throw true`, `throw 'hi'`, not just errors
+- the error must be handled by the next call stack execution with a catch block
+- if the error is not inside a catch block, it is an `uncaughtException`
+
+### instances of Error constructor function
+
+- properties include:
+  - `.stack` -> prints current func where error was thrown
+  - `.name` , `.message`
+    - note that Error methods are all getters so no need to wrap with `()`
+- can create specific errors like `new SyntaxError`, `new ReferenceError`
+
+### try catch
+
+- a catch can be a catch block (in async await or syncronous code) or a catch method (in promise chaining)
+
+- NOTE that going into the catch block does not STOP the execution context. it will keep going. Best to return in the catch block
+
+```
+function fail() {
+  try {
+    conSAWL.log('good') // syntax error
+  } catch (error) {
+    console.log('error found!');
+  }
+}
+
+fail() -> will log the error. the error was caught, which is good
+
+```
+
+### finally
+
+- if you need code to run even after a caught exception, use a finally block. Sort of weird because you don't need a finally as this is the default behavior
+- note that NO code will run AFTER a finally block
+
+- in async code, it is crucial to catch errors with a .catch method or a try catch block in async await
+
+### extending errors
+
+- you can create your own custom errros based on the built-in error constructor function
+
+```
+class MyNewError extends Error {
+  constructor(message) {
+    super(message);
+    this.name="My Error";
+  }
+}
+
+throw new MyNewError('test');
+```
