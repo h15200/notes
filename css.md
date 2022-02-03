@@ -560,8 +560,10 @@ When using this with translate: scale, there might be a weird line, in which cas
 
 ## Text color with color gradients
 
+- put the background color on the entire container with the text
+
 ```
-.text{
+.heading-secondary  {
  background-image: linear gradient(color, color);
  background-clip: text;
 -webkit-text-fill-color: transparent;
@@ -650,13 +652,27 @@ When floating an object, you can use shape-outside to dictate how the text outsi
 
 Both shape-outside and clip-path should be used with prefix -webkit as well
 
+## old way of grid layout (float) and clear fixes
+
+- before flexbox / grid, you used float left or float right to do layout
+- all float calls will collapse the height, so you need to do a `clear fix`
+- ```
+  floated::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  ```
+
 ## Horizontal Scroll bar on just one line of text
 
 in the container div,
 
 ```
+
 overflow-x: scroll;
 Whitespace: no-wrap.
+
 ```
 
 ## Text overflowing out of container
@@ -664,8 +680,10 @@ Whitespace: no-wrap.
 - on the container, set these two props
 
 ```
+
 overflow-x: hidden;
 text-overflow: ellipses;
+
 ```
 
 ## mask - like a stencil kit
@@ -702,10 +720,12 @@ Perspective: the lower it is, the more drastic the rotation transformation is
 in the base folder
 
 ```
+
 ::selection {
-  background-color: $primary-color;
-  color: $color-white
+background-color: $primary-color;
+color: $color-white
 }
+
 ```
 
 ## Pure css hamburger menu
@@ -717,13 +737,15 @@ If in gatsby, place this div IN between the <Layout> component in index.js
 ememt code
 
 ```
+
 Div.navigation
-        Input.navigation_checkbox id=”navi” type=”checkbox”
-        Label.navigation_button htmlFor=”navi”>   span stuff
-        Div.navigation_background  // the button that goes over the hidden input/label
-        Nav.navigation_nav  // the component that pops up
-           Ul.navigation_list
-               Li.navigation_item  a.navigation_link   x 4
+Input.navigation_checkbox id=”navi” type=”checkbox”
+Label.navigation_button htmlFor=”navi”> span stuff
+Div.navigation_background // the button that goes over the hidden input/label
+Nav.navigation_nav // the component that pops up
+Ul.navigation_list
+Li.navigation_item a.navigation_link x 4
+
 ```
 
 The background will expand by 80x to cover the entire screen.
@@ -748,8 +770,10 @@ Also on checked, have the nav elements appear. Keep them opacity 0 and click-eve
 Make a component
 
 ```
+
 div.popup id=”popup”
-   Div.popup_content
+Div.popup_content
+
 ```
 
 fixed position
@@ -785,11 +809,13 @@ syntax is
 for very small screen
 
 ```
-@media only screen and (max-width: 25em) {
-  h1 {
 
-  }
+@media only screen and (max-width: 25em) {
+h1 {
+
 }
+}
+
 ```
 
 ### advanced media query stuff
@@ -807,13 +833,15 @@ Use both min and max width for the middle children break points! Otherwise, you�
 The way css can figure out the device type is detection of a hover type. You can add multiple media queries with a comma, which as as an OR operator
 
 ```
+
 // either a device with a certain max width OR a device that has a mouse
 @media only screen and (max-width: whatever),
 only screen and (hover: hover) {
-  h1 {
-    color: blue
-  }
+h1 {
+color: blue
 }
+}
+
 ```
 
 For NON mouse devices, use `only screen and (hover: none);`
@@ -861,9 +889,10 @@ In css, you can do this with `@supports`
 does your browser support stuff inside parens? if so, use the first line. if not, use the second line
 
 ```
+
 @supports (backdrop-filter: blur(10px) {
-	backdrop-filter: blue(10px);
-	background-color: whateverColor;
+backdrop-filter: blue(10px);
+background-color: whateverColor;
 }
 
 // important to write out the FULL prop AND value inside the parens. it's weird, but
@@ -881,9 +910,11 @@ You make an item, and an item::before, which is the high lighted version of item
 You can access the ::before item on hover over the original item with
 
 ```
+
 item:hover::before {
 
 }
+
 ```
 
 Making a hovering highlight example:
@@ -891,7 +922,8 @@ Making a hovering highlight example:
 reminder: z-index does not work on position: static!! Change to relative.
 
 ```
-&_item::before {
+
+&\_item::before {
 content: "";
 display: block;
 position: absolute;
@@ -904,13 +936,13 @@ height: 100%;
 transform: scaleY(0);
 }
 
-&_item:hover::before {
+&\_item:hover::before {
 transform: scaleY(1);
 width: 100%;
 }
 
-&_link:link,
-&_link:visited {
+&\_link:link,
+&\_link:visited {
 display: flex;
 align-items: center;
 text-decoration: none;
@@ -920,6 +952,7 @@ padding: 1rem 1.5rem;
 position: relative;
 z-index: 10;
 }
+
 ```
 
 ## Loading images from an api
@@ -932,14 +965,16 @@ Putting # or "" inside the src does not work.
 THe best workaround is to use css and keep the element out of the flow until it's loaded
 
 ```
+
 img {
-  display: none;
+display: none;
 }
 
 img[scr*="https"] {
-  displya: inline-block;
-  // other props for the image
+displya: inline-block;
+// other props for the image
 }
+
 ```
 
 `*=` is 'includes'
@@ -982,3 +1017,7 @@ make top/bottom transparent and a third one not transparent
   `overflow-wrap: anywhere`
 
 using word-break does not work for both conditions for some reason.
+
+```
+
+```

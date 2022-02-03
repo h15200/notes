@@ -586,3 +586,9 @@ Update
 
 
 ```
+
+## testing resiliency
+
+- some companies like uber will use a tool like `hailstorm` that randomly shuts down a microservice and logs what happens to find weaknesses
+
+- distributed systems can be so large and complex that it's possible to lose track of all service dependncies. Ex.. an owner of a microservice may not be completely clear on what other services it's relying on, and what other services it's being relied on
