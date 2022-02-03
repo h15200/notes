@@ -8,16 +8,18 @@ Reset library is no longer needed.
 Just use this at the top of every project
 
 ```
-html {
-  box-sizing: border-box;
+
+
+
+*, *::before, *::after {
+  box-sizing: inherit;
   margin: 0;
   padding: 0;
 }
 
-*, *::before, *::after {
-  box-sizing: inherit;
-  margin: inherit;
-  padding: inherit;
+body {
+  box-sizing: border-box;
+  // font stuff
 }
 
 ```
@@ -177,20 +179,20 @@ line-height
 
 ## anchor links
 
-Most buttons will be anchor or Links, so include class/className btn or something to reuse code
+- Most buttons will be anchor or Links, so include class/className btn or something to reuse code
 
-links are inline by nature, so good idea to make inline-block to have access to vertical padding/ margin
+- links are inline by nature, so good idea to make inline-block to have access to vertical padding/ margin while taking up the entire horizontal space
 
-All anchor tags have 4 link states:
+- All anchor tags have 4 link states:
 
-:link (unclicked, initial state)
-:hover
-:visited (a link a user has already clicked)
-:active (the exact moment the link is clicked)
+  1. :link (unclicked, initial state)
+  2. :hover
+  3. :visited (a link a user has already clicked)
+  4. :active (the exact moment the link is clicked)
 
-Generally use group a:link and a:visited to style "regular" stategeneric color, border-radius, padding, transition time, etc..
+- Generally use group a:link and a:visited to style "regular" stategeneric color, border-radius, padding, transition time, etc..
 
-And a:hover and a:active for click actions
+- And a:hover and a:active for click actions
 
 ## buttons (actual)
 
@@ -376,11 +378,20 @@ Divide px by 16 and use em instead for best practice
 
 ## Multiple background-images
 
-background-image property can take comma separated images. Both linear-gradient (or whatever gradient) made up of just colors AND a url(path) can be taken to make overlays.
+- background-image property can take comma separated images. Both linear-gradient (or whatever gradient) made up of just colors AND a url(path) can be taken to make overlays.
 
-You can either blend the two (or more bg images) using background-blend-mode (93.5% usage) or adjusting the opacity of the top layer.
+  - ex ```
+    .header {
+    background-image: linear-gradient(to right bottom, #222, #666), url(../somepath.jpg))
+    }
 
-Since usaability is much higher than clip-path, a good alternative although a bit verbose.
+    ```
+
+    ```
+
+- You can either blend the two (or more bg images) using background-blend-mode (93.5% usage) or adjusting the opacity of the top layer.
+
+- Since useability is much higher than clip-path, a good alternative although a bit verbose.
 
 ## Clippath
 
