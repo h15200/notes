@@ -198,7 +198,7 @@ but if you want to render it through javascript on an event, use hexcode.
 
 ```
 const img = document.querySelector("img");
-img.setAttribute("src", "123");
+`img.setAttribute("src", "123");
 
 OR JUST
 img.src = "123";
@@ -311,13 +311,19 @@ react
 - const section = document.querySelector(".section");
   section.querySelectorAll(".input") // get all .input class elements INSIDE this section
 
+## parent
+
+- `.parentElement` (don't use parentNode)
+
 ## child
 
 - to get child element, use `.childElement` instead of `.childNode.`. Generally, use the api that has teh word `element` and not node
 
+- for first child, use `.firstElementChild`
+
 ## sibling
 
-- to get next sibling, use `ele.nextElementSibling`
+- to get next sibling, use `ele.nextElementSibling` (don't use nextSibling as that returns the node)
 
 - previous sibling is `ele.previousElementSibling`
 
@@ -335,3 +341,17 @@ react
 
 - you can't use querySelector for ids that START with a digit. must be `a11` or something
 - better to use `getElementById` for that
+
+## innerText vs textContent
+
+- one displays all text, including elements that are display: none, the other does not
+
+## element.insertBefore(newEle, targetEle)
+
+- adds the newEle right before the targetEle
+
+## input
+
+- to connect an event listner to an input value, either use `keyup` or `input` (covers all input change events)
+
+- for selects and radio buttons, use `change`
