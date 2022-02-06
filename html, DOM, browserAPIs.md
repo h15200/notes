@@ -212,12 +212,25 @@ img.src = "123";
 ## data set
 
 - you can add any custom attribute to dom elements with name `data-[anything]`
-- <div data-my-age="40"></div>
+- <div data-age="40"></div> (always hyphen after `data`);
 - this can be accessed by `dataset` in js `myEle.dataset` => {
   myAge: 40
-  }
+  } which is an object of all data-[whatever] attributes
+  - to get specific datasets, `myEle.dataset.age`
+- you can query by the usual `document.querySelector('[data-foo]') for all elements with that attribute.
+
+  - you can also search by value `document.querySelector(`[data-foo="${index}"]`)`;
+  - NOTE that all attributes are of type STRING, not number
+  - NOTE you need to add quotes around the variable as you can only search on strings
+
 - you can remove/add/edit like any other attribute
+
+  - image.setAttribute("data-id", 3); // sets new data-set of id
+  - image.removeAtrribtue("data-id");
+
+- GOTCHAS
   - `myEle.dataset.newName = "Patti"; (automatically converts from camelcase to hyphen case)
+  - best to avoid hyphens after the first one. data-age instead of data-my-age
 
 ## classes
 
@@ -317,3 +330,8 @@ react
 ## Array.from()
 
 - some queries return a list that is not a nodeList, but a collection that doesn't have a .forEach method. If that's the case, just wrap it in Array.from
+
+## GOTCHA
+
+- you can't use querySelector for ids that START with a digit. must be `a11` or something
+- better to use `getElementById` for that
