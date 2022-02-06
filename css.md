@@ -798,15 +798,39 @@ Then it will style the element with an id of jazzSection ONLY when it is indicat
 
 ## media queries, breakpoints, mobile vs desktop first
 
-Unless the particular field is desktop majority, do mobile first. It strips down the site to its bare essentials
+- Unless the particular field is desktop majority, do mobile first. It strips down the site to its bare essentials
 
-Find break points based on content and when the layout starts breaking, not some pre made pixels
+  - for MOBILE first, you will use `min-width: 40em` (applies to all screens bigger than 40em) from smallest to largest screens. The order matters as some screens will inherit properties from other screens
 
-Best practice to use ems for media break points
+    ```
+    @media only screend and (min-width: 50em) {
+      h1 {
+        // stuff
+      }
+    @media only screend and (min-width: 40em) {
+      h1 {
+        // stuff
+      }
+    }
+    @media only screend and (min-width: 37.5em) {
+      h1 {
+        // stuff
+      }
+    }
 
-syntax is
+    }
 
-for very small screen
+    ```
+
+  - for desktop first you will use `max-width: 30em` (all screens smaller than 30em) and order from smallest to largeset view port
+
+- Find break points based on content and when the layout starts breaking, not some pre made pixels
+
+- Best practice to use ems for media break points
+
+- syntax is:
+
+for very small screen (for desktop first in this case)
 
 ```
 

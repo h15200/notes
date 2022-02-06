@@ -254,14 +254,24 @@ solution:
 ### Message Queue / Brokers
 
 - a message queue is used by a service to just say "ok we got the request, but we won't try to do it now and will instead put it on a todo list". This ensures that the servcer doesn't get overloaded and the requests are never lost, for the price of delayed processing
-- very similar to load balancing (with health server heartbeat checks) but the main difference being message queues are ASYNCHRONOUS for time consuming tasks and load balancing is SYNCHRONOUS
-- a COMBINATION of services that include having a NOTIFIER that keeps track of which servers are healthy (heartbeat sent to notifier)
+
+- The notifier is the `producer` and the services doing the actual work is `consumer`. The consumer takes a task from the queue and works on it when it's ready.
+
+- a COMBINATION of services that include having a NOTIFIER (producer) that keeps track of which servers (consumers) are healthy (heartbeat sent to notifier). You can have a message queue with one consumer, or multiple consumers but there is only one producer.
+
+- The notifier (or producer) also has access to a db that keeps a queue of asynchronous tasks to persist tasks. Once it's in a queue, that message or task won't be lost
+
+- very similar to load balancing (with health server heartbeat checks on all services (consumers) that are doing the "work") but the main difference being message queues are ASYNCHRONOUS for time consuming tasks and load balancing is SYNCHRONOUS
+
+- the consumer and producer can be in the same service where the work is being handled, or separate where multiple other services have access
+
 - a variety of ways that this can be handled. For example, you can just tell the client "ok we did it!" while in reality it's happening a little after
-- The notifier also has access to a db that keeps a queue of asynchronous tasks to persist tasks
+
 - queues are used to effectively manage requests in a large-scale distributed system to allow us to decouple our processes and distribute/throttle processing load.
-- because it's async, it frees up the requester from the process
+
 - The notifier also acts as a load balancer to distribute requests.
-- ex. `RabbitMQ`
+
+- ex. `RabbitMQ`, `kafka`
 
 #### Methods of storing message queue
 
