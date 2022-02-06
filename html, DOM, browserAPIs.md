@@ -355,3 +355,17 @@ react
 - to connect an event listner to an input value, either use `keyup` or `input` (covers all input change events)
 
 - for selects and radio buttons, use `change`
+
+## event delegation
+
+- when it's complicated to add multiple event listeners to some nested list button, just take the closest parent element that contains all of the target and delegate
+  - ex ul -> li -> btn. first target the ul, add event listener "click" and a call back
+  - in the callback, simply add `if (e.target.type === "button")` or `if (e.target.classList.contains("someClass"))` and add the logic in there
+
+## confirm
+
+- a built in pop up ui to confirm an action. the if statement will only run if confirmed. cancel will skip the if block
+- ```if (confirm('Are you sure?')) {
+    // do stuff
+  }
+  ```
