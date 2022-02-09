@@ -327,11 +327,11 @@ react
 
 - previous sibling is `ele.previousElementSibling`
 
-## closest
+## closest (closest parent)
 
-- the opposite of querySelector is `closest`. Gets the first match that is the ancestor (as opposed to child) of the `this` element that's calling the method.
+- the opposite of querySelector is `closest`. Gets the first match that is the ancestor (as opposed to child) of the `this` element that's calling the method matching a tag, class, or id.
 
-`child.closest(".input")` // gets 1st parent ele that has class of "input"
+`const eleOrNull = event.target.closest(".input")` // gets 1st parent ele that has class of "input"
 
 ## Array.from()
 
@@ -360,7 +360,7 @@ react
 
 - when it's complicated to add multiple event listeners to some nested list button, just take the closest parent element that contains all of the target and delegate
   - ex ul -> li -> btn. first target the ul, add event listener "click" and a call back
-  - in the callback, simply add `if (e.target.type === "button")` or `if (e.target.classList.contains("someClass"))` and add the logic in there
+  - in the callback, simply add `if (e.target.type === "button")` or `if (e.target.classList.contains("someClass"))` or `if (e.target.tagName === "")` and add the logic in there
 
 ## confirm
 
