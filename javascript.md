@@ -243,7 +243,7 @@ fetch
 - closures can keep data private, persist info in memory, and memoize
 
 - all js data inherits all properties based on its `__proto__`.
-- you can manually change the proto by doing something like this, but DON'T EVER DO THIS! bad performance, bad practice, etc.. use classes or `Object.create([obj to inherit])`
+- you can manually change the proto by doing something like this snippet below, but DON'T EVER DO THIS! bad performance, bad practice, etc.. use classes or `Object.create(obj_to_inherit)`
 
 ```
 const car = {
@@ -276,11 +276,9 @@ myCar.getColor() // returns "red"
 - you can add built-in prototype like
 
 ```
-Array.prototype.myMethod = function () {
+Array.prototype.sayHiPerArrItem = function () {
   for (let i = 0; i < this.length; i++) {
-    console.log('poop');
-  }
-  }
+    console.log('hi');
   }
 }
 ```
@@ -290,7 +288,7 @@ Array.prototype.myMethod = function () {
 - `__proto__` is the reference of what a child used to inherit from the parent. It's the parent's properties
 - `prototype` is the object that's used to inherit for a CHILD of the current object. What's going to be passed down
 
-  - if a child function inherits from a parent, `child.__proto__ === parent.prototype`
+  - if `const someClassInstance = new Someclass()`, then `someCLassInstance.__proto__ === Someclass.prototype`
 
 - code example:
 
@@ -389,7 +387,7 @@ myCar.__proto__ === Car.prototype // true
 
 - in OOP, data is privatized by the keyword `private` and public getters. In FP, it's done with closure
 
-- currying, composition is used in FP. It's best to have a low arity (number of args) of pure funcs chained together
+- currying, composition is used in FP. It's best to have a low `arity` (number of args) of pure funcs chained together
 
 ## imperative vs declaritive
 
