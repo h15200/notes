@@ -55,7 +55,7 @@ var a = null;
 
 typeof will also identify “function” but not array despite both of them being subsets of objects
 
-Many developers will assume "undefined" and "undeclared" are roughly the same thing, but in JavaScript, they're quite different. undefined is a value that a declared variable can hold. "Undeclared" means a variable has never been declared.
+"undefined" and "undeclared" in JavaScript are quite different. undefined is a value that a declared variable can hold. "Undeclared" means a variable has never been declared.
 JavaScript unfortunately conflates these two terms, not only in its error messages ("ReferenceError: a is not defined") but also in the return values of typeof, which is "undefined" for both cases.
 However, the safety guard (preventing an error) on typeof when used against an undeclared variable can be helpful in certain cases.
 
@@ -69,7 +69,7 @@ Arrays are also objects, so keys can be added arr.<key> = <value> in either dot 
 “aa” < “Aaa” // still false because the 1st char a is bigger than A
 “aa” < “aaA” // true . third char is bigger than “nothing”
 
-## Weird things about forEach
+## loop breaking
 
 You can pass in a second arg to the callback of forEach for index.
 However, you can not STOP a forEach method with return, as that only returns the value from the forEach loop and the loop continues to run. `break` doesn't work and is a syntax error.
@@ -77,6 +77,8 @@ However, you can not STOP a forEach method with return, as that only returns the
 To use a breakable loop, use the for or while loops
 
 ## .flat() will flatten arrays once without an arg. You can add levels with arg
+
+- passing in Infinity will flatten to 1 level
 
 ## Dom inside backticks
 
@@ -99,9 +101,9 @@ let b = 2;
 
 ## Object.assign()
 
-target first, then the additional (or overwrite) props starting 2nd arg. Can be multiple.
+- target to copy as first arg, then an optios object as the 2nd arg for additional (or overwrite) values.
 
-If an empty obj is the 2nd arg, nothing will change in the target
+- If an empty obj is the 2nd arg, nothing will change in the target
 
 ## Class method syntax and 'this' binding reminder
 
@@ -642,7 +644,7 @@ fail() -> will log the error. the error was caught, which is good
 
 ```
 
-### finally
+### finally {}
 
 - if you need code to run even after a caught exception, use a finally block. Sort of weird because you don't need a finally as this is the default behavior
 - note that NO code will run AFTER a finally block
