@@ -162,7 +162,7 @@ If there are only 2 microservices, it's a sign you should just use a monlithic s
 
 - all load balancers are also reverse-proxies. you can have a reverse-proxy even if you only have 1 service to do things like config, routing, optimization for faster first paint etc...
 
-ex- `Nginx` is a popular reverse proxy used for load balancing
+- `Nginx` is a popular reverse proxy used for load balancing
 
 ### Load balancers
 
@@ -275,9 +275,10 @@ solution:
 
 #### Methods of storing message queue
 
-if it's stored in memory, a server outage will not keep that info
+- if it's stored in memory, a server outage will not keep that info
 
-solution: store the queue in a database, each server sends a NOTIFIER a heartbeat every 10 seconds. If a server dies, the notifier consults the db and reroutes unfinished tasks to another server.
+- solution: store the queue in a database, each server sends a NOTIFIER a heartbeat every 10 seconds. If a server dies, the notifier consults the db and reroutes unfinished tasks to another server.
+  - most message queue solutions have fault tolerence by storing the queue in a db
 
 ### Databases (relational, non-relational)
 
@@ -328,6 +329,8 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - Downside is that these index structures will require more disk space, so you are sacrificing space for time. ALSO, this will optimize for read, but slow down write operations slightly because you'd have to write to the normal db, then write to the index as well
 
+- this strategy needs to be implemented in relational dbs on frequent rows. SOME no-sql dbs have this baked in, some do not but it's case-by-case
+
 ### database failures
 
 - two main ways of ensuring backup
@@ -341,10 +344,11 @@ quad trees are trees that have 0 or 4 children used to do location searches used
   - this is not the case with most regional databases. Ex. if a facebook db server in north america is updated, then a db in asia doesn't need to have Immediate sync. It can update async such that a fb user in Asia receives an updated feed slightly after North American users.
   - this strategy of NOT syncing regional dbs will give you better latency to avoid the round trip syncing immediately.
 - if set up correctly, a main db failure will seamlessly be taken over by the replica until the main is back online again. once it's back, the main will resume as the primary db
+  - you can replicate primary dbs (two-way syncing necessary) or replicate a read-only db which only steps up as the primary when the current primary goes down
 
 #### Sharding - Data partitioning over multiple databases
 
-- if scaling horizontally (adding machines) with state-less servers, all you need is to copy the business logic. sometimes if you have an in-memory key-value storage like Redis for caching, you need to worry about hash strategies (use `consistent hashing` or `rendezvous hashing`). with dbs, there's an extra layer as it carries data
+- if scaling horizontally (adding machines) with state-less servers, all you need is to copy the business logic. sometimes if you have an in-memory key-value storage like Redis for caching, you need to worry about hash strategies (use `consistent hashing` or `rendezvous hashing`). with dbs, there's an extra layer as it carries its own data
 
 - it's not efficient for all dbs to have the same data. Better to break up a big db into many smaller parts.
 - this logic is usually written in a reverse-proxy (on behalf of the db) so that certain data goes to a particular shard
@@ -411,11 +415,11 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - when a client needs to request data that is continuously being updated like the weather or the status or something, the standard request model is not optimal
 - to see regularly updated pieces of data, `polling` or `streaming` can be used
-- `streaming` is also called `pushing`
+- `streaming` is also called `pushing`. The opposite of this, the traditional http req-res model is `pulling` because the client initiates contact with a req to pull data.
 
-- Polling - the client simply sends a request based on a set interval. ex. client checks the status every 5 seconds. This could work for something that has regular changes, but not great for specific event change updates like a text message as data will be stale between the interval `n`. This can be mitigated by lowering the poll interval but it comes with extra load on the server.
+- `Polling` the client simply sends a request based on a set interval. ex. client checks the status every 5 seconds. This could work for something that has regular changes, but not great for specific event change updates like a text message as data will be stale between the interval `n`. This can be mitigated by lowering the poll interval but it comes with extra load on the server.
 
-- Http Streaming - client makes a req to server, then the server sends back data indefinitely. After the initial req, the server proactively continues sending data on event changes
+- `Streaming (Http streaming)` - client makes a req to server, then the server sends back data indefinitely. After the initial req, the server proactively continues sending data on event changes
 
 - Two ways of implementing HTTP streaming. Chunked and Server-Sent-Events.
 
@@ -458,7 +462,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - very similar to message queues, except the message can be received by MULTIPLE subscribers
 
-- an expention of the concept of streaming. Streaming works with a simple connection, but what if we need a large scale distributed system (micro services system) where the data message needs to be persisted in the event of outages.
+- an extention of the concept of streaming. Streaming works with a simple connection, but what if we need a large scale distributed system (micro services system) where the data message needs to be persisted in the event of outages.
 
 - a pubsub model consists of 4 entities
 
@@ -478,6 +482,8 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 ### CDN or CDA
 
 - content delivery network is a group of servers around the world that can lower latency, add redundancies and fault-tolerence when deliverying static data
+
+- sits in the DNS layer to route calls to PHYSICALLY different location servers. This is conceptually similar to a load balancer, but is different as load balancers usually distributes network calls to individual severs that are all close together in location.
 
 ### Rate limiting
 
@@ -523,17 +529,17 @@ Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
 
 - storing static data
 
-if the data is small (5 pictures for a dating site), then you have the choice of storing in a Distributed File System (pics are saved to machines directly) where the pros are faster, cheaper, easier to implement. Cons are not secure or consistent
+- if the data is small (5 pictures for a dating site), then you have the choice of storing in a Distributed File System (pics are saved to machines directly) where the pros are faster, cheaper, easier to implement. Cons are not secure or consistent
 
-a blog store like S3 is NOT ACID compliant, but it's more secure and persistent and can store bigger data.
+- a blog store like S3 is NOT ACID compliant, but it's more secure and persistent and can store bigger data.
 
-If the static data is large (songs, videos) or is sensitive, then a blob store is probably better
+- If the static data is large (songs, videos) or is sensitive, then a blob store is probably better
 
-Both distributed file systems and blob storage will be governed by a service that has its own table with userId, imageId, and a reference to the DFS/blob table with an image URL.
+- Both distributed file systems and blob storage will be governed by a service that has its own table with userId, imageId, and a reference to the DFS/blob table with an image URL.
 
 - auth / gateway service
 
-in most systems with a user that requires a profile via email/password, always make the point to send that info as a hashed token (instead of the password itself) and that the client will always connect to gateway service that takes care of auth. If authenticated, the gateway will then forward the request to the correct micro service. Then it will also forward the response back to the client.
+- in most systems with a user that requires a profile via email/password, always make the point to send that info as a hashed token (instead of the password itself) and that the client will always connect to gateway service that takes care of auth. If authenticated, the gateway will then forward the request to the correct micro service. Then it will also forward the response back to the client.
 
 ### blob db vs distributed file system
 
