@@ -1,4 +1,10 @@
-Redux is a library that manages state as an alternative to using state in React components. Both methods tries to track changing data
+# Redux is a library that manages global state (as opposed to component state)
+
+- MVC (Model, View, Controller) used to be the way stores were made. bi-directional data flow, so hard to debug has both the view and controller might change the state in the store.
+
+- Flux introduced a uni-directional data flow, making it easier to debug. It used MULTIPLE stores, which made updating state and debugging still difficult and coding clunky. All logic was done in individual stores
+
+- Redux introduced reducers, which allowed combining all previous stores into one. Even easier to work with than Flux, especially in React if using `useSelector` and `useDispatch` instead of HOFs.
 
 ## set up and overview
 
@@ -11,11 +17,12 @@ In index.js, import { createStore } from ‘redux’
 
 2 boilerplate steps before calling createstore
 
-Additional pre-step. Make a file in actions called types.js that just simply returns a string
-Const SET_ALERT = ‘SET_ALERT’
-Bring that into actions and use it instead of returning an object with strings, use the variables
+- Additional pre-step. Make a file in actions called types.js that just simply returns a string
+  const SET_ALERT = ‘SET_ALERT’. these are action type Enums
 
-Action(s) - seems stupid but a good idea for later. Just a function that returns { action: SOMETHING}
+- Bring that into actions and use it instead of returning an object with strings, use the variables
+
+- Action(s) - Just a function that returns { action: SOMETHING}
 
 ```
     const increment = () => {
@@ -25,7 +32,7 @@ Action(s) - seems stupid but a good idea for later. Just a function that returns
 
 Reducer - pure func that takes in 2 args. One to set default state, and the action object
 Usually a switch structure that’s set on action.type
-action.type is CAP with \_ for spaces by convention
+action.type is CAP snakecase by convention
 
 const counterReducer = (state = 0, action) => {
 switch (action.type) {
@@ -141,7 +148,7 @@ hello, {counter}
 );
 }
 
-Notice the syntax of useSelector(state => state.nameOfState)
+Notice the syntax of `useSelector(state => state.nameOfState)`
 
 To CHANGE state, you still need to import actions from src/actions as well as { useDispatch } from react-redux
 
