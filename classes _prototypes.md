@@ -28,3 +28,22 @@ class Animal {
 Weird JS specific stuff
 
 When a prototype is changed on a function (or a class), the instance of that function that was ALREADY instantiated before the additional protype will also have access to that method now!
+
+## as of 2022, #privateMethod
+
+- in js (NOT ts), you can use private methods by prepending the name with `#`;
+
+```
+class Test {
+  #privateGet() {
+return 5;
+  }
+
+  get num() {
+return this.#doNotGet();
+  }
+}
+```
+
+- all methods without a hashtag prepended is a `public` method.
+- #methodName() will act like ts private class methods
