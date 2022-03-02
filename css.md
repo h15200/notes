@@ -9,7 +9,9 @@ Just use this at the top of every project
 
 ```
 
-
+html {
+  box-sizing: border-box;
+}
 
 *, *::before, *::after {
   box-sizing: inherit;
@@ -17,10 +19,6 @@ Just use this at the top of every project
   padding: 0;
 }
 
-body {
-  box-sizing: border-box;
-  // font stuff
-}
 
 ```
 
