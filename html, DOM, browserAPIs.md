@@ -369,3 +369,32 @@ react
     // do stuff
   }
   ```
+
+## table element
+
+- basic structure
+- `<table>` is the top element
+
+  - inside `<table>`, only one `<thead>` and one `<tbody>` which are siblings, not nested
+
+    - inside `<thead>`, you can have multiple `<tr>` (table rows) if the header needs to be multiple rows
+    - `<th>` (table header) should have one child, the string text for the whole table
+
+    - inside body, `<tr>` per each row.
+    - inside each tr (table row), `<td>` (table data?) per COLUMN
+
+```
+<table>
+    <thead>
+        <tr>
+            <th colspan="2">The table header</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>The table body</td>
+            <td>with two columns</td>
+        </tr>
+    </tbody>
+</table>
+```
