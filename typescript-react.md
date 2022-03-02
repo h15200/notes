@@ -17,12 +17,15 @@ export function PracticeInput() {
     else return false;
   }
   return (
-    <input
-      className={`${getIsFirstCharItalics() ? "italics" : ""}`}
-      type="text"
-      value={inputString}
-      onChange={updateInput}
-    />
+    <label>
+      Italics Converter
+      <input
+        className={`${getIsFirstCharItalics() ? "italics" : ""}`}
+        type="text"
+        value={inputString}
+        onChange={updateInput}
+      />
+    </label>
   );
 }
 
@@ -60,7 +63,7 @@ export function TestProps({
   num = 0,
   str = "N/A",
 }: {
-  num?: number; // must be optional if defautls are used
+  num?: number; // must be optional if defaults are used
   str?: string; // same
 }) {
   return (
@@ -102,7 +105,7 @@ async function fetchHelper(url: string): Promise<User[]> {
   let userData: User[];
   try {
     userData = await res.json();
-  } catch (e) {
+  } catch (e: any) {
     console.log("Erorr on json()", e);
     throw Error("Something went wrong during json()");
   }

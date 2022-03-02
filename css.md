@@ -215,11 +215,23 @@ method defaults to "get"
 
 ## input and label
 
-syntax
+syntax (3 ways)
+
+1. label before input, using a htmlFor (just "for" for react) matching the name attribute of input
+2. label AFTER input with same syntax
+3. label is parent of input. No need for htmlFor attribute
+
+- it doesn't matter which to use in terms of best practice, so use the one that makes the most sense in terms of css. In a type=checkbox, it may make sense to nest to make the entire row checkable
 
 ```
-<input id="name" required placeholder="enter name" />
+<input id="name" type="text" required placeholder="enter name" />
 <label htmlFor="name">enter name</label>
+```
+
+```
+<label>
+  <input name="first-name" />
+</label>
 ```
 
 These are not automatically inherited from the `body`, so set them to `inherit`
@@ -294,6 +306,7 @@ There should be a source tag for EACH version of the picture (not including mobi
 this means the picture will ONLY download based on media query
 
 ```
+
 <picture>
   <source srcset="pathToBigImage" media="(min-width: 1200px)">
   <source srcset="pathToSmallerImage" media="(min-width: 800px)">
