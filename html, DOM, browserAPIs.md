@@ -273,7 +273,11 @@ Returns an iterator allowing code to go through all values (nodes) of the key/va
 - when the DOM checks for event listeners, it does 2 passes. Once going down from the document to children (Capture) and another pass going UP (bubble)
 
 - all event listeners and callbacks are executed during the bubbling phase as the default. to change this, add the third arg option like so:
-  - `btn.addEventListener('click', (e) => console.log('clicked'), {capture: true})`
+
+  - `btn.addEventListener('click', someFunc, {capture: true})`
+
+- in some cases you want to remove listeners to avoid memory leaks (continually adding more listeners). to remove, use the same exact params (same handle action, same function)
+  - `btn.removeEventListener('click', someFunc, {capture:true})`
 
 ## STOP PROPAGATION
 
