@@ -362,6 +362,41 @@ react
   - ex ul -> li -> btn. first target the ul, add event listener "click" and a call back
   - in the callback, simply add `if (e.target.type === "button")` or `if (e.target.classList.contains("someClass"))` or `if (e.target.tagName === "")` and add the logic in there
 
+## auto complete select dropdown
+
+- usually, a drop down in native html uses a label, input, and options like:
+
+```
+<label for="colors">Choose a color</label>
+<select name="colors" id="colors">
+  <option value="red">Red</option>
+  <option value="yellow">Yellow</option>
+  <option value="green">Green</option>
+</select>
+
+
+```
+
+- to add a typeable autocomplete field, REPLACE the select with <input list={same as datalist.id} id={same as label.for} name={same as label.for}> and <datalist id={something}>
+
+  REMEMBER!
+
+  - label.for === input.id === input.name
+  - input.list === datalist.id
+  - no string child inside options now since input is there
+
+```
+<label for="colors">Choose a color</label>
+<input id="colors" name="colors" list="colors-list"/>
+<datalist id="colors-list">
+  <option value="red"/>
+  <option value="yellow"/>
+  <option value="green" />
+</datalist>
+
+
+```
+
 ## confirm
 
 - a built in pop up ui to confirm an action. the if statement will only run if confirmed. cancel will skip the if block
