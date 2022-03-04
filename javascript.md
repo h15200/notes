@@ -663,3 +663,27 @@ class MyNewError extends Error {
 
 throw new MyNewError('test');
 ```
+
+### reduce with array of objects
+
+- when reducing nested values like `const arr = [{num:1}, {num:2}, {num:3}], think about the accumulator data structure.
+
+- this will NOT WORK
+  `arr.reduce((a, b) => a.num + b.num)` because the in the 1st iteration, it's fine but in the 2nd, `a` is a number and not an object. number.num is not a property, and will return `nan`
+
+- 3 ways to fix:
+
+  1. map it, then reduce it `arr.map(obj => obj.num).reduce((a, b) => a + b)`;
+  2. add a starting value, and just evaluate the nested val (better than option 1). BEST option
+     `arr.reduce((a, b) => a + b.num, 0)`
+  3. reduce as an object. works, but hard to reed11
+
+  ```
+  const obj = arr.reduce((a, b) => {
+    return ({
+      num: a.num + b.num1
+    })
+  })
+
+  // obj.num is total
+  ```
