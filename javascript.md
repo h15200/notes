@@ -687,3 +687,52 @@ throw new MyNewError('test');
 
   // obj.num is total
   ```
+
+  ### for in vs Object.entries
+
+  - `for in` loops are easier to make, but not as good for performance
+
+  ```
+    const hash = {1: "a", 2: "b", 3: "c"};
+
+
+  // goal: mutate to {1: "newA", 2: "newB", etc..}
+
+  // best practice
+  Object.entries(hash).forEach(([key, val]) => {
+  hash[key] = `new${val.toUpperCase()}`
+  })
+  // easiest to read, but not great memory usage
+  for (const key in hash) {
+  hash[key] = `new${val.toUpperCase()}`
+  }
+  ```
+
+### using reduce to make new objects
+
+- if you want to make an object with reduce, it's a bit harder to read but possible
+
+```
+
+const hashArr = [{id: 1, char: "a"}, {id: 2, char: "b"}, {id: 3, char: : "c"}]
+// goal make an OBJECT of lookup tables {1: {id: 1, char: "a"}}, {2: {id: 2, char: "b"}}, {3: {id: 3, char: "c"}};
+
+// using .map won't work as you want an object, not another array
+
+// simplest and easiest to read is to just make a new obj and loop
+
+const lookup = {};
+hashArr.forEach(hash => {
+  lookup[hash.id] = hash;
+})
+
+// exercise: do the above with reduce
+
+
+const lookupUsingReduce = hash.reduce((obj, hashItem) => {
+obj[hashItem.id] = hashItem;
+return obj;
+}, {})
+
+
+```
