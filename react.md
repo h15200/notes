@@ -298,3 +298,70 @@ Put any state changes inside componentDidMount, or inside an event, as an event 
 ```
 
 - Another reason for that same error can be duplicate useState calls by accident!
+
+## useRef()
+
+- 2 main usages
+  1.  make persistent local state that does NOT re-render the component whenver it changes
+  2.  have a DOM reference like in vanilla js
+
+## useCallback() and useMemo()
+
+- both used to memoize something in heavy algorithms
+
+- useMemo returns a RESULT of a function (anything returnable from a function, including a function)
+- useCallback returns a FUNCTION
+
+  - main usage is to return a react functional component
+
+- both has the same syntax, taking in a callback and a dependency array like useEffect
+
+```
+
+// useMemo - the callback, `superHardFunction` will only re-run when either dependencyA or B changes. The dependencies are often stored in state so it re-runs on state change
+
+const numberResultFromSuperSlowAlgo = useMemo(
+   superHardFunction, [dependencyA, dependencyB]
+)
+
+// useCallback - same as useMemo, but it will return a component which will likely be used in the return function
+
+const MemoizedReactComponent = useCallback(
+   someFunctionThatReturnsComponent, [dependencyA, dependencyB]
+)
+```
+
+## custom hooks
+
+- custom hooks is a function that returns something (could be a component) that is called by another component
+
+- if it doesn't return a component and a value, the extension of the file should reflect that `ts` and not `tsx` for clarity. Also it can take any args like a regular function and does not need to use props
+
+- should be named `use...` as convention for hooks
+
+- a common pattern uses its own state and effect, but returns a value
+
+```
+import { useState, useEffect } from "react";
+
+export function useGetPokemon(limit: number = 20) {
+  const [pokemonList, setPokemonList] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch(
+          `https://pokeapi.co/api/v2/pokemon?limit=${limit}`,
+        );
+        const data = await res.json();
+
+        setPokemonList(data.results);
+      } catch (e) {
+        console.log("error", e);
+      }
+    })();
+  }, [limit]);
+
+  return pokemonList;
+}
+```
