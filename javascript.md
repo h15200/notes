@@ -314,6 +314,70 @@ myCar.__proto__ === Car.prototype // true
 - nullish coalesce: `const thing = obj?.prop1 ?? "no prop"`
 - it is similar to `||` which tests for truthy / falsey, but `??` tests only for if data is `undefined / null`. If the left hand side of `??` is EITHER null or undefined, it will use the right hand side option
 
+## es6 generator functions
+
+- when you put a `*` right after the function keyword with no whitespace, it denotes a special type of functions called `generators`
+
+- generators are called repeatedly to return a value and can be used as a local state machine
+
+### how generators are written
+
+- make sure there is a keyword `yield` to define what value you are returning
+
+- make sure you use syntax `*`
+
+- no need to return anything
+
+```
+function* generatorFunc() {
+  let i = 0;
+  while (true) {
+    yield i;
+    i++;
+  }
+}
+
+```
+
+### how generators are consumed
+
+- the first call of a generator is initialized on a variable since generators are higher order functions. `const generator = generatorFunc()`
+  - this can also be `const interator` since it functions the same way as what you get in an instance of built in Map if you chain `myMap.keys()`
+- starting on the 2nd call, the yield is extracted with the syntax `generator.next()` which returns an object with 2 keys, `value` and `done`
+- when there is no more execution on the generator, the value will be "undefined" and done will be `true`
+
+- example 1
+
+```
+function* generatorFunc1() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+const iterator = generatorFunc1();
+iterator.next() // returns {value: 1, done: false}
+iterator.next() // returns {value: 2, done: false}
+iterator.next() // returns {value: 3, done: false}
+```
+
+- example 2
+
+```
+function* generatorFunc2() {
+  let i = 0;
+  while (true) {
+    yield i;
+    i++;
+  }
+}
+
+```
+
+const gen2 = generatorFun2();
+gen2.next(); // returns {value: 1, done: false};
+gen2.next(); // this will continue and done will never be true since generatorFunc2 is an infinite loop
+
 ## Map
 
 - maps are ordered, so they can be helpful in certain algos
@@ -736,3 +800,34 @@ return obj;
 
 
 ```
+
+## filter - call back args 2 and 3
+
+- array.filter() takes in ONE arg, a callback
+- that callback typically has only 1 arg, the array item, but it can also take in a 2nd arg, the index and a 3rd one, the array itself.
+
+- best use case is when you're doing the algo, turn an array with duplicates into an array of unique values
+
+```
+// input   arr = [1,1,1,4,5,6];
+
+function getUniqueArr(arr) {
+  const uniqueArr = arr.filter((item, idx, thisArray) => {
+    const firstIdxOfThisVal = thisArray.indexOf(item);
+    return idx === firstIdxOfThisVal
+  })
+}
+
+```
+
+## 3 types of built-in browser popups
+
+- `alert(someString)` just for message
+- `confirm(someString)` return true or false based on input
+- `prompt(someString)` returns the string inputted by the user
+
+## localStorage, cookies
+
+- local storage is used for caching on the client side and is stored in browser memory, meaning it will all go away if the browser is closed
+
+- cookies are used for sending info to the server-side. The user's session is determined and some db calls may be prevented. The cookie data is sent as part of the http request header.
