@@ -63,9 +63,9 @@
 
 ## Cloud integration
 
-- Initially, the Confluent Plaform (the enterprise distribution of Kafka), aka `on-prem` was given to a customer, then they were responsible for connecting and deploying on a cloud service (Azure, Aws, GCP)
+- Initially, the Confluent Plaform (the enterprise distribution of Kafka), aka `on-prem` was given to a customer, then they would connect the system to their physical data centers
 
-- `Confluent Cloud` is a hosted version of the same that abstracts the operational workload from the customer.
+- `Confluent Cloud` is a cloud native solution to kafka.
 
   - In vanilla Kafka, data is stored in brokers (machines) including historical data that you may want to keep around. It is also hard to scale as the requirements are coupled with the amount of data that's being computed.
 
