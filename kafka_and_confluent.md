@@ -61,9 +61,13 @@
 
 2. `ksqlDB (Kafka SQL DB)` - allows people to define common processing patterns in event feeds using familiar SQL like syntax. Even if you don't know java, you can use ksqlDB to write sql code to work with Kafka
 
+### Cloud native vs on-prem
+
+- on-prem usually means the company has a physical data center
+
 ## Cloud integration
 
-- Initially, the Confluent Plaform (the enterprise distribution of Kafka), aka `on-prem` was given to a customer, then they would connect the system to their physical data centers
+- Initially, the Confluent Plaform was the only available Confluent product and it was used for `on-prem`, `private cloud` or `public cloud` integration. Confluent was not involved in connecting Confluent to cloud services.
 
 - `Confluent Cloud` is a cloud native solution to kafka.
 
