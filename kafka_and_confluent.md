@@ -43,7 +43,7 @@
 
 - in vanilla Kafka, data is stored in local brokers (computers). as your data grows, you need to scale the storage.
 
-## Confluent adds more functionality on top of Kafka
+## Confluent
 
 ### connectors
 
@@ -76,3 +76,111 @@
   - With Confluent Cloud, storage is elastic because it's using cloud resources more efficiently. The most necessary data is kept in local brokers, but historical data (the vast majority) is kept in block storage and lowering total computation and storage costs. The storage need is decoupled from computation needs, so scaling is elastic and adding brokers is easier
 
   - because of the storage efficiency in Confluent Cloud, customers now have infinite retention on historical data.
+
+## Confluent Cloud
+
+## architecture
+
+- Confluent Cloud uses a combination of GCP, AWS, and Azure
+
+### Planes
+
+- In cloud services and paas (platform as a service) there are 2 major components
+
+1. control plane (customer control plane)
+
+- handles provision flows, api config, creating clusters
+- is a way to communicate with the mothership vpc (see below)
+
+2. data plane
+
+- how to access services (in Confluent, connectors)
+- is a way to connect to the network, or the satellite vpcs (see below)
+
+### VCP, cluster, zones
+
+- one "unit" of cluster is thought of as 1 k8 cluster, and that means 1 `VCP` (virtual private cloud) must also be created for each 1 k8 cluster.
+
+- When a VPC is created, by extension kubernetes cluster zookeeper cluster, kafka cluster and all other types running on that VCP will also be created
+
+- a VCP can either be `single-zone` or `multi-zone`. Zone in this context refers to the cloud provider's availablility zones.
+
+### Env
+
+- there are 4 envs in Confluent Cloud
+
+1. prod - many regions in all clouds we're officially deployed in
+2. stag- 2 regions in AWS, one in GCP, 2 Azure
+3. devel- 1 AWS, 1 GCP, 2 Azure
+4. Private development (cpd)
+
+Notice how all of them are using different accounts to keep them 100% isolated from each other
+
+- per each `environment`, there is only ONE `mothership`, which is a special VPC which has the golden source of truth for all high-level desired state.
+
+- all other VPCs in the same env that is not a `mothership` are considered `satellites`
+
+- the `mothership` contains a db that has info on all satellites (network_id, k8_cluster identifier, orgName, etc..)
+
+### Global mothership kafka
+
+- a special kafka cluster which sites inside an env, inside a mothership VPC, inside that mothership kubernetes cluster.
+
+- has producers and consumers spread around all of the satellites
+
+- in `prod`, this means that the global mothership kafka is linked all over the globe from both GCP and AWS.
+
+### Scheduler service
+
+- sits inside the mothership cluster and does the main kafka thing, which is producing events that the satellites are listening for.
+
+- is the main service responsible for handling kafka clusters by choosing which kubernetes cluster to start a physical kafka cluster in, which physical kafka cluster to create a new logical kafka cluster in, etc..
+
+- functions as both a producer and a consumer to the global mothership kafka cluster.
+
+- it inserts/modifies/deletes info into/out of the mothership DB
+- creates and sends the appropriate messages into the global mothership kafka cluster
+
+### sync-service
+
+- each satellite has a sync-service that consume the messages produced by the `scheduler-service`.
+
+- scheduler is the producer, sync is the listener
+
+- all sync-services consume messages but messages are designated for selected satellites. If you're a satellite that gets a message that's not designed for you, the message is consumed but is immediately thrown away
+
+- when a message is designated for a sync-service, it reacts by creating a special kubernetes object called `Physical Stateful Clusters` or `PSC`s
+
+### Provisioning FLow
+
+- a user creates a cluster
+- scheduler decides what to do and puts info into the mothership DB
+- scheduler produces messages to global mothership kafka cluster
+- sync-services consume the message, and all but one do nothing
+- the appropriate sync-service creates an appropriate PSC in its kubernetes cluster
+- the operator reacts by creating all the other kubernetes components:
+
+  - namespace
+  - persistent volumes
+  - statefulset
+  - deployments
+  - pods
+  - configmaps
+  - secrets
+  - services
+
+### Kafka logical clusters vs physical clusters
+
+- the smallest "unit" of kafka is a `kafka broker` or a `kafka node`
+
+- a `kafka cluster` is a group of `kafka nodes`, or `kafka brokers`
+
+- physical cluster is a traditional kafka cluster (non cloud)
+- logical cluster is the cloud native version of a kafka cluster that leverages cloud scaling
+
+### Kafka data model Confluent Cloud org
+
+- a conflent cloud `organization` has 2 tiers
+
+1. professional
+2. enterprise
