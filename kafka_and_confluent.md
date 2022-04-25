@@ -107,7 +107,9 @@
 
 - one "unit" of cluster is thought of as 1 k8s cluster, and that means 1 `VCP` (virtual private cloud) must also be created for each 1 k8s cluster.
 
-- When a VPC is created, by extension kubernetes cluster zookeeper cluster, kafka cluster and all other types running on that VCP will also be created
+  - in that k8s cluster, there could be 1 or more Kafka clusters
+
+- When a VPC is created, by extension kubernetes cluster zookeeper cluster, kafka cluster(2) and all other types running on that VCP will also be created
 
 - a VCP has a relational database inside it (Postgres usually)
 
@@ -160,6 +162,8 @@ Notice how all of them are using different accounts to keep them 100% isolated f
   - `metrics-service` (uses Elasticsearch as it's backing store)
 
   - services inside the mothership are accessible through the `control plane (user management plane)` and the services communicate with each other via `grpc` with Protobuf messages.
+
+  - Control plane component exist in each satellite as well including Kubernetes control plane, cloud-layer auto-scaling groups, synce-service and psc-operator.
 
 - a mothership cluster also has its own postgres DB running in the same AWS VPC for state storage.
 
