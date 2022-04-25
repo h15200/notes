@@ -220,6 +220,8 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 
 - a `kafka cluster` is a group of `kafka nodes`, or `kafka brokers`
 
+- a `topic` is created on Kafka, but a `stream` is used in `ksqldb`. To import a topic as a stream, there needs to be a valid `schema` attached to it
+
 - physical cluster is a traditional kafka cluster (non cloud)
 - logical cluster is the cloud native version of a kafka cluster that leverages cloud scaling
 
