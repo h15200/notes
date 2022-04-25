@@ -5,6 +5,12 @@
 
 ## Main concept is `Data in Motion` vs `Data at rest`
 
+## related terms
+
+- K8s, (Kubernetes)
+- GCP (google cloud platform)
+- GKE (Google Kubernetes Engine) GCP container engine
+
 - traditionally, `data at rest` systems use cron jobs to look for data updates to trigger services. Example in linked if a user changes jobs on a profile, there are associated events that should trigger. For Linkedin to KNOW that a job changed, it used to run a check periodically. This is passive
 
 - the same system can be improved if the job change automatically triggers the jobs. As data changes, there are pre-defined jobs that run after that change event
@@ -99,9 +105,11 @@
 
 ### VCP, cluster, zones
 
-- one "unit" of cluster is thought of as 1 k8 cluster, and that means 1 `VCP` (virtual private cloud) must also be created for each 1 k8 cluster.
+- one "unit" of cluster is thought of as 1 k8s cluster, and that means 1 `VCP` (virtual private cloud) must also be created for each 1 k8s cluster.
 
 - When a VPC is created, by extension kubernetes cluster zookeeper cluster, kafka cluster and all other types running on that VCP will also be created
+
+- a VCP has a relational database inside it (Postgres usually)
 
 - a VCP can either be `single-zone` or `multi-zone`. Zone in this context refers to the cloud provider's availablility zones.
 
@@ -121,6 +129,39 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 - all other VPCs in the same env that is not a `mothership` are considered `satellites`
 
 - the `mothership` contains a db that has info on all satellites (network_id, k8_cluster identifier, orgName, etc..)
+
+### Satellites
+
+- satellites are all VPCs (and the k8s clusters that are in them) that are NOT the mothership.
+
+- satellites are in AWS, GCP, Azure in many regions
+
+- `GCP Satellites` are just the VPC and a GKE (Google kubernetes engine)
+
+- `AWS Satellites` are VPC with its own network with no direct internet access. Outbound connections are allowed through internet gateways. A single k8s cluster is deployed into each of these satellite VPC's with its own set of DNS names for the masters managed through `route53`
+
+### "Mothership" (always AWS us-west-2)
+
+- the term `mothership` can be used to refer to several different things in conversation
+
+1. The data that is the source of truth for all desired state
+2. The mothership VPC itself (in AWS us-west-2 region)
+3. The k8s cluster within that mothership VPC
+4. The Kafka cluster in that k8s cluster
+5. The set of services in that k8s cluster
+6. The Postgres database in that mothership VPC
+
+- there are several important services inside the mothership
+
+  - `scheduler-service` (handles which physical clusters should exist, where they are scheduled, how many resources they require, api credentials, etc.. )
+  - `gateway-service`
+  - `org-service`
+  - `auth-service`
+  - `metrics-service` (uses Elasticsearch as it's backing store)
+
+  - services inside the mothership are accessible through the `control plane (user management plane)` and the services communicate with each other via `grpc` with Protobuf messages.
+
+- a mothership cluster also has its own postgres DB running in the same AWS VPC for state storage.
 
 ### Global mothership kafka
 
