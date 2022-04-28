@@ -47,7 +47,17 @@
 
 - with this system, all you need to get data is to subscribe to the topic.
 
-- in vanilla Kafka, data is stored in local brokers (computers). as your data grows, you need to scale the storage.
+- in vanilla Kafka, data from the `commit log` is stored in local brokers (computers). as your data grows, you need to scale the storage.
+
+### stream
+
+- a `stream` is the `commit log` that has multiple `records`.
+- `record` === `event` === `message`
+  - a `record` consists of `headers`, and a `body` (a key-value pair where the value contains business relevant data, although the key is optional), and a `timestamp`
+  - the `key` in the body is used to determine where in the `partition` a record is written to
+- a `stream` is immutable
+- a stream has history and new events are added to the end
+- a stream is open ended (does not end)
 
 ## Confluent
 
@@ -231,3 +241,62 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 
 1. professional
 2. enterprise
+
+### resiliency
+
+- Apache `ZooKeeper` (key-value store) is used to manage kafka clusters
+- typically run in a cluster of 3 or 5 servers, called an `ensemble`
+- uses `ZAB` consensus algorithm to achieve a quorum and elect leader
+- stores `ACLs` and `secrets`
+
+### retention policy
+
+- all data has a default retention policy of 1 week and the record will be purged from the partition after that
+
+### delivery policy
+
+- all ensures `at-least-once` delivery with acknowledgement
+
+- 3 levels of ack
+
+1. no ack (fastest, but no insurance that all records are being sent)
+2. only leader (only leader partitions will ack)
+3. all (leader and follower partitions will all ack. slowest, but ensures all delivery)
+
+### topics, partitions, and consumers
+
+- the `commit log` has a bunch of `records`, all with metadata about the data (`topic`)and header and timestamp
+- a `topic` will have multiple producers and consumers and paritions
+- the `record` is then spread to the appropriate `partition` based on the `topic`, which are spread across `brokers`.
+- the `key` will assign partitions. If there are no keys, the producer will just use `round-robbin` distribution to be assigned to a random partition
+  - each `broker` handles many `partitions`. paritions are stored on the brokers' disk
+- in Kafka there are three terms `topic`, `partition`, `segment`
+- a `partition` is smaller groups that comprise a topic. Partitions are made to parallelize work and increase the throughput Kafka by splitting a topic
+- a `segment` breaks down the partition further and creates physical files using the `rolling-fie` strategy (when a segment file is full, the next one is allocated by the broker.)
+- topics are broken down into `partitions`
+  - it is possible to re-partition a topic after it's created
+  - the optimal number is derived from testing throughput for producers and consumers.
+- if a consumer is subscribing to a certain topic, it is consuming from all of the partitions that make up that topic
+- consumers are single-threaded. To scale, you can add consumers (up to the max of the total number of paritions for a topic) to create `consumer groups`
+- consumers usually run infinitely `while (true) { // read logic}` by polling at intervals (defaulting to 500ms)
+- adding / removing consumers will auto scale
+
+### schema registry
+
+- topics can be defined by a schema built on `avro`, `json`, or `protobuffers`
+- schemas can be updated
+- schemas are held in kafka topics themselves
+- ksql streams need schemas to connect to a topic. (a `topic` may or may not have a schema, but a `ksql stream` requires a schema)
+
+### connectors
+
+- you can plug in external `sources` and `sinks` to the kafka ecosystem via `connectors` or `connect clusters`
+- ex. you can read records from a db, stream them as topics, then have consumers write to some other external db even if those are NOT currently part of kafka
+
+### ksqlDB
+
+- not a `db` but more a materialized view of a stream
+- used to build apps (ksaql streming application)
+- output can be another stream, or some logic
+- uses sql syntax and functions like aggregations
+- possible to CRUD streams, connectors
