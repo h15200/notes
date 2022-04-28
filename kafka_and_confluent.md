@@ -300,3 +300,19 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 - output can be another stream, or some logic
 - uses sql syntax and functions like aggregations
 - possible to CRUD streams, connectors
+
+### exactly once delivery
+
+- if within the confines of kafka (not including external sources or sinks), it is possible to ensure `exactly-once-delivery`, which is amazing
+
+### Confluent operator
+
+- a product to run Kafka on Kubernetes
+- challenges include managing state.
+  - there are two k8s primitives called `StatefulSets` and `Persistent Volumes`, but they weren't quite the right tools
+  - two extensibility features of k8s, `Custom Resource Definitions` and `Kubernetes Operator` fills the gap. `CRD` allows users to define custom objects that become part of the API. The k8s operator is a domain-specific controller that makes the actual state of the app match that defined desired state
+- the Confluent Operator allows kafka clusters to be build on top on k8s clusters and manages:
+  1. Automated provisioning
+  2. Cluster Management and Operations
+  3. Resiliency
+  4. Monitoring
