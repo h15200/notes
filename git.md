@@ -172,3 +172,13 @@ First time, set up remote alias - git remote add upstream <org url>, git remove 
 
 switch to master - git checkout master, git pull upstream master
 switch to featureBranch, git merge master
+
+### rebase to squah local commits
+
+- `git log --graph` count how many commits exist, but don't include last master branch commit!
+- `git rebase -i HEAD~n`, n being the number
+- double check that the first item is MY branch commit, and not the last master branch commit
+- make one big commit by marking first commit is `r` and the rest with `f` to squash and rename as one
+- some final check of main branch before pushing `git pull origin master`
+- push to github branch
+- pr
