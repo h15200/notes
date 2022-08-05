@@ -1821,3 +1821,9 @@ There is an interface for the dispatch function inside the typedef,
 you can import {Dispatch} from 'redux'
 
 ## Reducers are generic functions so you can pass in interface types as args for validating return values
+
+## unknown objects
+
+- escape hatch if you don't want to define nested objects
+
+`Record<string, unknown>;`
