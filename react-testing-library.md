@@ -171,3 +171,66 @@ test("Input element should display what's being typed", () => {
 ```
 
 ### react-testing-library is used to test logic, not css styles
+
+## Gotchas
+
+- You can mock components to return something to make Router testing easier
+
+- if you are testing a Route with location, mock window.location by copying, then changing pathname to "/" or whatever you want.
+
+```
+beforeEach(() => {
+  let oldLocation = window.location;
+
+  // either here or in an it block,
+  delete window.location;
+  window.location = {
+    ...oldLocation,
+    pathName = "/somePath"
+  }
+})
+
+afterEach(() => {
+  window.location = oldLocation
+})
+```
+
+`React.createElement: type is invalid -- expected a string (for built-in components) ... but got: undefined. Check your import/exports`
+
+- Usually means you messed up the top level mocks. Don’t import from the same directory twice, and if you just want to change one export, make sure to use use …jest.requireActual(‘dirPath’) to leave alone the other exports from the file!
+
+- Generally, ok to repeat code inside `it` blocks because duplication goes up, but readability goes down. Don’t make a mock file unless it’s being used in at least 2 separate tests
+
+- TypeError: (0 , \_core.mocked)(...).mockImplementationOnce(or mockImplementation) is not a function.
+
+  - If an outer hook is using an inner hook and the outer hook is being mocked, you have no mocked access to the inner hook
+
+  - use .mockImplementation to change a mock function or to mockClear(), but to do that you have to:
+    - use {mocked} from @confluent/core and chain it before `mocked(myFunct).mockImplementation(// stuff)`
+  - Use REGULAR .mockImplementation when hooks are re-rendering the component as it will only mock that first time
+
+- Use console log to debug
+  - Note that it runs for ALL tests, so use `it.only`
+- renderWithRedux is fine. If you are rendering a <Link>, use renderWithReduxRouter
+
+- If you need to render a hook with a wrapper (see ksql/src/**tests**/hooks-test -> useKsqlCluster) and get Objects are not valid as a React child error = use renderWithReduxWrapper
+- To mimic drawers with url paths, just use { createMemoryHistory} from history to see that it changed instead of checking against render of the component
+
+- Use `yarn lint:quick` to check for real linting issues in case vscode is not syncing
+- Tooltip hover state testing
+- Use async func
+- Use `await act(async() => {await fireEvent.mouseOver(getBySomething()}, then expect getBy after that
+- Ex. (TutorialCard-test.js)`it('will render tooltip', async () => {
+  const { getByText, getByTestId } = renderWithReduxRouter(
+  <TutorialCard moduleName={KSQL_GETTING_STARTED} />
+  );
+
+  await act(async () => {
+  await fireEvent.mouseOver(getByTestId(`tutorial-card-${KSQL_GETTING_STARTED}`));
+  });
+
+  expect(getByText('You have already finished this recipe!')).toBeInTheDocument();
+  });
+
+useSelector stuff can be put into state in a beforeEach
+Look at StreamDesignerAnnouncement-test.js, ClusterUpgradeCta-test.js
