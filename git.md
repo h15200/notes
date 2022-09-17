@@ -1,20 +1,18 @@
 # git
 
-# commands
+## commands
 
-See if the machine has git on terminal  
- `git --version`
+- See if the machine has git on terminal `git --version`
 
-Create a repository on github
+- Create a repository on github
 
-Clone repository on terminal  
- `git clone http://blablabla` (that you got through the repository on github)
+- Clone repository on terminal by copying the repo url, then in the directory that you want the new repo to be, `git clone http://blablabla` (that you got through the repository on github)
 
-    OR  start with the local computer, and make an empty repo
-    git init
+  OR start with the local computer, and make an empty repo
+  git init
 
-On terminal have the git keep track of the working file
-`git add foo.html` // this tells the computer to keep track of this file from now on.
+- On terminal have the git keep track of the working file
+  `git add foo.html` // this tells the computer to keep track of this file from now on.
 
 To save to a server (not yet on github) needs -m
 `git commit -m “Message to yourself about this particular save. “`
