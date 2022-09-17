@@ -111,7 +111,7 @@ Use Fork & Pull with Organization
 Never write on master branch. Not even on your forked repo. Create feature branches and review and merge
 `git checkout -b [new-feature]`
 add and commit,
-`git remove -v` see what the remote is
+`git remote -v` see what the remote is
 `git push origin [new-feature]` -> push to your forked repo
 Then make a PR to the ORGANIZATION LEVEL master (never your own master to your own branch)
 
