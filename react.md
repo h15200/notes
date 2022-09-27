@@ -365,3 +365,19 @@ export function useGetPokemon(limit: number = 20) {
   return pokemonList;
 }
 ```
+
+### error react does not recognize the prop X in a DOM element
+
+- usually means styled components is passing down some prop all the way to the dom.
+
+```
+const SomeComponent = styled.div`
+// css based on prop
+$(prop) => prop.isDisabled ? css`// some css` : css`// some other css`
+`
+
+
+```
+
+- usually tells the dev to use all lowercase (not `isDisabled` but `isdisabled`)
+- solution is to use `transient props` in styled components like `$isDisabled`
