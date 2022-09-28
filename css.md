@@ -1056,3 +1056,16 @@ using word-break does not work for both conditions for some reason.
 ```
 
 ```
+
+### replacing a list-style with svg
+
+- you can use `list-style-image: css(<pathToFile>)` to replace bullets with any image
+- if you don't have the path to an image, you can inline SVGs by encoding it
+
+```
+  ul {
+    list-style-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><linearGradient id='gradient'><stop offset='10%' stop-color='%23F00'/><stop offset='90%' stop-color='%23fcc'/> </linearGradient><rect fill='url(%23gradient)' x='0' y='0' width='100%' height='100%'/></svg>");
+    }
+
+    // utf8 is fine but if that doesn't work, try base64 encoding the entire string from "<svg>" and use `url("data:image/svg+xml;base64,LIST_OF_STRINGS_HERE")
+```
