@@ -13,3 +13,17 @@
 - in 1991, Linus Torvalds started working on a new kernel based on the Minix kernel. It eventually because the `Linux` kernel, which combined with the `GNU` project, became what we know was Linux. First release of Linux 1.0 was 1994.
 
 - the concept of major/minor/patch release started with linux kernal versioning to not disrupt users
+
+## Kernel
+
+- the term `operating system` is commonly used in 2 ways
+
+1. the entire package consisting of the central software managing a computer including command-line interpreters, gui, editors
+
+2. more specifically, the central software that manages memory, (CPU, RAM) and devices
+
+- the term `kernel` refers to #2
+- the `kernel` software is an executable
+
+- `process` is an instance of executing a program
+- a `daemon` is a special `process` that runs in the background and is usually running through the lifecycle of the system until shutdown (think windows background services for OVR)
