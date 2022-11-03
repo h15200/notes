@@ -221,6 +221,10 @@ Consistent hashing allows a load balancer to allocate the request that protects 
 
 Consistent hashing is used to preserve the most common users (that are already cached) so instead of going 0 - 33%, 33 - 66, 66-100 in the new model, you slice the LAST percentage of each existing server and assign them to the new ones to scale efficiently so that requests in 0 - 24% range will still be routed to the same server.
 
+- 2 main types
+  - layer 4 load balancer is in the transport layer and hs access to TCP or UDP protocol info, so hashing is done on some combination of `Source IP`, `Source Port`, `Destination IP`, `Destination Port`, `Protocol Type`
+  - layer 7 load balancers operate on the app layer so they have access to the HTTP headers (as opposed to transport protocol info) so will hash on URL, cookies, content type, and other meta data
+
 #### Rendezvous Hashing
 
 Each client has a weighted "ranking" of servers to go to. If a server goes down, then you simply pick the 2nd pick server.
@@ -250,6 +254,14 @@ Hybrid solution: use write-throughs for sensitive information. Use write-back fo
 
 ex challenge "we've got a distributed system and we want to manage request calls"
 solution:
+
+#### Load balancers vs Gateway service (or API gateway)
+
+- these are 2 different things. Load balancers are more hands off, and usually only provides the actual routing to servers, and caching
+
+- an API gateway has all of that plus more bells and whistles like rate limiting, monitoring, and auth and replaces the job of a load balancers
+
+- both of these options can be used as the front door for your app, but load balancers are usually cheaper
 
 ### Message Queue / Brokers
 
