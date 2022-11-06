@@ -437,3 +437,8 @@ react
     </tbody>
 </table>
 ```
+
+### append vs appendCHild
+
+- append can take either a DOM node or a string
+- appendChild can only take a node
