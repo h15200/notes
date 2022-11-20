@@ -1,4 +1,4 @@
-see separate flex.md and grid.md for those modules
+see separate flexbox.md and grid.md for those modules
 
 # Current Landscape
 
