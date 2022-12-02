@@ -281,6 +281,22 @@ Put any state changes inside componentDidMount, or inside an event, as an event 
 
 # HOOKS
 
+## setState
+
+- when calling setState with the current (or prev) value, always use a callback instead of doing it directly. For values that don't use the current, you can set it directly
+
+  - given some `data` and `updateData` state, `updateData(5)` is fine
+  - `updateData(data + 1)` is bad! If you had two of these in a row, only one would render as React bactches all state changes in this syntax
+  - solution: `updateData((prev) => { return prev + 1})`
+
+- state is updated on the re-render, not immediately after the code that updates state
+  - counter starts at 0
+  ```
+   updateCount(1);
+   console.log(counter); // will still be 0 on this render
+  ```
+  - if you need to see re-render first, put these inside a `useEffect` that tracks changes in state and put `counter` in the dependency array
+
 ## useEffect
 
 - when fetching async, always subscribe and unsubscribe based on mount to avoid `can not set state on an unmounted component` error
@@ -302,8 +318,19 @@ Put any state changes inside componentDidMount, or inside an event, as an event 
 ## useRef()
 
 - 2 main usages
+
   1.  make persistent local state that does NOT re-render the component whenver it changes
   2.  have a DOM reference like in vanilla js
+
+      - ```
+         const inputRef = useRef()
+         // stuff
+
+         // then in the return jsx,
+         <input ref={inputRef} />
+         <button onClick={(e) => {e.preventDefault(); console.log(inputRef.current.value) }} type="submit">Submit</button>
+
+        ```
 
 ## useCallback() and useMemo()
 
@@ -316,20 +343,42 @@ Put any state changes inside componentDidMount, or inside an event, as an event 
 
 - both has the same syntax, taking in a callback and a dependency array like useEffect
 
-```
+- all non-primitive values have referencial inequalities by default. For arrays and objects, use like this to prevent re-renders unnecessarily
+
+  - assuming state1 and state2 are primitive values,
+
+  ```
+      const arr = [state1, state2]
+      useEffect(() => {
+         console.log('arr changed!');
+      }, [arr])
+
+      // this Effect will run every time because arrays are never equal to another array
+  ```
+
+  ```
+   const arr = useMemo(() => {
+    return [state1, state2]
+   }, [state1, state2])
+
+   // use useMemo instead, and the dep array is now the individual state values
+
+    useEffect(() => {
+         console.log('arr changed!'); // now it will onlyl change when either state1 or state2 changes
+      }, [arr])
+  ```
 
 // useMemo - the callback, `superHardFunction` will only re-run when either dependencyA or B changes. The dependencies are often stored in state so it re-runs on state change
 
 const numberResultFromSuperSlowAlgo = useMemo(
-   superHardFunction, [dependencyA, dependencyB]
+superHardFunction, [dependencyA, dependencyB]
 )
 
 // useCallback - same as useMemo, but it will return a component which will likely be used in the return function
 
 const MemoizedReactComponent = useCallback(
-   someFunctionThatReturnsComponent, [dependencyA, dependencyB]
+someFunctionThatReturnsComponent, [dependencyA, dependencyB]
 )
-```
 
 ## custom hooks
 
@@ -341,29 +390,35 @@ const MemoizedReactComponent = useCallback(
 
 - a common pattern uses its own state and effect, but returns a value
 
+- most complex `useEffect` logic should be abstracted inside a custom hook.
+  - for example, `fetching`, error handling, and loading can be in a custom hook that can be called like `const {data, isLoading, error} = getData()`. Keep the main component separate from logic that needs `useEffect` if possible
+
 ```
+
 import { useState, useEffect } from "react";
 
 export function useGetPokemon(limit: number = 20) {
-  const [pokemonList, setPokemonList] = useState([]);
+const [pokemonList, setPokemonList] = useState([]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch(
-          `https://pokeapi.co/api/v2/pokemon?limit=${limit}`,
-        );
-        const data = await res.json();
+useEffect(() => {
+(async () => {
+try {
+const res = await fetch(
+`https://pokeapi.co/api/v2/pokemon?limit=${limit}`,
+);
+const data = await res.json();
 
         setPokemonList(data.results);
       } catch (e) {
         console.log("error", e);
       }
     })();
-  }, [limit]);
 
-  return pokemonList;
+}, [limit]);
+
+return pokemonList;
 }
+
 ```
 
 ### error react does not recognize the prop X in a DOM element
@@ -371,13 +426,52 @@ export function useGetPokemon(limit: number = 20) {
 - usually means styled components is passing down some prop all the way to the dom.
 
 ```
+
 const SomeComponent = styled.div`
 // css based on prop
 $(prop) => prop.isDisabled ? css`// some css` : css`// some other css`
 `
 
-
 ```
 
 - usually tells the dev to use all lowercase (not `isDisabled` but `isdisabled`)
 - solution is to use `transient props` in styled components like `$isDisabled`
+
+## isMounted / Abortcontroller
+
+- when fetching, we need to account for when a component is unmounted by the time fetch gets a response
+
+```
+// some custom useFetch hook
+
+export function useFetch(url) {
+   const [loading, setLoading] = useState(false);
+   const [data, setData] = useState();
+   const [error, setError] = useState();
+
+   useEffect(() => {
+      const controller = new Abortcontroller // setup a mechanism that allows canceling
+      // IIFE
+      (async () => {
+      setLoading(true);
+      try {
+      const res = await fetch(url, { signal: controller.signal }) // send switch
+      const data = await res.json();
+      } catch(e) {
+         setError(e);
+      } finally {
+         setLoading(false);
+      }
+      })();
+      // if unmounted, cancel the fetch
+      return () => {
+         controller.abort();
+      }
+      }, [url]);
+      // end of useEffect
+
+      return {loading, data, error}
+   })
+
+}
+```
