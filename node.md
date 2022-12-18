@@ -3,6 +3,11 @@
 Node is javascript that runs on your computer rather than on the browser.
 You don't have access to document or window, but you have access to process and the ability to create files, make changes to your system, and listen to network traffic.
 
+## how to run quickly
+
+- run `node` in terminal for interactive mode
+- to quit, `.exit`
+
 ## Difference between browser js
 
 JS in the browser uses the event loop to sort the stack and callback queue. Web apis are pushed to the callback queue (promises have high priority) and the callback queue is not cleared until the main stack is clear.
