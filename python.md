@@ -76,3 +76,9 @@ except:
 - `elif` , not `else if`
 - `and` instead of `&&`
 - `or` instead of `||`
+
+## fs
+
+- `file_handler = open(myNotes.txt, 'r')` open "read" mode and return handler. "r" is default, but good to be explicit
+- `for line in file_handler:` for loop in a file handler defaults to lines of text
+- to get the file as 1 string, `file_as_one_string = read(file_handler)` use `read()` on the file_handler (not the atual file)

@@ -15,10 +15,13 @@ for i in range(len(nums) - 1, -1, -1):
 try:
   age = int(input('what is your age?\n')) 
 except:
-  age = - 1
-if (age >= 0 and age < 150):
-  print(f'that\'s fantastic that your age is {age}')
-else:
   print('Input must be a valid integer')
+  quit()
+
+if (age <= 0 or age > 150):
+  print('Must be a realistic age!')
+  quit()
+print(f'that\'s fantastic that your age is {age}')
+
     
 
