@@ -41,3 +41,19 @@ will return all the hops to routers that it takes to get to that ip from this ip
 ## web scraping
 
 - from the server side, make requests to html, then look specifically for certain anchor tags, then recursively continue
+
+## wire protocol
+
+- since various languages have their own implementation of data structures, the network data needs to be standardized
+
+- 2 common ones are
+
+  1. json (javascript object notation)
+  2. xml (extensible markup language)
+     - looks like html, but for arbitrary key-value data
+     - both `xml` and `html` are based on `sgml` (standard generalized markup language) which has angled brackets, and `attributes` inside
+     - XML has various schemas which outline what is valid
+     - various entities have made XML schemas. The W3C spec is called `XSD`
+
+- the act of turning language specific structures into a wire protocol is called `serialization`
+- when you receive data from a server over the wire, the act of turning that back into what your language can understand is called `de-deserialization`
