@@ -212,3 +212,12 @@ my_socket = socket.socket()
 my_socket.connect((<hostString>, <portNumber>))
 
 ```
+
+## strings
+
+- in python 3, all internal strings are `unicode`
+- in python 2, strings and unicode were separate classes
+
+- ASCII charCode can be accessed with `ord('H')` -> 72
+- when sending data over the network, `unicode` is sent via utf-8 majority of times
+- see `web_client.py` for examples
