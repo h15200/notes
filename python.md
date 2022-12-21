@@ -253,3 +253,7 @@ my_socket.connect((<hostString>, <portNumber>))
 
   - no need to manually call the super class constructor. It will automatically inherit and run the constructor.
   - the arg of the subclass expects the args of the super constructor
+
+## Database
+
+- python ships with SQLite
