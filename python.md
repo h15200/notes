@@ -221,3 +221,35 @@ my_socket.connect((<hostString>, <portNumber>))
 - ASCII charCode can be accessed with `ord('H')` -> 72
 - when sending data over the network, `unicode` is sent via utf-8 majority of times
 - see `web_client.py` for examples
+
+## class
+
+- all methods (including constructor and destructor functions) take in `self` as the first parameter
+- both constructors and destructors are defined like regular methods, `def __init__(self, bla): `
+- constructor is `__init__`
+- destructor (rarely used) is `__del__` is called on
+- when does the destructor run?
+
+  - whenever the instance is garbage collected or destroyed in any other way
+
+  ```
+  my_animal = Animal() # runs the constructor
+  my_animal = "hi" # the re-assignment destroys the instance, so the destructor will run here!
+
+  ```
+
+- when a class is instantiated, the first variable will be the 2nd parameter of the `__init__` method since the first param is `self`. Class methods will always have 1 extra param compared to the function args
+
+- subclassing or extending a class in Python looks like this
+
+  ```
+  class Animal:
+    # stuff
+
+  class Dog(Animal):
+    # subclass of Animal class
+
+  ```
+
+  - no need to manually call the super class constructor. It will automatically inherit and run the constructor.
+  - the arg of the subclass expects the args of the super constructor
