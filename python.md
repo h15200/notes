@@ -5,6 +5,19 @@
 - for interactive python, just run `python3` in terminal
 - to quit, `quit()`
 
+## variable assignments
+
+- generally, use the `let` version without a declaration
+- `num = 5`
+- multiple vars `a, b = 4, 6`
+- swapping vars `a, b = b, a`
+- inline conditional assignment `a = List[idx] if idx >= 0 else None`
+
+## infinity
+
+- float("-inf"), float("inf")
+- if you need int infinity, - infinity, import math and `a, b = math.inf, -math.inf`
+
 ## types
 
 - check by `type(variable)`
@@ -33,6 +46,7 @@ nVal =  int(sVal) # number 123
 
 - when dividing, python will always convert to a `float` and is more predictable
 - 12 / 4 logs `3.0`
+- if you want math.floor(<someDivisionOperation>), use `//`. `12 // 5 # returns 2`
 
 ## string template literals (v. 3.6+)
 
