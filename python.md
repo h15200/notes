@@ -50,7 +50,7 @@ nVal =  int(sVal) # number 123
 
 ## string template literals (v. 3.6+)
 
-- prepending with `f` will format the string with literals
+- prepending with `f` + quotation marks (single or double) will format the string with literals
 
 ```
 name = 'Patti'
