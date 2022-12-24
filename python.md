@@ -48,6 +48,13 @@ nVal =  int(sVal) # number 123
 - 12 / 4 logs `3.0`
 - if you want math.floor(<someDivisionOperation>), use `//`. `12 // 5 # returns 2`
 
+## is whole
+
+-<float>.is_integer() -> returns boolean
+
+- `3.5.is_integer()` -> False
+- `3.0.is_integer()` -> True
+
 ## string template literals (v. 3.6+)
 
 - prepending with `f` + quotation marks (single or double) will format the string with literals
