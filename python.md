@@ -14,6 +14,22 @@
 - swapping vars `a, b = b, a`
 - inline conditional assignment `a = List[idx] if idx >= 0 else None`
 
+## script vs library best practice
+
+- if it's a script, define a `main` function
+- at the end, check for `__name__` and run it
+- this is to avoid side effects if you accidentally imports this as a library and signals to others that this is meant to be run directly
+
+```
+def main() {
+  # add main script logic
+
+}
+
+if __name__ == "__main__":
+  main()
+```
+
 ## infinity
 
 - float("-inf"), float("inf")

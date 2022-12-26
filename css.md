@@ -1069,3 +1069,8 @@ using word-break does not work for both conditions for some reason.
 
     // utf8 is fine but if that doesn't work, try base64 encoding the entire string from "<svg>" and use `url("data:image/svg+xml;base64,LIST_OF_STRINGS_HERE")
 ```
+
+## container queries (new, check canIUse)
+
+- if you need responsiveness based on another element, use container queries
+  - look up `container: inline-size` (probably what you want), `@container`, and `cqp, cqw` for latest syntax
