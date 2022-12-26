@@ -4,6 +4,7 @@
 
 - for interactive python, just run `python3` in terminal
 - to quit, `quit()`
+- style guide https://peps.python.org/pep-0008/
 
 ## variable assignments
 
@@ -79,6 +80,13 @@ for i in range(len(nums) - 1, -1, -1):
 print ('item is', nums[i])
 
 ```
+
+### BETTER to use enumerate() for indices
+
+- `for idx,val in enumerate(list_A): `
+- remember, this is a tuple unpacking (destructuring), so you need two comma separated values
+- if you only need idx and not the val, use `_` to signify you don't need it.
+  - `for i,_ in enumerate(list)`
 
 ## try/except
 
