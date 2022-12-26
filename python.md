@@ -218,7 +218,13 @@ sliced_arr = arr[0:2]
   - note that that we're using `k,v` for the data extraction from items(). If you only have k, the k will contain the entire tuple instead of just the key as there is no destructuring
 
 - example making list of tuples of value/key strings (reversed)
+
   - `list_of_v_k_tuples = [(value,key) for key,value in dict.items()]`
+
+- to combine two existing lists, for python 3.6+, `combined_list = [*list_a, *list_b]`
+
+- chaining `for` ex. combining a list of inner lists from a matrix
+  - `combined_list = [char for single_list in matrix for char in single_list]`
 
 ## dictionary
 
