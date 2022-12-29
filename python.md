@@ -5,6 +5,9 @@
 - for interactive python, just run `python3` in terminal
 - to quit, `quit()`
 - style guide https://peps.python.org/pep-0008/
+- vscode packages
+  - black (the prettier of python)
+  - sourcery free tier (linter)
 
 ## variable assignments
 
