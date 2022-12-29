@@ -14,6 +14,11 @@
 - swapping vars `a, b = b, a`
 - inline conditional assignment `a = List[idx] if idx >= 0 else None`
 
+## Typing
+
+- input/outputs can be typed
+- variable annotations `is_true: bool = True`
+
 ## script vs library best practice
 
 - if it's a script, define a `main` function
@@ -193,10 +198,16 @@ sliced_arr = arr[0:2]
 ## str.split()
 
 - without any args, it defaults to "smart" splitting on all whitespace, multiple whitespaces, and newline
+
   ```
   str = "hello     there      with    whitespaces"
   arr = str.split() # ['hello, there, with, whitespces]
   ```
+
+- if you want to split by all chars, you need to use either:
+  1. `list(str)` (uses the list constructor, so less optimal than option 2)
+  2. list comprehension `[char for char in some_string]` (better than option 1)
+  3. unpacking with "*" `[*my_string]`
 
 ### sorted()
 
