@@ -1,4 +1,4 @@
-# Python 3 cheatsheet
+# Python 3 cheat sheet
 
 ## quick env
 
@@ -7,7 +7,7 @@
 - style guide https://peps.python.org/pep-0008/
 - vscode packages
   - black (the prettier of python)
-  - sourcery free tier (linter)
+  - `sourcery` free tier (linter)
 
 ## variable assignments
 
@@ -134,7 +134,7 @@ except:
 
 - `file_handler = open(myNotes.txt, 'r')` open "read" mode and return handler. "r" is default, but good to be explicit
 - `for line in file_handler:` for loop in a file handler defaults to lines of text
-- to get the file as 1 string, `file_as_one_string = read(file_handler)` use `read()` on the file_handler (not the atual file)
+- to get the file as 1 string, `file_as_one_string = read(file_handler)` use `read()` on the file_handler (not the actual file)
 
 ## Collection type data structures
 
@@ -200,11 +200,11 @@ sliced_arr = arr[0:2]
 
 ## str.split()
 
-- without any args, it defaults to "smart" splitting on all whitespace, multiple whitespaces, and newline
+- without any args, it defaults to "smart" splitting on all whitespace, multiple whitespace, and newline
 
   ```
-  str = "hello     there      with    whitespaces"
-  arr = str.split() # ['hello, there, with, whitespces]
+  str = "hello     there      with    whitespace"
+  arr = str.split() # ['hello, there, with, whitespace]
   ```
 
 - if you want to split by all chars, you need to use either:
@@ -221,7 +221,7 @@ sliced_arr = arr[0:2]
 
 - `List comprehension` is a way to make lists easily from other data structures
 - syntax is square brackets with the `comprehension target` (data you want), then a for loop structure over an iterable
-- if multiple comprehension targets, must use parethesis
+- if multiple comprehension targets, must use parenthesis
 - example with nums from list -> list of nums
 
   - `list_of_nums_plus_1 = [num + 1 for num in [1,2,3,4,5]]` -> list_of_nums_plus_1 is [2,3,4,5,6]
@@ -263,7 +263,7 @@ sliced_arr = arr[0:2]
 
 - tuples can be compared `(1,2,3) < (0,1,5)`
   - is 1 < 0 ? if so, return true. if not, increment both tuple iterations
-  - is 2 < 1 ? if so, return true, if not, icrement both
+  - is 2 < 1 ? if so, return true, if not, increment both
   - is 3 < 5? etc...
 
 ## socket library
@@ -305,7 +305,7 @@ my_socket.connect((<hostString>, <portNumber>))
 
 - when a class is instantiated, the first variable will be the 2nd parameter of the `__init__` method since the first param is `self`. Class methods will always have 1 extra param compared to the function args
 
-- subclassing or extending a class in Python looks like this
+- sub classing or extending a class in Python looks like this
 
   ```
   class Animal:
