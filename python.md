@@ -73,6 +73,17 @@ nVal =  int(sVal) # number 123
 - 12 / 4 logs `3.0`
 - if you want math.floor(<someDivisionOperation>), use `//`. `12 // 5 # returns 2`
 
+## min(), max(), abs()
+
+- no need to import math
+- you can add a `key` arg to use a `lambda` to each iterable
+  - ex. ```
+    my_list = ['hello', 'patricia']
+    shortest_str = min(my_list, key=len)
+
+```
+
+
 ## is whole
 
 -<float>.is_integer() -> returns boolean
@@ -85,8 +96,10 @@ nVal =  int(sVal) # number 123
 - prepending with `f` + quotation marks (single or double) will format the string with literals
 
 ```
+
 name = 'Patti'
 print(f'hello, {name}')
+
 ```
 
 ## for in loop args
@@ -117,10 +130,15 @@ print ('item is', nums[i])
 - throw exceptions with try/except
 
 ```
+
 try:
-  # some code that could fail
+
+# some code that could fail
+
 except:
-  # some action when there is an error
+
+# some action when there is an error
+
 ```
 
 ## syntax
@@ -182,9 +200,12 @@ except:
 - if blank, will default to first idx of collection for start and end of collection for end
 
 ```
+
 arr = ['a', 'b', 'c']
 sliced_arr = arr[0:2]
+
 # returns ['a', 'b']
+
 ```
 
 ## declaring collections
@@ -202,15 +223,17 @@ sliced_arr = arr[0:2]
 
 - without any args, it defaults to "smart" splitting on all whitespace, multiple whitespace, and newline
 
-  ```
-  str = "hello     there      with    whitespace"
-  arr = str.split() # ['hello, there, with, whitespace]
-  ```
+```
+
+str = "hello there with whitespace"
+arr = str.split() # ['hello, there, with, whitespace]
+
+```
 
 - if you want to split by all chars, you need to use either:
-  1. `list(str)` (uses the list constructor, so less optimal than option 2)
-  2. list comprehension `[char for char in some_string]` (better than option 1)
-  3. unpacking with "*" `[*my_string]`
+1. `list(str)` (uses the list constructor, so less optimal than option 2)
+2. list comprehension `[char for char in some_string]` (better than option 1)
+3. unpacking with "*" `[*my_string]`
 
 ### sorted()
 
@@ -224,53 +247,55 @@ sliced_arr = arr[0:2]
 - if multiple comprehension targets, must use parenthesis
 - example with nums from list -> list of nums
 
-  - `list_of_nums_plus_1 = [num + 1 for num in [1,2,3,4,5]]` -> list_of_nums_plus_1 is [2,3,4,5,6]
+- `list_of_nums_plus_1 = [num + 1 for num in [1,2,3,4,5]]` -> list_of_nums_plus_1 is [2,3,4,5,6]
 
 - example making list of key strings from dict
 
-  - `list_of_strings_dict = [ k for k,v in some_dict.items()]`
-  - note that that we're using `k,v` for the data extraction from items(). If you only have k, the k will contain the entire tuple instead of just the key as there is no destructuring
+- `list_of_strings_dict = [ k for k,v in some_dict.items()]`
+- note that that we're using `k,v` for the data extraction from items(). If you only have k, the k will contain the entire tuple instead of just the key as there is no destructuring
 
 - example making list of tuples of value/key strings (reversed)
 
-  - `list_of_v_k_tuples = [(value,key) for key,value in dict.items()]`
+- `list_of_v_k_tuples = [(value,key) for key,value in dict.items()]`
 
 - to combine two existing lists, for python 3.6+, `combined_list = [*list_a, *list_b]`
 
 - chaining `for` ex. combining a list of inner lists from a matrix
-  - `combined_list = [char for single_list in matrix for char in single_list]`
+- `combined_list = [char for single_list in matrix for char in single_list]`
 
 ## dictionary
 
 - key doesn't need to be a string. it can be any immutable python object
 - `.get(<key>, <defaultIfNotFound>)` looks for a value, but if it doesn't exist returns the provided default val
 
-  - useful for making a counter `cache[key] = cache.get(key, 0) + 1` (if val exists, assign + 1. if not, assign 1)
+- useful for making a counter `cache[key] = cache.get(key, 0) + 1` (if val exists, assign + 1. if not, assign 1)
 
 - `.keys()` will return a list of keys from the dict
-  - you can also `list(my_dict)` which will do the same thing
+- you can also `list(my_dict)` which will do the same thing
 - `.values()` will return a list of values from the dict
 - `.items()` will return a `list` of `tuples` of key-value pairs
-  - you can easily have access to both key and value with .items by:
-  ```
-  my_dict = {<some data>}
-  for key, value in my_dict.items():
-    # do stuff
-  ```
-  note that destructuring can just be done with comma separated values
+- you can easily have access to both key and value with .items by:
+```
+
+my_dict = {<some data>}
+for key, value in my_dict.items(): # do stuff
+
+```
+note that destructuring can just be done with comma separated values
 
 ## tuple
 
 - tuples can be compared `(1,2,3) < (0,1,5)`
-  - is 1 < 0 ? if so, return true. if not, increment both tuple iterations
-  - is 2 < 1 ? if so, return true, if not, increment both
-  - is 3 < 5? etc...
+- is 1 < 0 ? if so, return true. if not, increment both tuple iterations
+- is 2 < 1 ? if so, return true, if not, increment both
+- is 3 < 5? etc...
 
 ## socket library
 
 - built-in support for TCP sockets
 
 ```
+
 import socket
 
 my_socket = socket.socket()
@@ -297,28 +322,29 @@ my_socket.connect((<hostString>, <portNumber>))
 
   - whenever the instance is garbage collected or destroyed in any other way
 
-  ```
-  my_animal = Animal() # runs the constructor
-  my_animal = "hi" # the re-assignment destroys the instance, so the destructor will run here!
+```
 
-  ```
+my_animal = Animal() # runs the constructor
+my_animal = "hi" # the re-assignment destroys the instance, so the destructor will run here!
+
+```
 
 - when a class is instantiated, the first variable will be the 2nd parameter of the `__init__` method since the first param is `self`. Class methods will always have 1 extra param compared to the function args
 
 - sub classing or extending a class in Python looks like this
 
-  ```
-  class Animal:
-    # stuff
+```
 
-  class Dog(Animal):
-    # subclass of Animal class
+class Animal: # stuff
 
-  ```
+class Dog(Animal): # subclass of Animal class
 
-  - no need to manually call the super class constructor. It will automatically inherit and run the constructor.
-  - the arg of the subclass expects the args of the super constructor
+```
+
+- no need to manually call the super class constructor. It will automatically inherit and run the constructor.
+- the arg of the subclass expects the args of the super constructor
 
 ## Database
 
 - python ships with SQLite
+```
