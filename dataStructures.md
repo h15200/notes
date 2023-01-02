@@ -104,8 +104,8 @@ Tuples have a fixed order of values because the number of bathrooms must match t
 
 ## Map
 
-A map stores a key-value pair. In JS, maps are avilable as objects but there are certain limitations,
-the main one being the order of insertion is not specified.
+A map stores a key-value pair. In JS, maps are available as objects but there are certain limitations,
+for example, the order of insertion is not specified. (In Python maps are ordered)
 
 In ES6, maps are available as another value-pair data structure with useful methods not available to objects.
 
@@ -129,7 +129,7 @@ myMap.set('Patti', 'Awesome');
 
 ## Hash Table
 
-A tash table is an array of data where the index of the data is built in to the key.
+A hash table is an array of data where the index of the data is built in to the key.
 Ex- database of users. User's first name as ASCI values added up, then modulo by a number might return the index.
 Since it's relatively easy to get the index, it is considered constant time O(1) and very efficient.
 
@@ -230,7 +230,7 @@ The next element of a node is initialized to null until it's set.
 
 The first item is called the head
 
-Implementation - to add a new node, you can interatively look for a node where the next value is null and assign the new node to that. You can't use indexes, you must always start at the head and continue calling next until the next value is 'null', which means it's the end of the linked list
+Implementation - to add a new node, you can iteratively look for a node where the next value is null and assign the new node to that. You can't use indexes, you must always start at the head and continue calling next until the next value is 'null', which means it's the end of the linked list
 
 to remove an element, you have to start at the head, and rather than deleting that node, you simply link the previous node to the node 2 links in front and exclude the current.
 
@@ -315,7 +315,7 @@ A binary tree can only have 2 branches per node
 The branches of a binary tree are ordered such that the left branch has a smaller value than the parent,
 and the right branch has a greater value than the parent node
 
-Logarithmic Time comlexity - Means at best, the time can be halved. The binary tree will be travesing based on
+Logarithmic Time complexity - Means at best, the time can be halved. The binary tree will be traversing based on
 the value of the current node, so it has a CHANCE of doing everything in half the time.
 
 If the tree is unbalanced, at worst, it could still take linear time.
@@ -437,7 +437,7 @@ The heap property - Specifies a relationship between a parent and child node
 Max heap = all parent nodes are greater than OR equal to their child nodes
 Min heap = all parent nodes are less than OR equal to their child nodes
 
-The left and right children don't have to relate to each other in any way, as long as they satisfy the value relatiopnship with the parent node.
+The left and right children don't have to relate to each other in any way, as long as they satisfy the value relationship with the parent node.
 
 Although it's a tree and can be represented like this
 ex of Binary Min Heap Tree
@@ -474,7 +474,7 @@ This array with the null in the top BEFORE the root is often how a max heap or m
 
 ### time complexity
 
-MAKING a max or min-heap from an array is O(n) because of MATH. In detail, you start from the LAST parent by getting the parent of the last index. THat already cuts out the work to about n/2 (all n/2 + 1 to n-1 have no children). At the lowest branch level (with children), it's constant time swapping because you only compare against direct children and there are no more grandchildren. At the highest level n, you have logN levels to compare to children, grandchildren, grandgrandchildren etc...
+MAKING a max or min-heap from an array is O(n) because of MATH. In detail, you start from the LAST parent by getting the parent of the last index. THat already cuts out the work to about n/2 (all n/2 + 1 to n-1 have no children). At the lowest branch level (with children), it's constant time swapping because you only compare against direct children and there are no more grandchildren. At the highest level n, you have logN levels to compare to children, grandchildren, grand-grandchildren etc...
 
 When you add count each row time complexity, this adds up to linear time.
 
@@ -488,11 +488,11 @@ Dropping the last node is constant time
 
 After the drop, re-shaping the heap again is O(logN) as you swap from the head down each level.
 
-Total time is O(nLogn), the same as merge sort
+Total time is O(nLogN), the same as merge sort
 
 ### Sift up/ Sift down
 
-Important to understand and implmement siftUp / siftDown methods.
+Important to understand and implement siftUp / siftDown methods.
 siftDown is what's used in makeHeap, as well as remove(). You compare from the current to the children, swap if necessary, then check the swapped node.
 
 In siftUp, it is used in insertion. You add to the END of the heap,then look to the parent to see if the tree is valid. If not, swap, and look the new parent etc..
@@ -522,7 +522,7 @@ To remove from a max heap, you usually remove the greatest value, which is the r
 
 A heap sort uses a min heap, which means the root is always the smallest number.
 
-Heap sort takes an unsorted array, adding each item in the array into a min heap, then extracting every item out of the min heap into another array. The min heap structure will insure that the new array is in least to greatest value, and is O(nlog(n)), making it one of the most efficient sorting algorithms.
+Heap sort takes an unsorted array, adding each item in the array into a min heap, then extracting every item out of the min heap into another array. The min heap structure will insure that the new array is in least to greatest value, and is O(nLog(n)), making it one of the most efficient sorting algorithms.
 
 ## Note; What's interesting is that the array version of a min heap is NOT in least to greatest order
 
@@ -545,7 +545,7 @@ class MaxHeap {
     // add to first available (last of array)
     // if added node is bigger than parent, swap
     this.heap.push(val);
-    let newIndex = this.heap.length - 1; // intitialize i of new node
+    let newIndex = this.heap.length - 1; // initialize i of new node
     let parentIndex = Math.floor((newIndex - 1) / 2 ); // initialize parent of new node
     // edge case if len is 1, do nothing
     while (parentIndex >= 0 && parentIndex !== newIndex) {
@@ -647,11 +647,11 @@ Notice how the above nodes are connected to each other on both ends.
 1 to 2, 2 to 1
 1 to 3, 3 to 1
 
-This makes that particular adjency list an `undirected graph`
+This makes that particular adjacency list an `undirected graph`
 
 A `directed graph` will have a directional edge that only goes one way
 
-## Adjencency Matrix
+## Adjacency Matrix
 
 Another way to represent a graph in a 2D array
 
@@ -670,7 +670,7 @@ The same example from above would be represented like so:
 
 This can represent both directed and undirected graphs. This one above is undirected, as the relationship is reciprocal.
 
-Unlike adjency lists, you must have the same number of rows and columns to represent nodes.
+Unlike adjacency lists, you must have the same number of rows and columns to represent nodes.
 
 In js, this is represented with a nested array
 
@@ -692,7 +692,7 @@ When there are more than 0 and 1 representing edges, they represent weights of e
 
 ## Incidence Matrix
 
-Another graph represenatation type
+Another graph representation type
 
 In an incidence matrix, the Rows are nodes and the Columns are edges
 The rows and columns can be different lengths
@@ -709,7 +709,7 @@ Can represented both undirected and directed graphs
 // 4 nodes, 3 edges. node 1 - 3, 2 - 3, 1-5. Look on each column for matching pair
 ```
 
-It's easy to get confused.. remember, the ROW is a particular EDGE, so seeing one '1' doesn't tell you about the destinatino of that edge. It just means that edge EXISTS. You go down the same column to find another '1' to find WHERE that edge is connecting to.
+It's easy to get confused.. remember, the ROW is a particular EDGE, so seeing one '1' doesn't tell you about the destination of that edge. It just means that edge EXISTS. You go down the same column to find another '1' to find WHERE that edge is connecting to.
 
 In js, it is again an array of arrays
 The "labels" of row and column are assumed
@@ -767,7 +767,7 @@ Steps
 3. After you've added all neighbor nodes, shift() the queue INTO the doneList
 4. Recursively go into the new queue[0]
 
-- code implmentation example
+- code implementation example
 
 ```
 class Graph {
@@ -895,7 +895,7 @@ console.log(graph.bfs("a"))
 
 ```
 
-### Dijkstra shortests path
+### Dijkstra shortest path
 
 - make 3 storages for priorityQueue (use a Heap that always puts the min distance to head), shortestPaths, and previousVertex
 - initiate shortestPath to 0 for starting node, Infinity for all others
@@ -1032,20 +1032,20 @@ loop left to right, but for every time something is unsorted, sort that element 
 
 - note how this will be optimal to sort data that keeps adding to an already sorted data. Selection sort will not have this advantage as the whole thing needs to run every time a new element is introduced.
 
-Basically have the second pointer tragerse twice as fast.
+Basically have the second pointer traverse twice as fast.
 
 ### Selection sort T: O(N^2), S: O(1)
 
 - get the min of entire array, swap with first index. repeat for 2nd index
 
-### Merge Sort T: O(n logn), S: O(n) for extra array
+### Merge Sort T: O(n logN), S: O(n) for extra array
 
-A merge sort is O(NlogN) because if you break down the tree into halves,
+A merge sort is O(NLogN) because if you break down the tree into halves,
 you get levels of N, N/2, N/4, N/8 and on each level, you are "stitching" them. Stitching each level have different amounts of items to sort (only 2 at the bottom level, the entire N at the top level) but average out to N. Since you're stitching on every level of the tree, there are logN levels of the tree, so it's N on each logN level.
 
-### Quick sort T: O(n logn), S: O(log n)
+### Quick sort T: O(n LogN), S: O(log n)
 
-- best case TIME is nLogn but worst case is n^2 since pivot point can yield no left or right subarray
+- best case TIME is nLogN but worst case is n^2 since pivot point can yield no left or right sub array
 - in the same logic, best case SPACE is O(logN) for recursion stack but could be O(n) if pivot is unbalanced
 
 - like merge sort, usually implemented with recursion
@@ -1119,7 +1119,7 @@ console.log(quickSort([5,17,1,7,0, 3, -1]))
 
 - All of the previous sorts (bubble, insertion, selection, merge, quick) are grouped under `Comparison Sorts` Comparison Sorts will at best have a time complexity of O(n Log(n)). In THEORY, can be faster although under the hood it may not be an improvement on quick sort.
 
-- if bound by certain contrainsts (only integars), other sorting algorithms can be faster by using an alternate method and NOT comparing values
+- if bound by certain constraints (only integers), other sorting algorithms can be faster by using an alternate method and NOT comparing values
 
 - in a radix sort, you just repeatedly do O(n + k) operations.
 
