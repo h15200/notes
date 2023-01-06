@@ -27,7 +27,7 @@
 
   1. getByRole
 
-  - query element exposed in the accessibiity tree.
+  - query element exposed in the accessability tree.
   - screen.getByRole('button', {name: /enter/i})
   - this should work most of the time
 
@@ -42,7 +42,7 @@
 
   4. getByText
 
-  - used to find non-interactive elements. divs, p
+  - used to find non-interactive elements. div, p
 
   5. getByDisplayValue
 
@@ -55,7 +55,7 @@
 - used to assert that an element does NOT exist
 - getBy can't assert a missing element as it will throw an error, while queryBy will return null
 - if queryBy returns more than 1 match, it will throw an error
-- `querryAllBy` returns an array of all matching nodes OR an EMPTY ARRAY if not found
+- `queryAllBy` returns an array of all matching nodes OR an EMPTY ARRAY if not found
 
 ### findBy[...]
 
@@ -85,16 +85,16 @@
 the most common way is,label ele BEFORE input ele, htmlFor attribute set to the id that's set in the input
 
 ```
-<label htmlFor="firstname">First Name</label>
+<label htmlFor="first-name">First Name</label>
 <input
-  id="firstname"
+  id="first-name"
   type="text"
 
 />
 
 ```
 
-- method 1 input can be queried by `const inputEle = screen.getByLabelText(/firstname/i);`
+- method 1 input can be queried by `const inputEle = screen.getByLabelText(/first-name/i);`
 
 -using `screen.getByRoles("textbox", {name: /something/i})` will require specific aria labels
 
@@ -206,7 +206,7 @@ afterEach(() => {
   - If an outer hook is using an inner hook and the outer hook is being mocked, you have no mocked access to the inner hook
 
   - use .mockImplementation to change a mock function or to mockClear(), but to do that you have to:
-    - use {mocked} from @confluent/core and chain it before `mocked(myFunct).mockImplementation(// stuff)`
+    - use {mocked} from @confluent/core and chain it before `mocked(myFunc).mockImplementation(// stuff)`
   - Use REGULAR .mockImplementation when hooks are re-rendering the component as it will only mock that first time
 
 - Use console log to debug
@@ -219,7 +219,7 @@ afterEach(() => {
 - Use `yarn lint:quick` to check for real linting issues in case vscode is not syncing
 - Tooltip hover state testing
 - Use async func
-- Use `await act(async() => {await fireEvent.mouseOver(getBySomething()}, then expect getBy after that
+- Use `await act(async() => {await fireEvent.mouseOver(getBySomething()}`, then expect getBy after that. If you are missing `async` in the callback, you'll get a console.error
 - Ex. (TutorialCard-test.js)`it('will render tooltip', async () => {
   const { getByText, getByTestId } = renderWithReduxRouter(
   <TutorialCard moduleName={KSQL_GETTING_STARTED} />
