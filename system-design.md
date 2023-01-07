@@ -32,7 +32,7 @@ so sending 1GB over the network would take 10 seconds
 
 1. Understand the question
 
-Ask questions to understand the contraints and use cases
+Ask questions to understand the constraints and use cases
 
 - Who are our users and what are their needs?
 - what is the exact scope of the problem?
@@ -139,18 +139,18 @@ CONS
 
    Ways to reason about which service to use..
 
-If there are only 2 microservices, it's a sign you should just use a monlithic structure.
+If there are only 2 microservices, it's a sign you should just use a monolithic structure.
 
 ## protocols
 
-- `ip/tcp` (ensures delivery with handshakes and ackknowledgements).
+- `ip/tcp` (ensures delivery with handshakes and acknowledgements).
   - tcp have built in encryption using TLS
-  - websockets are built with ip/tcp
+  - web sockets are built with ip/tcp
   - is not a strict client-server model. Data can go both ways in any order
 - `http` built on top of ip/tcp with encryption and identify verification
   - is a client-server model. The client must first request, and the server replies
 - `smpp` (short message texting) twilio
-- `udp` (no ackknowledgement flow, so FASTER but some packets will be lost) video, voice
+- `udp` (no acknowledgement flow, so FASTER but some packets will be lost) video, voice
 - `xmpp` peer network (peer-to-peer networks can be built with xmpp or with tcp)
   - `xmpp` is slower but more secure than `tcp` websocket. It has additional encryption logic on top of TLS, which TCP also has
 
@@ -169,10 +169,10 @@ If there are only 2 microservices, it's a sign you should just use a monlithic s
 - Hardware vs Software
 
   - Hardware load balancers are actual structures.
-  - Software load balancers are USUALLY what systems design interviews are refering to. Software is more flexible in what you can do.
+  - Software load balancers are USUALLY what systems design interviews are referring to. Software is more flexible in what you can do.
 
 - is a type of reverse proxy (most of the time) as a reverse proxy sits in between the client and server on behalf of the server.
-- can be set for the database, or even on the dns layer (google.com has many IPs and the DNS roundrobin will assign a requeset to the correct dns server to respond with a domain name)
+- can be set for the database, or even on the dns layer (google.com has many IPs and the DNS round robin will assign a request to the correct dns server to respond with a domain name)
 - helps scale horizontally by distributing requests to multiple servers
 - avoids duplicate requests
 
@@ -183,7 +183,7 @@ Load Balancers can use different algos to choose a server.
 1. random
 2. round robin (cycles through all servers in order). more ven than random
 3. weighted round robin - certain servers have weight (priority) based on power of individual servers or past performance and are given more requests.
-4. Ip based asssignment - Client request ip address will be hashed and used to assign to an index number of server. Each individual client is always sent to the same server to maximize cache functionality.
+4. Ip based assignment - Client request ip address will be hashed and used to assign to an index number of server. Each individual client is always sent to the same server to maximize cache functionality.
 5. Path based - requests are distributed based on the path of the request. Each server specializes in specific functionality. Speeds up deployment as you only need to re-write code for 1 server type.
 
 Random, round robin, and weighted round robin will not work with server side in-memory caching because it won't maximize cache hits as the requests will come from random clients.
@@ -217,7 +217,7 @@ when adding server 3, it goes a third, a third a third
 `fault tolerance` - how to protect against a crashed server or machine
 `allocation` - the way a request is mapped to a server.
 
-Consistent hashing allows a load balancer to allocate the request that protects against fault tolerance AND scalibility based on efficiency of existing cache. In minimizes the number of keys that need to be remapped when a hash table gets resized.
+Consistent hashing allows a load balancer to allocate the request that protects against fault tolerance AND scalability based on efficiency of existing cache. In minimizes the number of keys that need to be remapped when a hash table gets resized.
 
 Consistent hashing is used to preserve the most common users (that are already cached) so instead of going 0 - 33%, 33 - 66, 66-100 in the new model, you slice the LAST percentage of each existing server and assign them to the new ones to scale efficiently so that requests in 0 - 24% range will still be routed to the same server.
 
@@ -250,7 +250,7 @@ methods of invalidation
 - Write-through cache: data is written into the cache and the corresponding database at the same time. Accurate, but it's expensive to make calls to the db to update during peak time.
 - Write-back (deferred) cache: data is written to cache ALONE, and completion is immediately confirmed to the client. The db write is done later, when traffic is low. It is less expensive, but bad if the server goes down and skips the db write step.
 
-Hybrid solution: use write-throughs for sensitive information. Use write-back for non-critical data.
+Hybrid solution: use write-through for sensitive information. Use write-back for non-critical data.
 
 ex challenge "we've got a distributed system and we want to manage request calls"
 solution:
@@ -265,7 +265,7 @@ solution:
 
 ### Message Queue / Brokers
 
-- a message queue is used by a service to just say "ok we got the request, but we won't try to do it now and will instead put it on a todo list". This ensures that the servcer doesn't get overloaded and the requests are never lost, for the price of delayed processing
+- a message queue is used by a service to just say "ok we got the request, but we won't try to do it now and will instead put it on a todo list". This ensures that the server doesn't get overloaded and the requests are never lost, for the price of delayed processing
 
 - The notifier is the `producer` and the services doing the actual work is `consumer`. The consumer takes a task from the queue and works on it when it's ready.
 
@@ -290,7 +290,7 @@ solution:
 - if it's stored in memory, a server outage will not keep that info
 
 - solution: store the queue in a database, each server sends a NOTIFIER a heartbeat every 10 seconds. If a server dies, the notifier consults the db and reroutes unfinished tasks to another server.
-  - most message queue solutions have fault tolerence by storing the queue in a db
+  - most message queue solutions have fault tolerance by storing the queue in a db
 
 ### Databases (relational, non-relational)
 
@@ -298,7 +298,7 @@ Reasons for:
 
 #### Relational db (sql)
 
-- ACID complicance. data is structured and unchanging, strong consistency
+- ACID compliant. data is structured and unchanging, strong consistency
 - A relational database that supports SQL (most of them) has the power of running SQL directly without having to load the data in memory.
 
 #### Non relational db (no sal)
@@ -327,7 +327,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
          (node)
             |
 (node) (node) (node) (node)
- null    nulll  |      null
+ null    null  |      null
         4 more nodes
 ```
 
@@ -371,36 +371,40 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - Vertical partitioning separates columns (categories) into shards (or partitions) for ex when a column is rarely used, it is stored elsewhere.
 
-- when sharding, just like in servers and load balancers, must take into account hot spots and aim for an even distribution by using a good hashing function that gurentees uniformity.
+- when sharding, just like in servers and load balancers, must take into account hot spots and aim for an even distribution by using a good hashing function that guarantees uniformity.
 
 - Pros and Cons
 
   - Pros: avoids failures
   - Cons: Must take into account hot spots (if partitioning by region, are certain regions hot spots?)
     can be hard to determine HOW to shard efficiently
-    joins can be expensive over different shareds
+    joins can be expensive over different shards
 
 - different for SQL vs NO-SQL dbs.
 
 ### Leader Election
 
 - the same idea of threads and locks but in a distributed system
-- used when only 1 of the replicated nodes should be reponsible fo something
+- used when only 1 of the replicated nodes should be responsible fo something
 
   - for example if you have a subscription service like Netflix, when using a 3rd party service like paypal to process payments, you don't want that 3rd party service to have direct access to your UsersDb.
 
-  - another example is repliacted dbs. Only the main active one should be in charge of writing so data is consistent
+  - another example is replicated dbs. Only the main active one should be in charge of writing so data is consistent
 
 - Usually there is a service that sits between your db and the 3rd party service that has access to your db and checks the status of `payments` or something, and communicates with the payment service. When you have important logic like payment, you want passive redundancies of this middle service so that only one "leader" takes care of the logic and the others are on standby.
 
 - The logic of multiple machines agreeing on a leader can be very complicated. The act of sharing this state of knowing who the leader is done with a `consensus algorithm`, specifically like `Paxos` & `Raft`
 
-- example of apps that use a consensus algo under the hood - `zookeeper`, `Etcd` (EtsyDee) are both strongly consistent and highly available key-value storeage that's often used to implement leader election
+- example of apps that use a consensus algo under the hood - `zookeeper`, `Etcd` (EtsyDee) are both strongly consistent and highly available key-value storage that's often used to implement leader election
 
-### Consistency, Availability
+### Consistency, Availability, CAP Theorem
 
 - availability is measured by `9s`. Five 9s means there are outages of seconds over a year
 - Strong Consistency means data is rarely stale. Eventual consistency means the data will sync over a period of time (seconds or minutes) when the network traffic is low.
+- CAP theorem (Consistency, Availability, Partition)
+  - in the event of a `Network Partition (server failure, network failure)` a system must prioritize either `consistency` (pause user operations until network is back up) or `availability` (continue allowing users to make API calls, but data is not consistent)
+  - For example, if the "likes" service that tracks the number of likes is the issue, probably ok to prioritize `availability` and keep allowing users continue
+  - for something like a bank statement, that's not the case
 
 ### Peer-to-peer networks
 
@@ -419,7 +423,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - Solution: Keep using that one machine, but divide the data into 1,000 pieces and send those 1/1000 data to each peer. Then, each peer will share with each other in parallel (ex. peer 1 <-> peer 2 while peer3 <-> peer4 etc.. )
 
-- implementation: Each peer needs to know the order of what peer to talk to via `gossip protocol` or `epidemic protocol` where the peers talk amongst themselves to figure out what peers to talk to each other based on current data fragments. Under the hood thre is a distributed hash table that tracks the progress of each peer and its data fragment.
+- implementation: Each peer needs to know the order of what peer to talk to via `gossip protocol` or `epidemic protocol` where the peers talk amongst themselves to figure out what peers to talk to each other based on current data fragments. Under the hood there is a distributed hash table that tracks the progress of each peer and its data fragment.
 
 - ex. `Kraken` used by uber
 
@@ -440,13 +444,13 @@ quad trees are trees that have 0 or 4 children used to do location searches used
   - Can stream over simple http.
   - not good for bidirectional communication
 
-- One is not necessarily better than the other. If the data needs instantaneous updating, use streaming. If the data only needs to be updated at an interval, use polling. Implmentation of polling is a lot easier
+- One is not necessarily better than the other. If the data needs instantaneous updating, use streaming. If the data only needs to be updated at an interval, use polling. Implementation of polling is a lot easier
 
-- websockets use TCP connections
+- web sockets use TCP connections
 
 - both of these concepts work in a simple setup, but a publish/subscribe pattern will be needed with persistent data in a large scale distributed system
 
-- XMPP is a peer-to-peer protocol unlike the usual client-server model. It can be used for chat as well as an alternative to websockets, but is slower and more secure.
+- XMPP is a peer-to-peer protocol unlike the usual client-server model. It can be used for chat as well as an alternative to web sockets, but is slower and more secure.
 - Websocket (faster, TCP, less secure). XMPP (peer-to-peer, slower, more secure)
 
 - pub/sub and streaming are the same "category" of techniques as the client signs up to a topic. Polling is not, as it's just a repeated http request
@@ -461,7 +465,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 ### Webhooks
 
 - you register a server with an event (typically a single event) and a callback URL
-- when the event gets updated, send POST reqest to callback URL
+- when the event gets updated, send POST request to callback URL
 - good for specific events. Multiple events can be noisy and server will have to handle a lot of traffic
 
 ### WebSockets
@@ -474,7 +478,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - very similar to message queues, except the message can be received by MULTIPLE subscribers
 
-- an extention of the concept of streaming. Streaming works with a simple connection, but what if we need a large scale distributed system (micro services system) where the data message needs to be persisted in the event of outages.
+- an extension of the concept of streaming. Streaming works with a simple connection, but what if we need a large scale distributed system (micro services system) where the data message needs to be persisted in the event of outages.
 
 - a pubsub model consists of 4 entities
 
@@ -493,7 +497,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 ### CDN or CDA
 
-- content delivery network is a group of servers around the world that can lower latency, add redundancies and fault-tolerence when deliverying static data
+- content delivery network is a group of servers around the world that can lower latency, add redundancies and fault-tolerance when delivering static data
 
 - sits in the DNS layer to route calls to PHYSICALLY different location servers. This is conceptually similar to a load balancer, but is different as load balancers usually distributes network calls to individual severs that are all close together in location.
 
@@ -503,7 +507,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - this can be thwarted by Rate Limiting which returns an error code `429` "Too many requests" on a request based on parameters like ip address / user, number of requests per minute, region
 
-- DDoS (DISTRIBUTED DoS) attacks are done from multiple client sources, and is harder to prevent with a smiple rate limiting on ip address / user. In a distributed system, the rate limiting will need to be checked against another entity that connects to ALL replicas of the server like a redis server
+- DDoS (DISTRIBUTED DoS) attacks are done from multiple client sources, and is harder to prevent with a simple rate limiting on ip address / user. In a distributed system, the rate limiting will need to be checked against another entity that connects to ALL replicas of the server like a redis server
 
 - Implementation can be done with a key-value in memory store like `redis`. The server gets a request, then asks redis "hey are we doing ok with rate limiting?" before responding
 
@@ -517,7 +521,7 @@ map - take the dataset and map to key-value pairs, then shuffle them to organize
 
 reduce - reduce the shuffled key-value pair and transform them into more meaningful data.
 
-- this allows for a `distributed file system`, an abstraction over a cluster of machines that allows them to act like one large file system. implementations incude `Google File System` and `Hadoop Distributed File System`. Files are split into chunks of a certain moderate size < Gb and those chunks are sharded across a cluster of machines.
+- this allows for a `distributed file system`, an abstraction over a cluster of machines that allows them to act like one large file system. implementations include `Google File System` and `Hadoop Distributed File System`. Files are split into chunks of a certain moderate size < Gb and those chunks are sharded across a cluster of machines.
 
 - MapReduce algos have fault tolerance by using Idempotent Operations in both the Map and Reduce steps to shield against outages
 
@@ -556,7 +560,7 @@ Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
 ### blob db vs distributed file system
 
 - a blob store can be relational or non-relational key-value pair
-  - if it's relational, it is ACID complient.
+  - if it's relational, it is ACID compliant.
   - use a blob store if the info is unstructured and sensitive
 - a distributed file system is usually cheaper and faster. should be first choice
   - you still need a db to map the imageId or dataId to FileUrl
@@ -619,4 +623,4 @@ Update
 
 - some companies like uber will use a tool like `hailstorm` that randomly shuts down a microservice and logs what happens to find weaknesses
 
-- distributed systems can be so large and complex that it's possible to lose track of all service dependncies. Ex.. an owner of a microservice may not be completely clear on what other services it's relying on, and what other services it's being relied on
+- distributed systems can be so large and complex that it's possible to lose track of all service dependencies. Ex.. an owner of a microservice may not be completely clear on what other services it's relying on, and what other services it's being relied on
