@@ -77,12 +77,11 @@ nVal =  int(sVal) # number 123
 
 - no need to import math
 - you can add a `key` arg to use a `lambda` to each iterable
-  - ex. ```
+  - ex.
+  ```
     my_list = ['hello', 'patricia']
     shortest_str = min(my_list, key=len)
-
-```
-
+  ```
 
 ## is whole
 
@@ -124,6 +123,14 @@ print ('item is', nums[i])
 - remember, this is a tuple unpacking (destructuring), so you need two comma separated values
 - if you only need idx and not the val, use `_` to signify you don't need it.
   - `for i,_ in enumerate(list)`
+
+## List.count
+
+- `my_list.count(None)` - how many None are there in the list
+
+## all()
+
+- `while all(i is None for i in my_list):`
 
 ## try/except
 
@@ -231,6 +238,7 @@ arr = str.split() # ['hello, there, with, whitespace]
 ```
 
 - if you want to split by all chars, you need to use either:
+
 1. `list(str)` (uses the list constructor, so less optimal than option 2)
 2. list comprehension `[char for char in some_string]` (better than option 1)
 3. unpacking with "*" `[*my_string]`
@@ -275,12 +283,14 @@ arr = str.split() # ['hello, there, with, whitespace]
 - `.values()` will return a list of values from the dict
 - `.items()` will return a `list` of `tuples` of key-value pairs
 - you can easily have access to both key and value with .items by:
+
 ```
 
 my_dict = {<some data>}
 for key, value in my_dict.items(): # do stuff
 
 ```
+
 note that destructuring can just be done with comma separated values
 
 ## tuple
@@ -347,4 +357,7 @@ class Dog(Animal): # subclass of Animal class
 ## Database
 
 - python ships with SQLite
+
+```
+
 ```
