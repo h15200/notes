@@ -101,13 +101,12 @@ print(f'hello, {name}')
 
 ```
 
-## for in loop args
+## range() in for loops
 
 - if 1 arg, just the start value
 - if 2 args, start, end
 - if 3 args, start, increment, end
-
-```
+  `for idx in range(1, len(my_list)):` will increment from 1 to end of list
 
 # reverse for loop
 
@@ -357,6 +356,8 @@ class Dog(Animal): # subclass of Animal class
 ## Database
 
 - python ships with SQLite
+
+```
 
 ```
 
