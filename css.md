@@ -47,7 +47,7 @@ h1 {
 }
 ```
 
-- tranparent is a valid color
+- transparent is a valid color
 
 - If a keyframe animation is glitchy, backface-visibility: hidden; could be a weird fix
 
@@ -158,7 +158,7 @@ color: green
 But for a SIBLING elements, you can use:
 
 `a.hover ~ div {}`
-the tilda `~` means ANY sibling that comes AFTER the hover element that is a div. can be multiple div elements
+the tilde `~` means ANY sibling that comes AFTER the hover element that is a div. can be multiple div elements
 
 `a.hover + div {}`
 the plus `+` means ONLY the direct next sibling. ONE div element
@@ -183,12 +183,12 @@ line-height
 
 - All anchor tags have 4 link states:
 
-  1. :link (unclicked, initial state)
+  1. :link (un-clicked, initial state)
   2. :hover
   3. :visited (a link a user has already clicked)
   4. :active (the exact moment the link is clicked)
 
-- Generally use group a:link and a:visited to style "regular" stategeneric color, border-radius, padding, transition time, etc..
+- Generally use group a:link and a:visited to style "regular" state like color, border-radius, padding, transition time, etc..
 
 - And a:hover and a:active for click actions
 
@@ -814,16 +814,16 @@ Then it will style the element with an id of jazzSection ONLY when it is indicat
   - for MOBILE first, you will use `min-width: 40em` (applies to all screens bigger than 40em) from smallest to largest screens. The order matters as some screens will inherit properties from other screens
 
     ```
-    @media only screend and (min-width: 50em) {
+    @media only screen and (min-width: 50em) {
       h1 {
         // stuff
       }
-    @media only screend and (min-width: 40em) {
+    @media only screen and (min-width: 40em) {
       h1 {
         // stuff
       }
     }
-    @media only screend and (min-width: 37.5em) {
+    @media only screen and (min-width: 37.5em) {
       h1 {
         // stuff
       }
@@ -914,7 +914,7 @@ Individual components
 
 When the media query requires a new build all together, copy and paste the entire section first and then delete the ones that don’t need changes via process of elimination
 
-## @suports, caniuse.com, graceful degradation
+## @supports, caniuse.com, graceful degradation
 
 Always check to see if features are supported on most browsers
 
@@ -931,7 +931,7 @@ background-color: whateverColor;
 }
 
 // important to write out the FULL prop AND value inside the parens. it's weird, but
-you have to write the css twice for the prefered method, once in parens, and once in first line.
+you have to write the css twice for the preferred method, once in parens, and once in first line.
 
 ```
 
@@ -1006,7 +1006,7 @@ display: none;
 }
 
 img[scr*="https"] {
-displya: inline-block;
+display: inline-block;
 // other props for the image
 }
 
