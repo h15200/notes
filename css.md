@@ -312,7 +312,7 @@ this means the picture will ONLY download based on media query
 </picture>
 ```
 
-download Picturefill library for older browser compatibility
+download `Picturefill` library for older browser compatibility
 
 ### background-image or object-fit on img tags
 
@@ -337,7 +337,7 @@ HTML
 srcset attribute instead of src and use multiple images for different densities.
 
 Density switching in HTML
-`<img srcset=”img/logo-green-1x.png 1x, img/logo-green-2x.png 2x alt=”blabla” />`
+`<img srcset=”img/logo-green-1x.png 1x, img/logo-green-2x.png 2x alt="" />`
 This will allow the browser to use the first 1x png file for normal screens and 2x for high resolution screens
 
 ### Resolution switching
@@ -393,7 +393,7 @@ Divide px by 16 and use em instead for best practice
 
   - ex ```
     .header {
-    background-image: linear-gradient(to right bottom, #222, #666), url(../somepath.jpg))
+    background-image: linear-gradient(to right bottom, #222, #666), url(../somePath.jpg))
     }
 
     ```
@@ -404,7 +404,7 @@ Divide px by 16 and use em instead for best practice
 
 - Since useability is much higher than clip-path, a good alternative although a bit verbose.
 
-## Clippath
+## Clip path
 
 Looks cool in new sections of a site
 
@@ -642,7 +642,7 @@ It also has a useful prop, `outline-offset`
 
 ## scroll-behavior
 
-When you click on an anchor link (or any react version of that) that has a #section jump, the scroll behavior defaults to intantaneous jump. If you want a smoother scroll as to show the user which way we are jumping to:
+When you click on an anchor link (or any react version of that) that has a #section jump, the scroll behavior defaults to instantaneous jump. If you want a smoother scroll as to show the user which way we are jumping to:
 
 ```
 // in the html tag
@@ -803,8 +803,8 @@ Visibility: visible
 
 ### :target
 
-Will select the elemnt that has an id that is equal to the current position displayed in the url.
-For example, if you are in `myhomepage.com/about#jazzSection`
+Will select the element that has an id that is equal to the current position displayed in the url.
+For example, if you are in `myHomepage.com/about#jazzSection`
 Then it will style the element with an id of jazzSection ONLY when it is indicated in the url bar
 
 ## media queries, breakpoints, mobile vs desktop first

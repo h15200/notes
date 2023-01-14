@@ -8,6 +8,7 @@
 ## related terms
 
 - K8s, (Kubernetes)
+  - an orchestrator for containers
 - GCP (google cloud platform)
 - GKE (Google Kubernetes Engine) GCP container engine
 
@@ -19,9 +20,9 @@
 
 - a transactional event is `changing a profile`, `making a connection request`, `messaging a connect`
 
-- non-transactional events include `clicking on a link`, `navigating to a subpage` etc..
+- non-transactional events include `clicking on a link`, `navigating to a sub page` etc..
 
-- non-trasactional events are often not tracked, but provide tons of insight and value on user behavior
+- non-transactional events are often not tracked, but provide tons of insight and value on user behavior
 
 - most user interactions (about 99.9%) are `non-transactional`
 
@@ -37,7 +38,7 @@
 
 - a database pushes (writes) events to a `commit log` where it's stored sequentially.
 
-- a service (reader) can access any of the evetns and the commit log can be shared by multiple readers.
+- a service (reader) can access any of the events and the commit log can be shared by multiple readers.
 
 - data is also compressed so that the commit log can handle volume at scale.
 
@@ -73,7 +74,7 @@
 
 - to build event-driven applications easier, Confluent created 2 processing frameworks
 
-1. `KStreams (Kafka Strems)` - a java library that provides high level abstractions for common event-driven patterns such as `filtering`, `joining`, `aggregating`
+1. `KStreams (Kafka Streams)` - a java library that provides high level abstractions for common event-driven patterns such as `filtering`, `joining`, `aggregating`
 
 2. `ksqlDB (Kafka SQL DB)` - allows people to define common processing patterns in event feeds using familiar SQL like syntax. Even if you don't know java, you can use ksqlDB to write sql code to work with Kafka
 
@@ -83,7 +84,7 @@
 
 ## Cloud integration
 
-- Initially, the Confluent Plaform was the only available Confluent product and it was used for `on-prem`, `private cloud` or `public cloud` integration. Confluent was not involved in connecting Confluent to cloud services.
+- Initially, the Confluent Platform was the only available Confluent product and it was used for `on-prem`, `private cloud` or `public cloud` integration. Confluent was not involved in connecting Confluent to cloud services.
 
 - `Confluent Cloud` is a cloud native solution to kafka.
 
@@ -101,12 +102,12 @@
 
 ### Planes
 
-- In cloud services and paas (platform as a service) there are 2 major components
+- In cloud services and PaaS (platform as a service) there are 2 major components
 
 1. control plane (customer control plane)
 
 - handles provision flows, api config, creating clusters
-- is a way to communicate with the mothership vpc (see below)
+- is a way to communicate with the mother ship vpc (see below)
 
 2. data plane
 
@@ -123,7 +124,7 @@
 
 - a VCP has a relational database inside it (Postgres usually)
 
-- a VCP can either be `single-zone` or `multi-zone`. Zone in this context refers to the cloud provider's availablility zones.
+- a VCP can either be `single-zone` or `multi-zone`. Zone in this context refers to the cloud provider's availability zones.
 
 ### Env
 
@@ -173,7 +174,7 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 
   - services inside the mothership are accessible through the `control plane (user management plane)` and the services communicate with each other via `grpc` with Protobuf messages.
 
-  - Control plane component exist in each satellite as well including Kubernetes control plane, cloud-layer auto-scaling groups, synce-service and psc-operator.
+  - Control plane component exist in each satellite as well including Kubernetes control plane, cloud-layer auto-scaling groups, sync-service and psc-operator.
 
 - a mothership cluster also has its own postgres DB running in the same AWS VPC for state storage.
 
@@ -217,7 +218,7 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 
   - namespace
   - persistent volumes
-  - statefulset
+  - statefulSet
   - deployments
   - pods
   - configmaps
@@ -230,14 +231,14 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 
 - a `kafka cluster` is a group of `kafka nodes`, or `kafka brokers`
 
-- a `topic` is created on Kafka, but a `stream` is used in `ksqldb`. To import a topic as a stream, there needs to be a valid `schema` attached to it
+- a `topic` is created on Kafka, but a `stream` is used in `ksqlDB`. To import a topic as a stream, there needs to be a valid `schema` attached to it
 
 - physical cluster is a traditional kafka cluster (non cloud)
 - logical cluster is the cloud native version of a kafka cluster that leverages cloud scaling
 
 ### Kafka data model Confluent Cloud org
 
-- a conflent cloud `organization` has 2 tiers
+- a confluent cloud `organization` has 2 tiers
 
 1. professional
 2. enterprise
@@ -266,10 +267,10 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 ### topics, partitions, and consumers
 
 - the `commit log` has a bunch of `records`, all with metadata about the data (`topic`)and header and timestamp
-- a `topic` will have multiple producers and consumers and paritions
+- a `topic` will have multiple producers and consumers and partitions
 - the `record` is then spread to the appropriate `partition` based on the `topic`, which are spread across `brokers`.
 - the `key` will assign partitions. If there are no keys, the producer will just use `round-robbin` distribution to be assigned to a random partition
-  - each `broker` handles many `partitions`. paritions are stored on the brokers' disk
+  - each `broker` handles many `partitions`. partitions are stored on the brokers' disk
 - in Kafka there are three terms `topic`, `partition`, `segment`
 - a `partition` is smaller groups that comprise a topic. Partitions are made to parallelize work and increase the throughput Kafka by splitting a topic
 - a `segment` breaks down the partition further and creates physical files using the `rolling-fie` strategy (when a segment file is full, the next one is allocated by the broker.)
@@ -277,13 +278,13 @@ Notice how all of them are using different accounts to keep them 100% isolated f
   - it is possible to re-partition a topic after it's created
   - the optimal number is derived from testing throughput for producers and consumers.
 - if a consumer is subscribing to a certain topic, it is consuming from all of the partitions that make up that topic
-- consumers are single-threaded. To scale, you can add consumers (up to the max of the total number of paritions for a topic) to create `consumer groups`
+- consumers are single-threaded. To scale, you can add consumers (up to the max of the total number of partitions for a topic) to create `consumer groups`
 - consumers usually run infinitely `while (true) { // read logic}` by polling at intervals (defaulting to 500ms)
 - adding / removing consumers will auto scale
 
 ### schema registry
 
-- topics can be defined by a schema built on `avro`, `json`, or `protobuffers`
+- topics can be defined by a schema built on `avro`, `json`, or `protoBuffers`
 - schemas can be updated
 - schemas are held in kafka topics themselves
 - ksql streams need schemas to connect to a topic. (a `topic` may or may not have a schema, but a `ksql stream` requires a schema)
@@ -296,7 +297,7 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 ### ksqlDB
 
 - not a `db` but more a materialized view of a stream
-- used to build apps (ksaql streming application)
+- used to build apps (ksql streaming application)
 - output can be another stream, or some logic
 - uses sql syntax and functions like aggregations
 - possible to CRUD streams, connectors
