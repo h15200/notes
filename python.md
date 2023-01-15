@@ -114,8 +114,6 @@ nums = [10,20,30]
 for i in range(len(nums) - 1, -1, -1):
 print ('item is', nums[i])
 
-```
-
 ### BETTER to use enumerate() for indices
 
 - `for idx,val in enumerate(list_A): `
@@ -192,6 +190,8 @@ except:
 - immutable
 - "{}
 - no duplicates allowed
+
+- `row = collections.defaultdict(list)` Makes a dictionary that creates a default list with a new key that doesn't require a separate creation step. `row["new_key"].append(5)` will create the new list in the dict. Useful in caching!
 
 ## range()
 
@@ -356,9 +356,3 @@ class Dog(Animal): # subclass of Animal class
 ## Database
 
 - python ships with SQLite
-
-```
-
-```
-
-```
