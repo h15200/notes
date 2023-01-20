@@ -121,6 +121,10 @@ print ('item is', nums[i])
 - if you only need idx and not the val, use `_` to signify you don't need it.
   - `for i,_ in enumerate(list)`
 
+## making a list of the same item x buckets long
+
+- `[0] * 26` will make a list with len 26 with all `0` as values (building alphabet hash)
+
 ## List.count
 
 - `my_list.count(None)` - how many None are there in the list
@@ -272,7 +276,8 @@ arr = str.split() # ['hello, there, with, whitespace]
 
 ## dictionary
 
-- key doesn't need to be a string. it can be any immutable python object
+- key doesn't need to be a string. it can be any immutable python object (TUPLE)
+- you can make a list, than make it a tuple to use a hash like data as a key
 - `.get(<key>, <defaultIfNotFound>)` looks for a value, but if it doesn't exist returns the provided default val
 
 - useful for making a counter `cache[key] = cache.get(key, 0) + 1` (if val exists, assign + 1. if not, assign 1)
