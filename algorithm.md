@@ -50,7 +50,7 @@ example -
 
 ```
 [
-  0: (value1, key1) => null // no colliosion
+  0: (value1, key1) => null // no collision
   1: (value2, key2) => (value3, key3) // collision dealt by linked list
 ]
 ```
@@ -77,7 +77,7 @@ In an algo problem that uses a queue, you can probably just do `const queue = []
 
 ## Strings
 
-Stored as integars via ASCII
+Stored as integers via ASCII
 
 traverse => O(n)
 copy => O(n)
@@ -85,7 +85,7 @@ get => (1)
 insert Immutable in js, so impossible. Must copy first, then append
 
 string += "3" => this is O(n), NOT O(1)
-so if you have to add something more than 2 times, it is actually better to .split(), make a bunch of constand mutations, and .join()
+so if you have to add something more than 2 times, it is actually better to .split(), make a bunch of constant mutations, and .join()
 
 ## Graphs
 
@@ -93,7 +93,7 @@ Vertices (Nodes)
 Edges - the path between
 Direction - if directed, it's one way. If undirected, it goes both ways
 Cycle - 3+ vertices that can be revisited
-Connected / Unconnected - is a set of verties visitable
+Connected / Unconnected - is a set of vertices visitable
 
 Creation - Space O(v + e) where v is number of vertices and e is number of edges
 Traversal - O(v + e) for both breadth-first and depth-first
@@ -172,7 +172,7 @@ third index. remember you MUST use the index element, so the choice is either 4 
 fourth index - 7 alone is bigger
 last index 4
 
-Notice how at index 7, we cut off all possibilites from the left hand side as it was determined that nothing in the left is useful.
+Notice how at index 7, we cut off all possibilities from the left hand side as it was determined that nothing in the left is useful.
 
 As a last step, you must get the highest out of the new dp array for the max
 
@@ -543,7 +543,7 @@ For example: a given 4 letter ordered alphabet “zgac” how do you decide what
 
 ### findZero
 
-    " given an array of positive intergers,
+    " given an array of positive integers,
 
 each integer represents how many times to the left or right
 you can move in the array, no out of bound moves.
@@ -641,35 +641,31 @@ back to 1st level, unswap again to original [1,2,3] .. now do final swap between
 
 ```
 export function quickSort(array: number[]) {
-  // using index 0 as pivot is usually the simplest
-	  // otherwise you need one extra flip to position the pivot pointer to 0
+  // using LAST index as pivot is usually the simplest logic
+
 
 	return pivot(array, 0, array.length - 1);
 
 
 	function pivot(array: number[], start: number, end: number): number[] {
-		if (start >= end) return array;
-		const pivotIdx = start;
-		let leftIdx = pivotIdx + 1;
-		let rightIdx = end;
-		while (leftIdx <= rightIdx) {
-			if (array[leftIdx] < array[pivotIdx]) {
-				leftIdx++;
-			}
-			else {
-				if (array[rightIdx] < array[pivotIdx]) {
-					[array[leftIdx], array[rightIdx]] = [array[rightIdx], array[leftIdx]];
-					leftIdx++;
-					rightIdx--;
-				}
-				else {
-					rightIdx--;
-				}
+		if (start >= end) return array; // baseline - no need to change anything
+
+		const pivotVal = array[end];
+		let pivotIdx = start
+		for (let i = start; i < end; i++) { // don't loop to last element
+			if (array[i] <= pivotVal]) {
+				// swap
+				[array[i], array[pivotIdx]] = [array[pivotIdx], array[i]]
+				pivotIdx++
 			}
 		}
-		[array[pivotIdx], array[rightIdx]] = [array[rightIdx], array[pivotIdx]];
-		pivot(array, start, rightIdx - 1)
-		pivot(array, rightIdx + 1, end);
+		// the right most element has been chilling the whole time. The current pivotIdx is pointing to the first
+		// element that is NOT correct, so swap those 2 and the pivot point will be in the correct final position
+		[array[pivotIdx], array[end]] = [array[end], array[pivotIdx]];
+
+		// now repeat for the 2 left and right arrays NOT including the pivot point itself
+		pivot(array, start, pivotIdx - 1)
+		pivot(array, pivotIdx + 1, end);
 		return array;
 	}
 }

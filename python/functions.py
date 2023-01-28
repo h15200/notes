@@ -10,7 +10,7 @@ def main():
     def get_highest_num(nums):
         curr_lowest = None
         for num in nums:
-            if curr_lowest == None or num < curr_lowest:
+            if curr_lowest is None or num < curr_lowest:
                 curr_lowest = num
         return curr_lowest
 
