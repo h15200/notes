@@ -361,3 +361,9 @@ class Dog(Animal): # subclass of Animal class
 ## Database
 
 - python ships with SQLite
+
+## Queues
+
+- use `q = collections.deque([initialVal])` to make a queue
+- `q.popleft()` will get the top
+- `q.append()` will add to queue
