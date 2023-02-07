@@ -129,6 +129,10 @@ print ('item is', nums[i])
 
 - `my_list.count(None)` - how many None are there in the list
 
+## check for empty list
+
+use `if not my_list` instead of `if not len(list)`
+
 ## all()
 
 - `while all(i is None for i in my_list):`
