@@ -371,3 +371,10 @@ class Dog(Animal): # subclass of Animal class
 - use `q = collections.deque([initialVal])` to make a queue
 - `q.popleft()` will get the top
 - `q.append()` will add to queue
+
+## priority queues
+
+`my_list = [1,2,3,1,5,-1]`
+`heapq.heapify(my_list)` doesn't return anything, so call it separately
+`heapq.heappop(my_list)`
+`heapq.heappush(my_list, val)`
