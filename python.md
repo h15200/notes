@@ -378,3 +378,20 @@ class Dog(Animal): # subclass of Animal class
 `heapq.heapify(my_list)` doesn't return anything, so call it separately
 `heapq.heappop(my_list)`
 `heapq.heappush(my_list, val)`
+
+## comparator review
+
+- if plugging in custom compare function, return -1 if it's good as is, and return 1 to reverse order
+
+```
+# some compare function that takes the bigger of the 2nd index in an iterable
+def compare(a, b) -> int:
+  if a[2] > b[2]:
+    return -1
+  else:
+    return 1
+
+```
+
+- to plug it in, use `sorted` with the 2nd arg being `key=cmp_to_key(custom_func)`
+  `new_list = sorted(nums, key=cmp_to_key(compare))`
