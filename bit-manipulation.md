@@ -7,7 +7,7 @@ To get binary from a value, get the greediest power of 2 first
 ex. 18 to binary
 
 - double 2 until the highest divisible number. 2^0 = 1, 2^1 = 2, 2^2 = 4, 2^3 = 8, 2^4 = 16, stop
-- put "1" as 18 / 16 = 1. `1` whie knowing that you have to fill out 4 more powers, so `1????`, more specifically, `1[how many 2^3?][how many 2^2?][how many 2^1?][how many 2^0?]`
+- put "1" as 18 / 16 = 1. `1` while knowing that you have to fill out 4 more powers, so `1????`, more specifically, `1[how many 2^3?][how many 2^2?][how many 2^1?][how many 2^0?]`
 - fill out the rest of the powers. we just need to fill 2, so that is 2^1 x 1, which now means `10010`
 
 ## binary -> hex
@@ -44,7 +44,7 @@ ex. 100000101011111010
 ## js bit manipulation
 
 - JS convert all operands to 32 bit signed integers, meaning the 32 bit (a binary with 32 digits or bits) will be negative after a certain point.
-- as the binary gets bigger, it goes 0 => biggest postivie => biggest negative => smallest negative
+- as the binary gets bigger, it goes 0 => biggest positive => biggest negative => smallest negative
 
 0 => 0
 the max is 2,147,483,647 (011111111111111111111111111111110) up to 31st bit
@@ -57,10 +57,10 @@ specifically in terms of javascript arithmetic operations, converting from decim
 To do this:
 
 - decimal => binary conversion is exactly the same unless the 32nd bit exists as `1`
-- on the 32nd bit (the last digit on the left), instead of increasing by another multiple of 2 (4 billion and chnage), just flip the previous bit (2 billion) to NEGATIVE 2 billion something
+- on the 32nd bit (the last digit on the left), instead of increasing by another multiple of 2 (4 billion and change), just flip the previous bit (2 billion) to NEGATIVE 2 billion something
 - if the 32nd bit exists, all other subsequent bits will be +(4 billion ish / 2)
 
-ultimately this doensn't matter for vector arrays if you don't have to print out a given int
+ultimately this doesn't matter for vector arrays if you don't have to print out a given int
 
 ## Bitwise Operators
 
@@ -89,6 +89,8 @@ ultimately this doensn't matter for vector arrays if you don't have to print out
   101 add two zeros on right
   10100 = 20
 - signed right shift `>> ${n}` adds the same bit as the current left most bit to the left, let the right bit(s) fall off
+- `>> 1` is the same thing as diving by 2
+- Checking to see if the right most bit is 1 can be done with `num % 2 == 1`. If there is a bit, then it will always be even
   note! This will only be significant if the 32nd power bit is a `1`. if not, then it's the same as the next operation, `>>>` as it will just add zeros
   ex. -170 >> 2 = -43
   1000000000000000000000000000000000 (add `1` x 2 to the left digit, two `0`s fall off from the right) = 11100000000000000000000000000000 = -43
@@ -120,7 +122,7 @@ ultimately this doensn't matter for vector arrays if you don't have to print out
   again, using `1 << n` this time with `&`
 
   - given number num, does the 2nd bit exist?
-    first build the comporator, which is `1 << 2` (0100) on the target bit
+    first build the comparator, which is `1 << 2` (0100) on the target bit
     then compare to given num with AND operator
     `num & (1 << 2)`
     since the right side will be zeroes except ONE bit, (explicitly, 0000000000etc...0000100), then the return will be zero UNLESS that target bit is `1` for both, meaning
@@ -139,18 +141,18 @@ ultimately this doensn't matter for vector arrays if you don't have to print out
       - make bit that looks like `1111111etc..0111` = `~(1 << 3)`
       - `AND` it with `n & (~(1 << 3))`
 
-  - another good tool is the abiity to check if at MOST 1 bit is `1` and rest are 0
+  - another good tool is the ability to check if at MOST 1 bit is `1` and rest are 0
     - take a random binary, `0001000`
-    - substract 1 `0001000 - 1` = `0000111` (all bits to the right flip to 1)
+    - subtract 1 `0001000 - 1` = `0000111` (all bits to the right flip to 1)
     - those two will NEVER coincide if there were only 1 bit to begin with `0001000` & `0000111` = 0
-    - so if num & (num - 1) === 0, then num has only 1 bit. very useful for string algos with palindromes in conjuction with XOR
+    - so if num & (num - 1) === 0, then num has only 1 bit. very useful for string algos with palindromes in conjunction with XOR
 
 ## bit vector (bit array)
 
 - when you need to make a hash map or array of booleans say, for some string algo, you usually do something like:
   {a: true, b: false, c: true} (for arrays, [true, false, false])
   These will take up at least 1 byte (8 bits) per bucket
-- if the total number of indicies are less or equal to 32, you can use a single variable as a bit vector and use bit manipulation to save space O(N) => O(1))
+- if the total number of indices are less or equal to 32, you can use a single variable as a bit vector and use bit manipulation to save space O(N) => O(1))
 - simply `let bitVector = 0` and use the getter, setter, and clear with bit manipulation
 
 ## example algos
@@ -171,7 +173,7 @@ ultimately this doensn't matter for vector arrays if you don't have to print out
   'abcdeff' -> true
   'bde' => false
 
-  - this can be done with a vectorArray as the alphabet has less than 32 combintions
+  - this can be done with a vectorArray as the alphabet has less than 32 combinations
 
   ```
   // input string
