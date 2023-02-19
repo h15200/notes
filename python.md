@@ -378,6 +378,7 @@ class Dog(Animal): # subclass of Animal class
 `heapq.heapify(my_list)` doesn't return anything, so call it separately
 `heapq.heappop(my_list)`
 `heapq.heappush(my_list, val)`
+`heap[0]` to just access the top of the heap without popping
 
 ## comparator review
 
