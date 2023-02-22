@@ -1,5 +1,7 @@
 # when moving a value, memorize this pattern
 
+from typing import List
+
 
 def moveZeroes(self, nums: List[int]) -> None:
     """
