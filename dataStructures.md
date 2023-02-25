@@ -1130,3 +1130,9 @@ console.log(quickSort([5,17,1,7,0, 3, -1]))
   - repeat until highest digit is sorted
 
 - it never makes a value to value comparison, but simply hashes them into buckets per pass, making it digits x n time complexity, and O(1) space (10 buckets is a constant, so slash to 1)
+
+## prefix arrays (dp)
+
+- to compute a range sum of numbers, use a prefix array
+- ex. [1,4,7,2,7] prefix = [1, 5, 12, 14, 21]
+- if given range [start, end[], take the prefix[end] and subtract prefix[start - 1]
