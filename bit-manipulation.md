@@ -197,3 +197,49 @@ ultimately this doesn't matter for vector arrays if you don't have to print out 
 
 
   ```
+
+## adding two integers
+
+5 + 11
+
+A - 0101 (5)
+B - 1011 (11)
+
+xor them and And them
+
+xor - 1110
+and - 0001
+
+shift and << 1 since it's a carry over digit:
+0010
+
+repeat with new values
+
+A - 1110
+B - 0010
+
+xor - 1100
+and - 0010
+shift (and) - 0100
+
+again
+A - 1100
+B - 0100
+
+xor - 1000
+and - 0100
+shifted - 1000
+
+A - 1000
+B - 1000
+
+xor 0000
+and 10000
+
+A - 0
+b 10000
+
+xor 10000
+and 0
+
+since and is 0, xor is the answer 10000 => 16
