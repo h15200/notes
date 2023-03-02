@@ -1136,3 +1136,42 @@ console.log(quickSort([5,17,1,7,0, 3, -1]))
 - to compute a range sum of numbers, use a prefix array
 - ex. [1,4,7,2,7] prefix = [1, 5, 12, 14, 21]
 - if given range [start, end[], take the prefix[end] and subtract prefix[start - 1]
+
+## Union Find
+
+- useful in getting total number of connected graphs
+
+- initialize 2 arrays, a parents array and a rank array
+- parents = [1,1,1,1] (node index i's parent is val)
+- rank = [1,1,1,1] (node index i each has 1 child)
+
+- for each edge, check the ROOT(!) parent and if they are different, merge the one with the smaller rank to the higher rank to keep the tree height short. Decrement 1 from original number of nodes to get new total component size
+- when merging, make sure you make the parent of the root_parent the new parent, and increment the rank of the smaller TOTAL rank
+- after going through all edges, the remaining number is the output
+
+```
+       parent = {i: i for i in range(n)}
+        rank = {i: 1 for i in range(n)}
+
+        def getRootParent(node: int) -> int:
+            while parent[node] != node:
+                node = parent[node]
+            return node
+
+        total = n
+
+        for a, b in edges:
+            par_a, par_b = getRootParent(a), getRootParent(b)
+            if par_a == par_b:
+                # already combined, do nothing
+                continue
+            if rank[par_a] >= rank[par_b]:
+                parent[par_b] = par_a
+                rank[par_a] += rank[par_b]
+            else:
+                parent[par_a] = par_b
+                rank[par_b] += rank[par_a]
+            total -= 1
+
+        return total
+```
