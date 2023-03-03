@@ -1135,11 +1135,11 @@ console.log(quickSort([5,17,1,7,0, 3, -1]))
 
 - to compute a range sum of numbers, use a prefix array
 - ex. [1,4,7,2,7] prefix = [1, 5, 12, 14, 21]
-- if given range [start, end[], take the prefix[end] and subtract prefix[start - 1]
+- if given range [start, end], take the prefix[end] and subtract prefix[start - 1]
 
 ## Union Find
 
-- useful in getting total number of connected graphs
+- useful in getting total number of connected nodes in an UNDIRECTED graph
 
 - initialize 2 arrays, a parents array and a rank array
 - parents = [1,1,1,1] (node index i's parent is val)
@@ -1165,6 +1165,7 @@ console.log(quickSort([5,17,1,7,0, 3, -1]))
             if par_a == par_b:
                 # already combined, do nothing
                 continue
+                # at this point, it also tells us this is not a tree since there's a cycle
             if rank[par_a] >= rank[par_b]:
                 parent[par_b] = par_a
                 rank[par_a] += rank[par_b]
