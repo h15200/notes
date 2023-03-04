@@ -288,7 +288,7 @@ function LinkedList() {
 }
 ```
 
-- MEMORIZE how to merge a list into another list. Alternate the references. It's ok if `second` is way shorter than `first` as the last item will have all next references
+- MEMORIZE how to merge a list into another list in zig zag order. Alternate the references. It's ok if `second` is way shorter than `first` as the last item will have all next references
 
 ```
 first = someList    [1,3,4]  1     3    4
@@ -301,6 +301,29 @@ while second:
   first = first.next // 2
   second = temp // 3
 
+```
+
+- MEMORIZE how to merge in order
+
+```
+dummy = ListNode(0)
+        curr = dummy
+        while list1 or list2:
+            if not list1:
+                curr.next = list2
+                return dummy.next
+            if not list2:
+                curr.next = list1
+                return dummy.next
+            if list1.val < list2.val:
+                curr.next = list1
+                list1 = list1.next
+            else:
+                curr.next = list2
+                list2 = list2.next
+            curr = curr.next
+
+        return dummy.next
 ```
 
 ### Doubly linked lists
