@@ -288,6 +288,21 @@ function LinkedList() {
 }
 ```
 
+- MEMORIZE how to merge a list into another list. Alternate the references. It's ok if `second` is way shorter than `first` as the last item will have all next references
+
+```
+first = someList    [1,3,4]  1     3    4
+second = someList    [2,5]    \  /  \  /
+                               2     5
+
+while second:
+  temp = first.next   // 3
+  first.next = second  1 -> 2
+  first = first.next // 2
+  second = temp // 3
+
+```
+
 ### Doubly linked lists
 
 A Doubly Linked List has a next AND a previous element stored in each node.
