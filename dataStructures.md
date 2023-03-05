@@ -326,6 +326,35 @@ dummy = ListNode(0)
         return dummy.next
 ```
 
+- MEMORIZE above with no extra space
+
+```
+ # merge into 1st
+        if list1.val > list2.val:
+            list1, list2 = list2, list1
+
+        curr1 = list1
+
+        # compare list1.next.val to list2.val
+        while list2 or curr1:
+            if not list2:
+                return list1
+            if not curr1.next:
+                curr1.next = list2
+                return list1
+            # compare, then link
+            if curr1.next.val <= list2.val:
+                curr1 = curr1.next
+            else:
+                temp = curr1.next
+                curr1.next = list2
+                list2 = list2.next
+                curr1.next.next = temp
+                curr1 = curr1.next
+
+        return list1
+```
+
 ### Doubly linked lists
 
 A Doubly Linked List has a next AND a previous element stored in each node.
