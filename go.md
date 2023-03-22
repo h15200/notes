@@ -47,9 +47,9 @@ bool false
 
 Go will infer the type based on assignment.
 
-var isTrue = false (defaults to type bool) is a same as var isTrue bool = false
+var isTrue = false (defaults to type bool) is the same as var isTrue bool = false
 
-numbers are infered as either int32 or int64 (not uint even for positive nums) and floats are always float64.
+numbers are inferred as either int32 or int64 (not uint even for positive nums) and floats are always float64.
 
 ### var declaration
 
@@ -57,11 +57,9 @@ numbers are infered as either int32 or int64 (not uint even for positive nums) a
 - package level vars can be used by function level because of lexical scope
 
 `var num int` // if there is no initializer, the type must be written
-`num = 32` // now a value is asssigned
+`num = 32` // now a value is assigned
 
 The above can be written as `var num = 3` // if there is an initializer, the type can be omitted
-
-var num int
 
 - Short hand for var initializing (Only inside functions)
   `myNum := 32`
@@ -181,7 +179,7 @@ this initializes the var, `myReturn` inside the function, and a `return` stateme
 ### defer
 
 - a defer statement will defer the execution of a function until the surrounding function returns
-- the call's arguments are evaluated immediately, but the execution is held off untilthe surrounding function is done
+- the call's arguments are evaluated immediately, but the execution is held off until the surrounding function is done
 
 ```
 func randomReturn() string {
@@ -234,7 +232,7 @@ fmt.Println("how", "are", "you") -> "How are you"
 
 fmt.Print() - no spaces, no linebreaks
 
-fmt.Printf() - takes in a string and varible(s). the variable will replace the `verbs`
+fmt.Printf() - takes in a string and variable(s). the variable will replace the `verbs`
 
 ```
 name := "Patti"
@@ -246,7 +244,7 @@ fmt.Printf("hello there, %v", name)
 
 %v - the actual value of variable turned into a string
 %T - TYPE of value ex. num, string, float
-%d - type coersion of int -> string `fmt.Printf("You're %d years old", age)`
+%d - type coercion of int -> string `fmt.Printf("You're %d years old", age)`
 %f - float -> string. option to set decimal place `fmt.Printf("Your test average is %.2f", gpa)` - 3.80
 %q - puts double quotes around string
 
