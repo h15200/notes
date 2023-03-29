@@ -5,7 +5,7 @@
 ## general syntax
 
 - NO SEMIs after statements (but often used inline in conditionals and for loops after var declarations)
-- Double quotes ONLY (no single quotes)
+- Double quotes ONLY (no single quotes unless declaring `runes`)
 - comments are same as js, `//` or `/* */`
 
 package or library
@@ -17,17 +17,17 @@ go doc [packageName.funcName]
 
 ## types
 
-bool
+- int int8 (-125 ish to +125) int16 int32 int64
+- uint uint8 (0 to 255) uint16 uint32 uint64 uintptr
 
-string
+- byte // alias for uint8 - same as `utf-8`
 
-int int8 (-125 ish to +125) int16 int32 int64
-uint uint8 (0 to 255) uint16 uint32 uint64 uintptr
+- when sending data over the network, data is usually converted into []byte
 
-byte // alias for uint8
+- rune // alias for int32
+  // represents a Unicode code point
 
-rune // alias for int32
-// represents a Unicode code point
+- a single quote declaration of a char will be a rune `myRune = 'a'` while a double quote will default to a string
 
 float32 float64
 
@@ -37,24 +37,25 @@ BUT best practice is to just use default `int` or `uint` with no number to let G
 
 ## defaults
 
-unlike JS and undefined, Go has sensible defaults when types and references are declared without init vals
-string ""
-int 0
-float 0
-bool false
+- unlike JS and undefined, Go has sensible defaults when types and references are declared without init vals
+  string ""
+  int 0
+  float 0
+  bool false
 
 ## inferring types
 
-Go will infer the type based on assignment.
+- Go will infer the type based on assignment.
 
-var isTrue = false (defaults to type bool) is the same as var isTrue bool = false
+- var isTrue = false (defaults to type bool) is the same as var isTrue bool = false
 
-numbers are inferred as either int32 or int64 (not uint even for positive nums) and floats are always float64.
+- numbers are inferred as either int32 or int64 (not uint even for positive nums) and floats are always float64.
 
 ### var declaration
 
 - declarations can be made on the top, package level or function level
 - package level vars can be used by function level because of lexical scope
+- If the FIRST char of a package level declaration is capitalized, it can be exported to other packages
 
 `var num int` // if there is no initializer, the type must be written
 `num = 32` // now a value is assigned
@@ -93,15 +94,15 @@ using := (again, only inside functions!)
 `T(v)` converts the value v to the type T
 
 `i := 31` // declares int i which has value of 31
-`u := uint(i)` // declares uint u which has value of 31. int 31 was conversted to uint
+`u := uint(i)` // declares uint u which has value of 31. int 31 was converted to uint
 
 ## constants
 
 Constants can be character, string, boolean, or numeric values
-consts can't be declared using the := syntax
-structs, slices, maps can't be consts
+const can't be declared using the := syntax
+structs, slices, maps can't be const
 
-convention to capitalize consts
+convention to capitalize const but only inside functions. Otherwise, it will signal that it should be exported
 
 `const Big = 1000000000`
 
@@ -572,6 +573,16 @@ v4 &{1 2}
 `var a [10] int ` describes an array of 10 items, all being int types
 
 - like js, it uses bracket notation to access values on indices
+- when initializing with literals, no need to add number. just use `...`
+  ```
+  myArray := [...]int{42,26,3,1}
+  // the `...` says to snap to the length of whatever len inside the curly brackets
+  ```
+- in Go, an array is a `value` and not a `reference`.
+  - arrA := []int{1,2,3}
+  - arrB := arrB
+  - arrB[0] = 4 .
+  - // arrA is [1,2,3], but arrB is [4,2,3]
 
 ```
 func main() {
@@ -593,12 +604,17 @@ Hello World
 ### slices
 
 - unlike an array, a `slice` is dynamically-sized and is closer to what you know as arrays in js
+- unlike an array, slices default to reference types, so sliceA := sliceB will point to the same slice, even without prepending with `&`
 - to express slices, simply leave the size inside `[]` blank. this will create an underlying array, then slice
 - in practice, slices are much more common than arrays!
 
 `[]T` is a type slice with unknown size of type `T`
 
 - you can create slices from arrays with arrayName[lowIndex: highIndex] (Excludes the actual highIndex)
+- to make a slice without initializing values, use the `make()` function
+  - `make([]int, 5)` // first arg takes in the type of slice, 2nd arg takes initial len, 3rd optional arg has max capacity
+- check capacity of slices with `cap(myArray)`
+- to add to slices, `mySlice = append(mySlice, 43)`
 
 ```
 func main() {
@@ -1171,7 +1187,7 @@ import (
 "lib "github.com/repo/somedirWithHelperFile"
 )
 
-// then lib.someFunc() is availble
+// then lib.someFunc() is available
 
 in somedirWithHelperFile, make helper.go
 
@@ -1188,3 +1204,12 @@ func Test() {
 ACTUALLY write the comment above the exported func
 also the func needs to be capitalized!
 ```
+
+## string types
+
+- if converting numbers to strings, do not use `string(num)`. Import and use `strconv.Itoa`
+
+## Enumerated constants
+
+- `iota` inside a const block
+- Enumerated expressions can be used with bit wise operators to find file size formatting
