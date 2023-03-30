@@ -19,39 +19,30 @@ go doc [packageName.funcName]
 
 - int int8 (-125 ish to +125) int16 int32 int64
 - uint uint8 (0 to 255) uint16 uint32 uint64 uintptr
-
+  - best practice is to just use default `int` or `uint` with no number to let Go figure out if your machine is using 32-bit or 64-bit architecture
 - byte // alias for uint8 - same as `utf-8`
-
-- when sending data over the network, data is usually converted into []byte
-
+  - when sending data over the network, data is usually converted into []byte
 - rune // alias for int32
   // represents a Unicode code point
-
 - a single quote declaration of a char will be a rune `myRune = 'a'` while a double quote will default to a string
-
-float32 float64
-
-complex64 complex128 (square roots, imaginary nums)
-
-BUT best practice is to just use default `int` or `uint` with no number to let Go figure out if your machine is using 32-bit or 64-bit architecture
+- float32 float64
+- complex64 complex128 (square roots, imaginary nums)
 
 ## defaults
 
 - unlike JS and undefined, Go has sensible defaults when types and references are declared without init vals
-  string ""
-  int 0
-  float 0
-  bool false
+- string ""
+- int 0
+- float 0
+- bool false
 
 ## inferring types
 
 - Go will infer the type based on assignment.
-
 - var isTrue = false (defaults to type bool) is the same as var isTrue bool = false
-
 - numbers are inferred as either int32 or int64 (not uint even for positive nums) and floats are always float64.
 
-### var declaration
+## var declaration
 
 - declarations can be made on the top, package level or function level
 - package level vars can be used by function level because of lexical scope
@@ -73,7 +64,7 @@ The above can be written as `var num = 3` // if there is an initializer, the typ
 
 - to initialize to something that's not inferred `z := float64(1)`
 
-### inline multiple declarations
+## inline multiple declarations
 
 ```
 var (
@@ -106,13 +97,17 @@ convention to capitalize const but only inside functions. Otherwise, it will sig
 
 `const Big = 1000000000`
 
-## comparisons
+### enumerated consts and enumerated expressions with iota
 
-equal is `==`, `!==`
-
-`<, >, ||, &&, !` same as JS
-
-Switch statements same as JS
+```
+const (
+	_ = iota
+	blueCar
+	greeCar
+	redCar
+)
+// iota starts at 0, then increments automatically
+```
 
 ## scoping
 
@@ -137,9 +132,8 @@ Since block scoped, `product` and `season` is not available outside the curly br
 
 ## functions
 
-Arg numbers must match when called
-
-params and returns should be typed
+- Arg numbers must match when called
+- params and returns should be typed
 
 ```
 func specialComputation(x float64) float64 {
@@ -327,7 +321,7 @@ math.Pow
 
 ### package "strings"
 
-strings.Fields - takes a string and returns a slice of inidividual strings surrounded by 1 or more whitespace. In other words, returns a slice of words from a sentence
+strings.Fields - takes a string and returns a slice of individual strings surrounded by 1 or more whitespace. In other words, returns a slice of words from a sentence
 strings.Fields("Hello Patti Kilroy!") // returns ["Hello", "Patti", "Kilroy!"]
 
 ### package "io"
@@ -358,21 +352,12 @@ init `i := 0` executed before the 1st iteration
 condition `i < 10` executed and evaluated before every iteration
 post `i++` executed at the end of every iteration
 
-### ommiting statements
+### omitting statements
 
-The init and post statments are optional.
+- The init and post statements are optional.
+  he init statement, a semicolon can be written optionally.
 
-When omitting the init statment, a semicolon can be written optionally.
-
-```
-num := 4
-for ; num < 2000; { // if num is less than 2000, iterate
-num *= 10
-}
-fmt;Println(num) // 4000
-```
-
-Or it can be omitted `for num < 2000 {}`
+`for num < 2000 {}`
 
 Note:
 
@@ -400,7 +385,7 @@ if n := someNum + 123; n <= 0 {
 
 ### switch statements
 
-- each case breaks, so there are no fall-throughs by default
+- each case breaks, so there are no fall through by default
 
 ```
 switch num := rand.Intn(100); num {
@@ -476,6 +461,10 @@ func main() {
 ```
 
 In the above example, passing in actual x instead of &x would not change the value of var x in main().
+
+## Collection types
+
+- includes `arrays`, `slices`, `maps`, and `structs`
 
 ## structs
 
@@ -756,7 +745,23 @@ board := [][]string{
 - if there are not enough capacities, it will build a new array and slice
 
 mySlice := []string{}
-append(mySlice, 'hi', 'add', 'these', 'strings')
+mySlice = append(mySlice, 'hi', 'add', 'these', 'strings')
+
+- IMPORTANT!! append will mutate the original backing array since all slices are just a "slice" of arrays. To be explicit, always either signal that you want the original reference mutated as well on purpose:
+
+```
+sliceA := []int{1,2,3}
+sliceB := &sliceB
+// append stuff
+```
+
+OR, copy it first to signal that you want a brand new slice!
+
+```
+sliceA := []int{1,2,3}
+sliceB := make([]int, len(sliceA))
+copy(sliceB, sliceA)
+```
 
 #### iterating over slices and maps
 
@@ -791,13 +796,23 @@ Index is 2 and Element is 23
 
 ## maps
 
-- maps keys to values
+- maps keys to values. key types are limited (no slices), but values can be any data type. Unlike `structs`, ALL key-value pairs within one map must be consistent
 - NOT ordered
 - zero value of a map is `nil` and it has no keys, nor can keys be ADDED!
-- the `make` function returns a map of the given type, initialized and ready for use
-  `var m map[string]Vertext`
+- literal declaration looks like
+
+```
+usersToIdMap := [string]uint{
+	"Patti": 0,
+	"Hideaki": 1
+}
+```
+
+- just the declaration of an empty map is made with the `make` function
+  `usersToIdMap := map[string]int`
 - difference between `make` in slices and maps is, with SLICES, you make(sliceType, length, capacity). with maps you only need type
-- map literals are like struct literals, written inside but keys need to be specified since ordering does not matter
+- to delete a key-val pair in a map, use `delete(mapName, keyName)`
+- when a non-existent value is accessed `myMap.["wrongKey"]`, it will return the default type of the value
 
 ### using structs in maps
 
