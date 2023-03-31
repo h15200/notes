@@ -173,7 +173,7 @@ this initializes the var, `myReturn` inside the function, and a `return` stateme
 
 ### defer
 
-- a defer statement will defer the execution of a function until the surrounding function returns
+- a `defer` statement will defer the execution of a function until the surrounding function returns
 - the call's arguments are evaluated immediately, but the execution is held off until the surrounding function is done
 
 ```
@@ -189,12 +189,12 @@ func randomReturn() string {
   if rand.Intn(100) < 50 {
     return "Returning later!"
   }
-
+// "Generated!" will print last in either scenario
 ```
 
 #### multiple defer - stack
 
-defer func returns are stored in a stack (last in, first out) so if there are multiple defer funcs, the LAST one in the code will execute first
+defer func returns are stored in a stack (last in, first out) so if there are multiple defer funcs, the LAST one in the code will execute first (in reverse order of appearance of `defer`)
 
 ```
 func main() {
@@ -212,6 +212,11 @@ func main() {
 
 "Generated" will print right after the return of either scenario
 
+#### defer and panic
+
+- if a function has a panic call and `defer`, the defer call will always still run, so closing resources will still be fine
+- when using anonymous defer function calls, a error handler can recover from a panic state
+
 ## packages and exporting
 
 - go imports packages from libraries and other files
@@ -225,7 +230,7 @@ import "fmt"
 fmt.Println() - prints every word with a space and every instance with a new line
 fmt.Println("how", "are", "you") -> "How are you"
 
-fmt.Print() - no spaces, no linebreaks
+fmt.Print() - no spaces, no line breaks
 
 fmt.Printf() - takes in a string and variable(s). the variable will replace the `verbs`
 
@@ -364,6 +369,21 @@ Note:
 - if init AND post statements are omitted, this is the same as a `while` loop
 - if the condition statement is omitted, it will be an infinite loop
 
+### Loop label and breaking from all parent loops
+
+```
+MyLoop:
+  for i := 0; i < 4; i++ {
+		for j := 1; j < 4; j++ {
+			if whatever {
+				break MyLoop
+			// will break out of BOTH loops!
+			}
+		}
+	}
+
+```
+
 ## conditionals
 
 syntax for `if, else if, else` is same as js except parenthesis are optional, but the brackets are required
@@ -478,6 +498,8 @@ type rectangle struct {
 }
 ```
 
+- structs, like arrays, are VALUE types! `structA := structB` will create a new struct decoupled from the copy
+
 // will not export to other packages because props start LOWERCASE. Must be Uppercase to export
 
 ### accessing struct fields
@@ -550,6 +572,43 @@ v2 {0 0}
 v3 {1 0}
 v4 &{1 2}
 *v4 {1 2}
+
+```
+
+#### Structs in OOP style composition
+
+- Go doesn't have support for `inheritance`, but uses `composition`
+- a struct can't inherit another struct, but it can have the characteristics of another struct via `embedding`
+
+```
+type Animal struct {
+	name string
+	type string
+}
+type Dog struct {
+	Animal // Dog can HAVE characteristics of an Animal, but doesn't inherit anything
+	favFood string
+}
+myDog = Dog{}
+myDog.name = "Kai"
+myDog.favFood = "Kale"
+
+// for the literal declaration unlike the one by one property approach above, you must know about the inner details of the composed structs
+
+myDog := Dog{
+	Animal: Animal{name: "Kai"},
+	favFood: "Kale",
+}
+```
+
+#### Struct tags
+
+```
+type Animal struct {
+	name string `required max len: 40`
+	// can add string to describe a field
+}
+use the package "reflect" to extract the string from a struct
 
 ```
 
@@ -851,15 +910,23 @@ var m = map[string]Vertex{
 (`m` is the name of your map)
 
 insert or update `m[key] = elem`
-retreive `elem = m[key]`
+retrieve `elem = m[key]`
 delete `delete(m, key)`
 
 ### test if does key exist in map
 
-test presence `elem, ok = m[key]`
+test presence `elem, ok := m[key]`
 
 - if ok == `true`, key exists in that map
 - if ok == `false`, elem still exists, but it is the default zero value for the type ("" for string, 0 for int)
+
+- putting it in one if statement
+
+```
+if data, ok := myMap["someKey"]; ok {
+	fmt.Println("only print this if the map key exists")
+}
+```
 
 ## syntax review
 
@@ -1007,9 +1074,9 @@ fmt.Println(p.MethodUsingValueReceiver()) // OK even though p SHOULD be a value 
 
 ## interface type
 
-- when adding
-- interface types hold a set of method signatures, which can be implmented by multiple types
+- interface types hold a set of method signatures, which can be implemented by multiple types
 - used to make strict checks to see if a type contains a method on creation OR by equality check
+- can check type with syntax `MyInterfaceInstance.(type)`
 
 check on creation (not necessary to use interface, but to be strict)
 
@@ -1017,7 +1084,7 @@ check on creation (not necessary to use interface, but to be strict)
 package main
 
 import "fmt"
-// type I always contains the method M()
+// type I always contains the method PrintString()
 type I interface {
 	PrintString()
 }
@@ -1032,7 +1099,7 @@ func (t T) PrintString() {
 }
 
 func main() {
-  // here we explicitly say i is an instance of type I interface AND an intestance of type T struct
+  // here we explicitly say i is an instance of type I interface AND an instance of type T struct
 	var i I = T{"hello"}
 	i.PrintString()
 
@@ -1040,7 +1107,7 @@ func main() {
 
   var anotherI I // anotherI is an instance of interface I
 
-  anotherI = someType // if someType has the method PrintString(), will be fine. if not, will throw an errror!
+  anotherI = someType // if someType has the method PrintString(), will be fine. if not, will throw an error!
 }
 ```
 
