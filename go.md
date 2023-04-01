@@ -954,6 +954,21 @@ map declare only
 map assignment
 `z[key] = v` // if key is string, add `""`
 
+### "new" keyword to create a pointer to a type
+
+```
+type someStruct struct {
+	number int
+}
+
+var ss *someStruct
+ss = new(someStruct) // this is a pointer to an instance of a struct
+ss.number = 44 // same as (*ss).number = 44
+
+
+
+```
+
 ### functions as values
 
 - like js, functions can be stored in variables
@@ -977,7 +992,7 @@ func compute(callback func(int, string) bool) string {
 ## methods
 
 - Go does not have classes, but you can define methods on types
-- a method is a function with a specifial `receiver` argument that points to a type
+- a method is a function with a special `receiver` argument that points to a type
 - syntax is `func (receiverType) funcName(args) return type {}`
 
 ```
@@ -989,7 +1004,7 @@ func (v Vertex) Abs() float64 {
 	return math.Sqrt(v.X*v.X + v.Y*v.Y)
 }
 
-// now Vertex types all have the moethod .Abs()
+// now Vertex types all have the method .Abs()
 ```
 
 - if a type is declared IN THE SAME PACKAGE, you can add methods to any type
@@ -1054,7 +1069,7 @@ fmt.Println(myIntInstance) // prints 9 and not 3
 }
 ```
 
-- NOTE that in the changeVal() method, we didn't have to write `(&myIntInstance).changeVal()` even though it technically needs to be called from the pointer
+- NOTE that in the changeVal() invocation, we didn't have to write `(&myIntInstance).changeVal()` even though it technically needs to be called from the pointer
   This is because when the method receiver is a pointer `(m *myInt)`, Go interprets the method call and assumes a prepended `&`
 
 - the same thing happens in the reverse direction. methods with value receivers take either a value or pointer as the receiver when they are called and Go will know which to use
@@ -1065,10 +1080,10 @@ fmt.Println(v.MethodUsingValueReceiver()) // OK
 p := &v
 fmt.Println(p.MethodUsingValueReceiver()) // OK even though p SHOULD be a value and not a pointer
 
-// In this case, in method call p.MethodUsingValueReciver(), p is interpreted as (*p)
+// In this case, in method call p.MethodUsingValueReceiver(), p is interpreted as (*p)
 ```
 
-- another big reason to use pointer recievers is that if you use value pointers for types like structs, you are making a new instance of that type on every method call!
+- another big reason to use pointer receivers is that if you use value pointers for types like structs, you are making a new instance of that type on every method call!
 
 - because of all of this, it's best practice to make ALL methods of a type either pointer receivers OR value receivers and never mix and match.
 
