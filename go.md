@@ -1099,8 +1099,8 @@ check on creation (not necessary to use interface, but to be strict)
 package main
 
 import "fmt"
-// type I always contains the method PrintString()
-type I interface {
+// type Printer always contains the method PrintString()
+type Printer interface {
 	PrintString()
 }
 
@@ -1115,14 +1115,14 @@ func (t T) PrintString() {
 
 func main() {
   // here we explicitly say i is an instance of type I interface AND an instance of type T struct
-	var i I = T{"hello"}
+	var i Printer = T{"hello"}
 	i.PrintString()
 
   // here's another way
 
-  var anotherI I // anotherI is an instance of interface I
+  var anotherPrinter Printer 
 
-  anotherI = someType // if someType has the method PrintString(), will be fine. if not, will throw an error!
+  anotherPrinter = someType // if someType has the method PrintString(), will be fine. if not, will throw an error!
 }
 ```
 
@@ -1141,6 +1141,7 @@ func
   calling the method of an interface value executes the method of the same name in its type
 - it is possible to call the interface method with a nil underlying value
 - if an interface has both nil value and nil concrete type, it is considered a nil interface
+- convention to end the interface name with "er" if it is a SINGLE method interface
 
 ### empty interface
 

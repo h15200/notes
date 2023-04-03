@@ -11,7 +11,7 @@
 
 ## systems
 
-- `apt install` (for linux)
+- `sudo apt install <packageName>` 
 - `uptime` will show how long system has been running
 - `free -h` displays amount of used and free memory. -h turns bytes into readable format
 - `ps -A` displays snapshot of all processes
@@ -19,3 +19,8 @@
 - `fdisk -l` shows partition info. may need sudo depending on user
 - `lsblk` displays block devices
 - `top` displays processes, but what's much better is `htop`. may need to apt install or brew install
+
+## networking
+
+- `ifconfig` the old school way. shows ip address and other info
+- the newer way to check network info is `ip a`. (will need brew install iproute2mac for mac)
