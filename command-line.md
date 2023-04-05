@@ -39,6 +39,7 @@
 - `ifconfig` the old school way. shows ip address and other info
 - the newer way to check network info is `ip a`. (will need brew install iproute2mac for mac)
 
+
 ## GREP (Global Regular Expression Print)
 - used to search for text in files
 
@@ -49,8 +50,6 @@
 	- use -i to ignore-case
 	- use -n line-number
 	- use -B + int for before context lines, -A for after context lines. -C is -A and -B but for the same lines numbers (grep -B 2 -A 2 "hi" fileName is same as grep -C 2 "hi" fileName)	
-- putting it together, `grep -win -B 2 -A 4 "hello" python.md` will search for hello with 2 lines before, 4 lines after, not case sensitive, whole words only
-
 ### GREP multiple files
 
 - you can NOT grep a directory with just "./" as the file arg. You must use wildstar `*` `grep -win "hello" ./*`. This will search through all files in this directory, but not dig into sub directories
@@ -83,5 +82,34 @@
 	- use regex for more control
 - if you see interesting files, then switch to single file searches `grep -win -C 2 "string" filePath` 
 
-## SED command
-- 
+## xargs 
+
+- the previous output becomes the arg of the next command. Usually used with a pipe
+- grep stuff | xargs sed  (common usage)
+
+## SED (Stream Editor)  command
+- must use SINGLE quotes
+- a no flag operation will just return the content with the change. use it as a draft
+- to finalize the change, add -i flag to modify in place
+
+### REPLACE operation
+
+- 's/findString/replaceString/' is the syntax to find and replace a string. don't forget to terminate with "/"
+-`sed 's/hello/goodbye/' test.txt`   - this does NOT modify the file, but simply returns a copy of the content
+
+### DELETE operation
+
+- same as replace operation, but simply don't include the replace string. keep the delimiters the same
+	- `sudo 's/hello// fileName` - will output the content without "hello"
+
+### SED delimiters
+ - the forward slash "/" is the standard delimiter in a sed command (again, always inside a single uote)
+	- if you need the actual forward slash as a string, it's possible to use other chars as dlimiters like [".", "|"]
+- if you want to remove "/erase" from the string "/erase/hello"  , a forward slash delimiter will not work
+	- use one of the alternate delimiters instead like `sed 's./erase..' example.txt`
+
+
+## grep with sed and xargs
+- search through all files starting this one for a string. -> outputs all files
+- use that output, pipe it, xarg it, and use it as a replace with sed
+- grep -wirl "/home/hideaki" | xargs sed -i ""  's./home./root.' - note that in macOS, you need an additional arg for backup (in this case, empty arg of ""). This is only necessary if you are modifying in place
