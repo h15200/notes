@@ -1291,7 +1291,7 @@ class Animal {
 
 ,references to this WILL NOT WORK as the getter code will be set BEOFORE the constructor code.
 
-However, if you sed the shorthand constructor method like
+However, if you set the shorthand constructor method like
 `constructor(public something: string) {}`
 
 Then the constructor will run first!!
