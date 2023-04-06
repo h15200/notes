@@ -24,6 +24,9 @@ go doc [packageName.funcName]
   - when sending data over the network, data is usually converted into []byte
 - rune // alias for int32
   // represents a Unicode code point
+	- a `range loop` will treat each char as a int32 or Rune
+	- a for loop ove indices and referencing by `myString[i]` will treat char as a uint8 or Byte
+
 - a single quote declaration of a char will be a rune `myRune = 'a'` while a double quote will default to a string
 - float32 float64
 - complex64 complex128 (square roots, imaginary nums)
@@ -1307,7 +1310,6 @@ also the func needs to be capitalized!
 
 - if converting numbers to strings, do not use `string(num)`. Import and use `strconv.Itoa`
 
-## Enumerated constants
+## any type
 
-- `iota` inside a const block
-- Enumerated expressions can be used with bit wise operators to find file size formatting
+- to use an "any" type, type the arg of a function as `i interface{}` meaning a data type that has none of the methods inside {}
