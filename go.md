@@ -10,8 +10,10 @@
 
 package or library
 
-go build [filename]
-go run [filename]
+go build [filename] - will do nothing if there is no main package anywhere
+go run [filename] - will run the file. will usually not work for packages that are not main
+go work - will allow for multiple go.mod files if in root directory.
+	- first `go work init`, then add the folders via `go work dir_name`
 go doc [packageName]
 go doc [packageName.funcName]
 
