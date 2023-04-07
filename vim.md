@@ -7,7 +7,7 @@
 
 - for macOS, use karabiner to set caps lock tap as Escape, and caps lock hold for control
 - other global shortcuts include shift + escape (or caps lock) for divy, and caps lock + spacebar for tmux
-- for vsCode, add `  "editor.lineNumbers": "relative",` to settings
+- for vsCode, add `  "editor.lineNumbers": "relative",` and  "vim.vimrc.enable": true to settings
 
 ### mac terminal setup 
 
