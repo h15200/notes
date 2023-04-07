@@ -2,6 +2,7 @@
 
 - `man` + command to look at documentation. The most important command!
 - `history` will show previous commands
+- `ctrl + u` to delete current command line
 
 
 ## files and navigation
