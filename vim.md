@@ -25,7 +25,7 @@
 - `git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions`
 - `git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting`
 	- add both zsh-autosuggestions and zsh-syntax-highlighting to .zshrc where it says plugins(). no commas, just whitespace as delimiter
-	- no need to install, but also add web-search to plugin list
+	- no need to install, but also add web-search to plugins list
 - also in .vimrc, add new keybinding for auto complete so it's not right arrow, but a semi-colon. "bindkey ';' autosuggest-accept"
 
 ## vertical movement
