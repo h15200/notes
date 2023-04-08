@@ -21,6 +21,7 @@
   nnoremap N Nzzzv
   nnoremap H 0
   nnoremap L $
+- use `:so` to source from within dotfiles inside vim
 
 ### mac terminal setup
 

@@ -1,0 +1,2 @@
+require("hideaki")
+print("hello")
