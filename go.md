@@ -12,8 +12,7 @@ package or library
 
 go build [filename] - will do nothing if there is no main package anywhere
 go run [filename] - will run the file. will usually not work for packages that are not main
-go work - will allow for multiple go.mod files if in root directory.
-	- first `go work init`, then add the folders via `go work dir_name`
+go work - will allow for multiple go.mod files if in root directory. - first `go work init`, then add the folders via `go work dir_name`
 go doc [packageName]
 go doc [packageName.funcName]
 
@@ -26,8 +25,9 @@ go doc [packageName.funcName]
   - when sending data over the network, data is usually converted into []byte
 - rune // alias for int32
   // represents a Unicode code point
-	- a `range loop` will treat each char as a int32 or Rune
-	- a for loop ove indices and referencing by `myString[i]` will treat char as a uint8 or Byte
+
+  - a `range loop` will treat each char as a int32 or Rune
+  - a for loop ove indices and referencing by `myString[i]` will treat char as a uint8 or Byte
 
 - a single quote declaration of a char will be a rune `myRune = 'a'` while a double quote will default to a string
 - float32 float64
@@ -1125,7 +1125,7 @@ func main() {
 
   // here's another way
 
-  var anotherPrinter Printer 
+  var anotherPrinter Printer
 
   anotherPrinter = someType // if someType has the method PrintString(), will be fine. if not, will throw an error!
 }
@@ -1246,18 +1246,15 @@ func main() {
 
 ## errors
 
-built-in type error can be used
+- 2 ways (errors or fmt)
 
-```
-func numEqualsOne(x int) (string, error) {
-	switch x {
-	case 1:
-		return "yes", nil
-	default:
-		return "", fmt.Errorf("not a valid input")
-	}
-}
-```
+- method 1 with errors package
+
+  - return errors.New("this is how to make an error")
+
+- method 2 with ftm
+  - return fmt.Errorf("this is also another way to make an error")
+  - `Errorf` can have a arg if % is used, but if not, no 2nd arg is necessary
 
 ## Goroutines
 
