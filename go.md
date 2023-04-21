@@ -1253,8 +1253,13 @@ func main() {
   - return errors.New("this is how to make an error")
 
 - method 2 with ftm
+
   - return fmt.Errorf("this is also another way to make an error")
   - `Errorf` can have a arg if % is used, but if not, no 2nd arg is necessary
+
+- Custom error types
+  - declare a struct
+  - add an Error() method to it, which is how Go implements built-in errors
 
 ## Goroutines
 
