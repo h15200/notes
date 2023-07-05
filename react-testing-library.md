@@ -234,3 +234,6 @@ afterEach(() => {
 
 useSelector stuff can be put into state in a beforeEach
 Look at StreamDesignerAnnouncement-test.js, ClusterUpgradeCta-test.js
+
+### blabla refers to a value, but is being used as a type here error
+- extension must be jsx or tsx (not js/ts) to render a react component with <ThisFormat /> in a render call
