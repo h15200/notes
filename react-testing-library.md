@@ -96,7 +96,7 @@ the most common way is,label ele BEFORE input ele, htmlFor attribute set to the 
 
 - method 1 input can be queried by `const inputEle = screen.getByLabelText(/first-name/i);`
 
--using `screen.getByRoles("textbox", {name: /something/i})` will require specific aria labels
+- using `screen.getByRoles("textbox", {name: /something/i})` the "name" here will refer to  aria labels
 
 ### example
 
@@ -234,3 +234,6 @@ afterEach(() => {
 
 useSelector stuff can be put into state in a beforeEach
 Look at StreamDesignerAnnouncement-test.js, ClusterUpgradeCta-test.js
+
+### blabla refers to a value, but is being used as a type here error
+- extension must be jsx or tsx (not js/ts) to render a react component with <ThisFormat /> in a render call
