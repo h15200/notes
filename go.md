@@ -306,3 +306,12 @@ package `math/rand` is used for random nums
 rand.intn(100) will return num between 0 and 99
 
 HOWEVER, go uses `seeds` to generate random numbers so if the seeds themselves aren'
+
+## go modules
+
+- generally, easiest to just add go mod file `go mod init <name>` at the top
+  level of a repo and only have 1
+
+### package "testing"
+
+- see go repo example file hello_test.go
