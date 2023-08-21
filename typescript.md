@@ -20,7 +20,35 @@ print<number>(4);
 
 args for classes and class methods
 can be extended from an interface by `<T extends interfaceName>`
-`<K extends keyof T>` - any of the keys of T
+
+### keyof Type Operator
+
+- when you want to specify an object and key type, for ex, a function that
+extracts the value of a certain object
+
+```
+type Person = {
+        name: string;
+        age: number;
+    }
+
+// we want a function that only works with the proper type that's passed in
+
+function getValue<T, K extends keyof T>(obj: T, key: K): T[K] {
+        return obj[key]
+    }
+
+    // in the angled brackets, we are defining K as a key of T
+
+const p: Person = {
+        name: "Patti",
+        age: 34,
+    }
+    const name = getValue(p, "name") // ok
+    const location = getValue(p, "location") // type check error! 
+
+```
+
 
 abstract classes - classes that can only be used as a parent class. Must be extended by a child class
 class implements interfaceName - let's ts help you build a class that satisfies the interface
