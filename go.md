@@ -33,6 +33,21 @@ go doc [packageName.funcName]
 - float32 float64
 - complex64 complex128 (square roots, imaginary nums)
 
+## strings are utf-8 encoded to include unicode characters
+
+- length of string is length of bytes!
+- unicode chars use multiple bytes
+
+```
+s := "あ"
+fmt.Println(len(s)) // 3 since 3 bytes
+
+
+```
+
+- a string can be cast as []byte or []rune
+- to get physical length of a string, cast to []rune and then get length
+
 ## defaults
 
 - unlike JS and undefined, Go has sensible defaults when types and references are declared without init vals
@@ -283,7 +298,7 @@ now myString is a new string
 
 since the first arg string can have %v inside, this is also possible:
 
-````
+```
 
 package main
 
@@ -312,6 +327,10 @@ fmt.Println("What's your favorite food?")
 fmt.Scan(&food)
 fmt.Printf("Cool! I like %v too!", food)
 
+#### fmt.Fprint
+
+- print to any writer like os.Stderr
+
 ### package "math/rand"
 
 package `math/rand` is used for random nums
@@ -328,5 +347,3 @@ HOWEVER, go uses `seeds` to generate random numbers so if the seeds themselves a
 ### package "testing"
 
 - see go repo example file hello_test.go
-```
-````
