@@ -46,7 +46,15 @@ fmt.Println(len(s)) // 3 since 3 bytes
 ```
 
 - a string can be cast as []byte or []rune
+
 - to get physical length of a string, cast to []rune and then get length
+
+- strings are immutable and passed by reference! a slice of a string
+  is just a pointer - the only time a string is copied as value is if it's changed
+  `    s := "hello"
+    s_slice := s[3:] // this is just a pointer to the original segment. no copy was made
+    new_string := s + ", world" // this is a copied value
+   `
 
 ## defaults
 
