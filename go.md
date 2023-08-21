@@ -262,6 +262,17 @@ myNum := 10
 fmt.Printf("hello there", myNum)
 
 // will print "hello there (EXTRA int=10)"
+
+
+	// to format the output (right-align), add a number between the % and verb
+	fmt.Printf("formatted to 8 spaces. a: %8T, %v\n", a, a)
+	fmt.Printf("formatted to 8 spaces. b: %8T, %v\n", b, b)
+
+	// using square bracket after % and before the verb to reuse same param
+	// with printf statements, parameter[0] is the string, [1] is the first var, etc..
+
+	fmt.Printf("Reuse the same param a: %8T, %[1]v\n", a)
+	fmt.Printf("Reuse the same param b: %8T, %[1]v\n", b)
 ```
 
 #### fmt.Sprint()
@@ -272,23 +283,25 @@ now myString is a new string
 
 since the first arg string can have %v inside, this is also possible:
 
-```
+````
+
 package main
 
 import "fmt"
 
 func main() {
-  template := "I wish I had a %v"
-  pet := "puppy"
+template := "I wish I had a %v"
+pet := "puppy"
 
-  var wish string
+var wish string
 
-  wish = fmt.Sprintf(template, pet)
+wish = fmt.Sprintf(template, pet)
 
-  fmt.Println(wish + !)
+fmt.Println(wish + !)
 }
 
 // PRINTS -> "I wish I had a puppy!"
+
 ```
 
 #### fmt.Scan()
@@ -315,3 +328,5 @@ HOWEVER, go uses `seeds` to generate random numbers so if the seeds themselves a
 ### package "testing"
 
 - see go repo example file hello_test.go
+```
+````
