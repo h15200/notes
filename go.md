@@ -249,8 +249,6 @@ func main() {
 ### arrays
 
 - syntax `var arr [3]int` // empty array defaults to zero value, or `arr := [...]{1,2,3}`
-- unlike maps and slices, an empty array has a fixed length with zero values, so it will
-  never be `nil`
 - arrays are copied. `a := someOtherArray` is not a pointer, but a copy of
   the original array
 - arrays use consecutive bytes in memory and must be initialized with a length
@@ -294,15 +292,8 @@ func main() {
 - to access a key in a map, best practice to use:
 
 ```
-// assuming m is a map[string]int
-
-if n, ok := m["test"]; ok {
-        // "test" does exist in the map!
-        // now we can assume n is not a zero-value
-    }
+m := make(map[int]string)
 ```
-
-- map functions `len(m)`, `delete(m, k)`, `cap(m)`
 
 ## packages and exporting
 
@@ -335,26 +326,55 @@ fmt.Printf("hello there, %v", name)
 %f - float -> string. option to set decimal place `fmt.Printf("Your test average is %.2f", gpa)` - 3.80
 %q - puts double quotes around string
 
-if a variable isn't used but is appended with `, someVar` it will print (EXTRA type=Value)
-
-ex
-
 ```
-myNum := 10
-fmt.Printf("hello there", myNum)
+func main() {
+	a, b := 12, 345
+	c, d := 1.2, 3.5
 
-// will print "hello there (EXTRA int=10)"
+	fmt.Printf("%d %d\n", a, b)
+	fmt.Printf("%x %x\n", a, b)   // base 16. an upper case X will make alphas upper case
+	fmt.Printf("%#x %#x\n", a, b) // adding # is more familiar for base 16
 
+	fmt.Printf("%f %f\n", c, d)     // floats default to a lot of decimals
+	fmt.Printf("%.3f %.2f\n", c, d) // add .<num> for number of decimals
 
-	// to format the output (right-align), add a number between the % and verb
-	fmt.Printf("formatted to 8 spaces. a: %8T, %v\n", a, a)
-	fmt.Printf("formatted to 8 spaces. b: %8T, %v\n", b, b)
+	fmt.Printf("|%4d|%4d|\n", a, b)   // using pipes will add columns. adding a number will right justify
+	fmt.Printf("|%-5d|%-5d|\n", a, b) // adding a - will left justify
+	fmt.Printf("|%05d|%05d|\n", a, b) // adding a number like 0 will fill extra space with zeroes
 
-	// using square bracket after % and before the verb to reuse same param
-	// with printf statements, parameter[0] is the string, [1] is the first var, etc..
+	fmt.Printf("|%6f|%6.2f|\n", c, d) // 6.2 means 6 spaces total, 2 decimal points
 
-	fmt.Printf("Reuse the same param a: %8T, %[1]v\n", a)
-	fmt.Printf("Reuse the same param b: %8T, %[1]v\n", b)
+	s := []int{1, 2, 3}
+
+	fmt.Printf("%T\n", s)  // type of s
+	fmt.Printf("%v\n", s)  // value of s [1 2 3]
+	fmt.Printf("%#v\n", s) // type and value []int{1,2,3}
+
+	arr := [3]rune{'a', 'b', 'c'}
+
+	fmt.Printf("%T\n", arr)  // type [3]int32, which is same as rune
+	fmt.Printf("%v\n", arr)  // [97 98 99]
+	fmt.Printf("%q\n", arr)  // ['a', 'b', 'c'] prints the actual unicode characters
+	fmt.Printf("%#v\n", arr) // [3]int32{97, 98, 99}
+
+	m := map[string]int{"and": 1, "or": 2}
+
+	fmt.Printf("%T\n", m)  // map[string]int
+	fmt.Printf("%v\n", m)  // map[and:1 or:2]
+	fmt.Printf("%#v\n", m) // map[string]int{"and":1, "or":2}
+
+	st := "my string"
+	b_slice := []byte(st)
+
+	fmt.Printf("%T\n", st)  // string
+	fmt.Printf("%v\n", st)  // my string
+	fmt.Printf("%#v\n", st) // "my string"  adding # makes it more familiar
+
+	fmt.Printf("%v\n", b_slice)         // [109 121 32 etc..]
+	fmt.Printf("%v\n", string(b_slice)) // make sure to cast to string "my string"
+
+}
+
 ```
 
 #### fmt.Sprint()
