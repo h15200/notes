@@ -51,10 +51,9 @@ fmt.Println(len(s)) // 3 since 3 bytes
 
 - strings are immutable and passed by reference! a slice of a string
   is just a pointer - the only time a string is copied as value is if it's changed
-  `    s := "hello"
-    s_slice := s[3:] // this is just a pointer to the original segment. no copy was made
-    new_string := s + ", world" // this is a copied value
-   `
+  `  s := "hello"
+s_slice := s[3:] // this is just a pointer to the original segment. no copy was made
+new_string := s + ", world" // this is a copied value`
 
 ## defaults
 
@@ -244,6 +243,66 @@ func main() {
 
 - if a function has a panic call and `defer`, the defer call will always still run, so closing resources will still be fine
 - when using anonymous defer function calls, a error handler can recover from a panic state
+
+## composite (or container) types
+
+### arrays
+
+- syntax `var arr [3]int` // empty array defaults to zero value, or `arr := [...]{1,2,3}`
+- unlike maps and slices, an empty array has a fixed length with zero values, so it will
+  never be `nil`
+- arrays are copied. `a := someOtherArray` is not a pointer, but a copy of
+  the original array
+- arrays use consecutive bytes in memory and must be initialized with a length
+- can be used as map key
+- since arrays have a fixed length, two arrays of the same len and vals
+  can be compared array1 == array2
+- often used as a pseudo const
+
+### slices
+
+- a reference to an array
+- does not require setting a set length
+- syntax `var s []int` // this is equal to `nil`
+  `var s = []int{1,2,3}`
+- syntax with `make` `d := make([]int, <len>, <cap>)`
+- has methods like `append` and `copy`
+- can not be used as map key
+
+  - `a = append(a, 4)` // append 4 to current slice and overwrite
+
+- slices are pointers to an underlying array
+- since it's not a copy, two slices pointing to the same array a and b, `a[1] == b[1]` // true
+- slices themselves cannot be comparable
+- slices are indexed like in python `s[3:5]`
+
+### maps
+
+- key value pair
+- a valid key must be a type that is comparable with `==`, `!=`. arrays are good, slices are not
+
+- syntax `var m map[int]string` creates a `nil` map. not useful since you can't insert
+  - empty maps are `nil` but you can still read from it m["the"] // returns empty string
+  - insertion attempt will cause `panic`
+- `m := make(map[int]string)` creates an empty but non-nil map
+- `var m = map[int]string{}` will do the same
+  - ok to insert or read
+- maps are passed by reference, so no copying. A mutation inside a function
+  will also change the original
+- maps can't be compared to each other, but as an exception, can compare to `nil`
+
+- to access a key in a map, best practice to use:
+
+```
+// assuming m is a map[string]int
+
+if n, ok := m["test"]; ok {
+        // "test" does exist in the map!
+        // now we can assume n is not a zero-value
+    }
+```
+
+- map functions `len(m)`, `delete(m, k)`, `cap(m)`
 
 ## packages and exporting
 
