@@ -295,6 +295,11 @@ func main() {
 m := make(map[int]string)
 ```
 
+## go modules
+
+- generally, easiest to just add go mod file `go mod init <name>` at the top
+  level of a repo and only have 1
+
 ## packages and exporting
 
 - go imports packages from libraries and other files
@@ -380,7 +385,8 @@ func main() {
 #### fmt.Sprint()
 
 fmt.Sprint(), Sprintln(), Sprintf will output the new string
-common usage is `myString := fmt.Sprinf("Let's make a new %v with Sprint", someVar)`
+common usage is `myString := fmt.Sprinf("Let's make a new %v with Sprint", s
+meVar)`
 now myString is a new string
 
 since the first arg string can have %v inside, this is also possible:
@@ -426,11 +432,33 @@ rand.intn(100) will return num between 0 and 99
 
 HOWEVER, go uses `seeds` to generate random numbers so if the seeds themselves aren'
 
-## go modules
-
-- generally, easiest to just add go mod file `go mod init <name>` at the top
-  level of a repo and only have 1
-
 ### package "testing"
 
 - see go repo example file hello_test.go
+
+### packages related to file I/O
+
+#### Package os
+
+- stdin, stdout, stderr
+- functionality to open or create files, list directories, and hosts the File type
+- to do things on files as a whole from the os
+
+#### Package io
+
+- utils to read and write
+- unbuffered (better for small files)
+
+#### Package bufio
+
+- provides buffered I/O scanners
+- when an in/out is buffered, it is temporarily stored somewhere to process
+  a batch instead of continuous processing. useful for big files
+
+#### io/ioutil
+
+- additional utilities such as reading an entire file to memory, or writing all
+
+### package strconv
+
+- utils to convert to/from string representations
