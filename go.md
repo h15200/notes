@@ -55,6 +55,35 @@ fmt.Println(len(s)) // 3 since 3 bytes
 s_slice := s[3:] // this is just a pointer to the original segment. no copy was made
 new_string := s + ", world" // this is a copied value`
 
+## functions ref vs value
+
+- technically speaking, all paramters are passed by value in Go
+  - even pointers are copied, but changing the pointer ends up changing the original
+- so in practice, the mental model is:
+
+- primitives, `arrays` and `structs` are passed in by value, meaning they are
+  copied. The original does not get mutated
+
+  - any of these however can be passed in by reference is using a pointer as an arg`&array`
+
+  ```
+         func do(*a [3]int) {
+                 *(a)[3] = 5 // since we are dereferencing the pointer and getting
+                 the original, the original array also mutates
+             }
+       arr := [3]int{1,2,3}
+       do(&arr) // although arrays are usually passed in by value, this will allow
+       to pass by reference
+  ```
+
+- all other complex types `slice`, `chan`, `map` etc.. are passed in by ref
+
+### multiple returns
+
+- when there are multiple return values, you must add parens. most commonly
+  used for errors
+  `func doSomething(a string) (string, error)`
+
 ## defaults
 
 - unlike JS and undefined, Go has sensible defaults when types and references are declared without init vals
@@ -90,6 +119,17 @@ The above can be written as `var num = 3` // if there is an initializer, the typ
   - `mySlice := structName{'hi', 'there'}`
 
 - to initialize to something that's not inferred `z := float64(1)`
+
+### inner functions
+
+- inner functions must be either anonymous and immediately invoked with syntax
+  `func (<param> <type) {
+    // body
+}(<args>)`
+
+OR
+
+- assigned with := `innerFunc := func (<parm> <type>) { // body }`
 
 ## inline multiple declarations
 
@@ -200,7 +240,7 @@ this initializes the var, `myReturn` inside the function, and a `return` stateme
 
 ### defer
 
-- a `defer` statement will defer the execution of a function until the surrounding function returns
+- a `defer` statement will defer the execution of a function until the surrounding function returns. It will run right BEFORE the return statement
 - the call's arguments are evaluated immediately, but the execution is held off until the surrounding function is done
 
 ```
@@ -217,6 +257,46 @@ func randomReturn() string {
     return "Returning later!"
   }
 // "Generated!" will print last in either scenario
+```
+
+- defer statements are run in `function scope`, not `block scope`! It will run
+  when the function exists, not a loop
+
+- putting a defer statement inside a conditional means that it will run
+  only if the conditional runs in that block, but again, it will run at the
+  end of the function, not the block that it was declared in!
+
+- for example, this is a BAD usage of defer
+
+```
+// passes in a bunch of filenames
+func main() {
+        for i:= 1; i < len(os.Args); i++ {
+            f, err := os.Open(os.Args[i])
+            // more stuff...
+
+            defer f.Close()
+            }
+    }
+
+// since f.Close will ONLY run at the end of main, it could potentially
+keep thousands of files open. In this case, it is just better to close
+each file after you've processed them, so just f.Close() at the end
+of the loop
+
+
+```
+
+- Unlike a closure, `defer` copies arguments to the call at that line
+
+```
+a := 10
+defer fmt.Println(a) // here it is copying the value at this point, 10
+a = 11
+fmt.Println("non defer a", a)
+
+// will print 11, but the defer call will print 10
+
 ```
 
 #### multiple defer - stack
