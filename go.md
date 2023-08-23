@@ -78,6 +78,21 @@ new_string := s + ", world" // this is a copied value`
 
 - all other complex types `slice`, `chan`, `map` etc.. are passed in by ref
 
+## pointer
+
+- the most confusing part is that `*` is a type like `*int` (a pointer address that
+  points to an int) AND it's also used as a dereferencer `num = *numPointer`
+
+- when declaring a func, always use `*` as ref to pointers
+
+```
+  func doSomething(n *int) {
+  // n is a pointer
+  }
+```
+
+- when passing IN a pointer, always use the `&` operator in the invocation `doSomething(&myNum) // pointer to myNum is passed in as arg`
+
 ### multiple returns
 
 - when there are multiple return values, you must add parens. most commonly
@@ -134,11 +149,13 @@ OR
 ## inline multiple declarations
 
 ```
+
 var (
-	ToBe   bool       = false
-	MaxInt uint64     = 1<<64 - 1
-	z      complex128 = cmplx.Sqrt(-5 + 12i)
+ToBe bool = false
+MaxInt uint64 = 1<<64 - 1
+z complex128 = cmplx.Sqrt(-5 + 12i)
 )
+
 ```
 
 using var
@@ -167,13 +184,15 @@ convention to capitalize const but only inside functions. Otherwise, it will sig
 ### enumerated consts and enumerated expressions with iota
 
 ```
+
 const (
-	_ = iota
-	blueCar
-	greeCar
-	redCar
+\_ = iota
+blueCar
+greeCar
+redCar
 )
 // iota starts at 0, then increments automatically
+
 ```
 
 ## scoping
@@ -182,17 +201,20 @@ Like es6, Go is block scoped.
 It is possible to have a short declaration inside if and switch statements
 
 ```
-if product := 8 * 9; product > 60 {
-  fmt.Println(product, "  is greater than 60")
+
+if product := 8 \* 9; product > 60 {
+fmt.Println(product, " is greater than 60")
 }
 
 ```
 
 ```
+
 switch season := "summer" ; season {
 case "summer"
-  fmt.Println("Go out and enjoy the sun!")
+fmt.Println("Go out and enjoy the sun!")
 }
+
 ```
 
 Since block scoped, `product` and `season` is not available outside the curly brackets and will throw error on compile
@@ -203,9 +225,11 @@ Since block scoped, `product` and `season` is not available outside the curly br
 - params and returns should be typed
 
 ```
+
 func specialComputation(x float64) float64 {
 
 }
+
 ```
 
 ### Go functions can return multiple values.
@@ -229,11 +253,13 @@ num1, num2 = returnTwoNums(3,4)
 returns can be named where you usually type the return, surrounded by parens
 
 ```
+
 func someFunc(num int) (myReturn int) {
-  myReturn = num + 1
-  return
+myReturn = num + 1
+return
 }
 // someFunc(3) will return 4
+
 ```
 
 this initializes the var, `myReturn` inside the function, and a `return` statement with nothing after will return ALL named returns, in this case `myReturn`
@@ -244,19 +270,21 @@ this initializes the var, `myReturn` inside the function, and a `return` stateme
 - the call's arguments are evaluated immediately, but the execution is held off until the surrounding function is done
 
 ```
+
 func randomReturn() string {
-  defer fmt.Println("Generated!")
+defer fmt.Println("Generated!")
 
-  if rand.Intn(100) > 50 {
-    return "Returning!"
-  }
+if rand.Intn(100) > 50 {
+return "Returning!"
+}
 
-  fmt.Println("waiting...)
+fmt.Println("waiting...)
 
-  if rand.Intn(100) < 50 {
-    return "Returning later!"
-  }
+if rand.Intn(100) < 50 {
+return "Returning later!"
+}
 // "Generated!" will print last in either scenario
+
 ```
 
 - defer statements are run in `function scope`, not `block scope`! It will run
@@ -269,11 +297,12 @@ func randomReturn() string {
 - for example, this is a BAD usage of defer
 
 ```
+
 // passes in a bunch of filenames
 func main() {
-        for i:= 1; i < len(os.Args); i++ {
-            f, err := os.Open(os.Args[i])
-            // more stuff...
+for i:= 1; i < len(os.Args); i++ {
+f, err := os.Open(os.Args[i])
+// more stuff...
 
             defer f.Close()
             }
@@ -284,12 +313,12 @@ keep thousands of files open. In this case, it is just better to close
 each file after you've processed them, so just f.Close() at the end
 of the loop
 
-
 ```
 
 - Unlike a closure, `defer` copies arguments to the call at that line
 
 ```
+
 a := 10
 defer fmt.Println(a) // here it is copying the value at this point, 10
 a = 11
@@ -304,15 +333,18 @@ fmt.Println("non defer a", a)
 defer func returns are stored in a stack (last in, first out) so if there are multiple defer funcs, the LAST one in the code will execute first (in reverse order of appearance of `defer`)
 
 ```
+
 func main() {
-	fmt.Println("counting")
+fmt.Println("counting")
 
-	for i := 0; i < 10; i++ {
-		defer fmt.Println(i)
-	}
+    for i := 0; i < 10; i++ {
+    	defer fmt.Println(i)
+    }
 
-	fmt.Println("done")
+    fmt.Println("done")
+
 }
+
 ```
 
 // prints DONE 9 8 7 6 ... to 0
@@ -372,7 +404,9 @@ func main() {
 - to access a key in a map, best practice to use:
 
 ```
+
 m := make(map[int]string)
+
 ```
 
 ## go modules
@@ -398,9 +432,11 @@ fmt.Print() - no spaces, no line breaks
 fmt.Printf() - takes in a string and variable(s). the variable will replace the `verbs`
 
 ```
+
 name := "Patti"
 
 fmt.Printf("hello there, %v", name)
+
 ```
 
 #### fmt.Printf verb types
@@ -412,51 +448,52 @@ fmt.Printf("hello there, %v", name)
 %q - puts double quotes around string
 
 ```
+
 func main() {
-	a, b := 12, 345
-	c, d := 1.2, 3.5
+a, b := 12, 345
+c, d := 1.2, 3.5
 
-	fmt.Printf("%d %d\n", a, b)
-	fmt.Printf("%x %x\n", a, b)   // base 16. an upper case X will make alphas upper case
-	fmt.Printf("%#x %#x\n", a, b) // adding # is more familiar for base 16
+    fmt.Printf("%d %d\n", a, b)
+    fmt.Printf("%x %x\n", a, b)   // base 16. an upper case X will make alphas upper case
+    fmt.Printf("%#x %#x\n", a, b) // adding # is more familiar for base 16
 
-	fmt.Printf("%f %f\n", c, d)     // floats default to a lot of decimals
-	fmt.Printf("%.3f %.2f\n", c, d) // add .<num> for number of decimals
+    fmt.Printf("%f %f\n", c, d)     // floats default to a lot of decimals
+    fmt.Printf("%.3f %.2f\n", c, d) // add .<num> for number of decimals
 
-	fmt.Printf("|%4d|%4d|\n", a, b)   // using pipes will add columns. adding a number will right justify
-	fmt.Printf("|%-5d|%-5d|\n", a, b) // adding a - will left justify
-	fmt.Printf("|%05d|%05d|\n", a, b) // adding a number like 0 will fill extra space with zeroes
+    fmt.Printf("|%4d|%4d|\n", a, b)   // using pipes will add columns. adding a number will right justify
+    fmt.Printf("|%-5d|%-5d|\n", a, b) // adding a - will left justify
+    fmt.Printf("|%05d|%05d|\n", a, b) // adding a number like 0 will fill extra space with zeroes
 
-	fmt.Printf("|%6f|%6.2f|\n", c, d) // 6.2 means 6 spaces total, 2 decimal points
+    fmt.Printf("|%6f|%6.2f|\n", c, d) // 6.2 means 6 spaces total, 2 decimal points
 
-	s := []int{1, 2, 3}
+    s := []int{1, 2, 3}
 
-	fmt.Printf("%T\n", s)  // type of s
-	fmt.Printf("%v\n", s)  // value of s [1 2 3]
-	fmt.Printf("%#v\n", s) // type and value []int{1,2,3}
+    fmt.Printf("%T\n", s)  // type of s
+    fmt.Printf("%v\n", s)  // value of s [1 2 3]
+    fmt.Printf("%#v\n", s) // type and value []int{1,2,3}
 
-	arr := [3]rune{'a', 'b', 'c'}
+    arr := [3]rune{'a', 'b', 'c'}
 
-	fmt.Printf("%T\n", arr)  // type [3]int32, which is same as rune
-	fmt.Printf("%v\n", arr)  // [97 98 99]
-	fmt.Printf("%q\n", arr)  // ['a', 'b', 'c'] prints the actual unicode characters
-	fmt.Printf("%#v\n", arr) // [3]int32{97, 98, 99}
+    fmt.Printf("%T\n", arr)  // type [3]int32, which is same as rune
+    fmt.Printf("%v\n", arr)  // [97 98 99]
+    fmt.Printf("%q\n", arr)  // ['a', 'b', 'c'] prints the actual unicode characters
+    fmt.Printf("%#v\n", arr) // [3]int32{97, 98, 99}
 
-	m := map[string]int{"and": 1, "or": 2}
+    m := map[string]int{"and": 1, "or": 2}
 
-	fmt.Printf("%T\n", m)  // map[string]int
-	fmt.Printf("%v\n", m)  // map[and:1 or:2]
-	fmt.Printf("%#v\n", m) // map[string]int{"and":1, "or":2}
+    fmt.Printf("%T\n", m)  // map[string]int
+    fmt.Printf("%v\n", m)  // map[and:1 or:2]
+    fmt.Printf("%#v\n", m) // map[string]int{"and":1, "or":2}
 
-	st := "my string"
-	b_slice := []byte(st)
+    st := "my string"
+    b_slice := []byte(st)
 
-	fmt.Printf("%T\n", st)  // string
-	fmt.Printf("%v\n", st)  // my string
-	fmt.Printf("%#v\n", st) // "my string"  adding # makes it more familiar
+    fmt.Printf("%T\n", st)  // string
+    fmt.Printf("%v\n", st)  // my string
+    fmt.Printf("%#v\n", st) // "my string"  adding # makes it more familiar
 
-	fmt.Printf("%v\n", b_slice)         // [109 121 32 etc..]
-	fmt.Printf("%v\n", string(b_slice)) // make sure to cast to string "my string"
+    fmt.Printf("%v\n", b_slice)         // [109 121 32 etc..]
+    fmt.Printf("%v\n", string(b_slice)) // make sure to cast to string "my string"
 
 }
 
