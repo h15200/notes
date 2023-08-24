@@ -345,7 +345,6 @@ fmt.Println("counting")
 
 }
 
-```
 
 // prints DONE 9 8 7 6 ... to 0
 
@@ -373,9 +372,17 @@ fmt.Println("counting")
 
 - a reference to an array
 - does not require setting a set length
-- syntax `var s []int` // this is equal to `nil`
-  `var s = []int{1,2,3}`
-- syntax with `make` `d := make([]int, <len>, <cap>)`
+- three basic ways of declaring:
+  - syntax `var s []int` // this is equal to `nil`
+  - `s := []int{1,2,3}` // this is empty but not equal to `nil`
+  - `s:= make([]int, 3)` // this is empty but not equal to `nil`
+- you can still append to a `nil` slice, but it's very important for
+some methods lke `json.Marshal(s)`. A nil slice will show up as `null`, while
+an empty, non-nil slice will be `[]`
+- gotcha: if you `s := make([]int, 5)` you are actually making {0,0,0,0,0}.
+Appending values to that will start on the 6th index! what you want for
+an empty slice is `s := make([]int, 0, 5)`
+- to check to see if a slice is empty for all 3 cases, check len(s) == 0
 - has methods like `append` and `copy`
 - can not be used as map key
 
@@ -385,6 +392,12 @@ fmt.Println("counting")
 - since it's not a copy, two slices pointing to the same array a and b, `a[1] == b[1]` // true
 - slices themselves cannot be comparable
 - slices are indexed like in python `s[3:5]`
+
+- if `s := someArray[2:4]` and you slice from that slice, `new_s := s[1:5]` you
+are actually slicing from the underlying ARRAY, not that slice. better practice
+is to limit the capacity when you first slice from an array. `s := someArray[2:4:2]`
+// means slice index 2 to 4, and keep the capacity to just those two!
+// by doing that, slicing that new slice out of bounds will fail properly
 
 ### maps
 
@@ -413,6 +426,10 @@ m := make(map[int]string)
 
 - generally, easiest to just add go mod file `go mod init <name>` at the top
   level of a repo and only have 1
+
+- if you need a package that's not in the standard library yet, you need
+to run `go get <package name>`. This will create a go.sum file. You'll
+then need to sync your current go.mod will with `go mod tidy`
 
 ## packages and exporting
 
@@ -579,3 +596,4 @@ HOWEVER, go uses `seeds` to generate random numbers so if the seeds themselves a
 ### package strconv
 
 - utils to convert to/from string representations
+```
