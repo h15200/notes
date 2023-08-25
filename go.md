@@ -416,16 +416,53 @@ is to limit the capacity when you first slice from an array. `s := someArray[2:4
 
 - to access a key in a map, best practice to use:
 
-```
+`m := make(map[int]string)`
 
-m := make(map[int]string)
+#### maps of structs
 
-```
+- since maps use a hash table that keeps changing the pointer of each entry,
+  you will always see a map to struct POINTERS instead
 
+`company := map[string]\*Employee // good`
+
+- if you put literal structs in a map, a lot of operations would not work
+  - any pointer related operations or even changing the value of a specific
+    employee would fail
+
+### struct tags
+
+- metadata about how to encode in certain protocols like json.
+- struct tags must be with backtick literals
+- used to encode structs for external use
+
+- the structure is `<keyword>:"<format>,<additionalOptions>"`
+
+type Response struct {
+	Page  int      `json:"page"`            // this says in json formatting, the property name will be lowercase "page"
+	Words []string `json:"words,omitempty"` // in json, property will be lowercase "words" and don't include if empty
+}
+
+- making the value lowercase is a common workaround because most structs need
+to be exportable, meaning uppercase! json values are conventionally lowercase.
+all fields of a struct MUST be uppercase for any kind of encoding!
+struct tags will override this formatting in json
+
+
+
+#### empty structs
+- like empty Interfaces, empty structs can be useful in specific situations
+
+- there is no `set` in go, so the workaround is:
+`var isPresent map[string]struct{}`
+    - here we have a string set that's just using the key and the value is nothing, or an empty struct.
+    - this takes up less space than a `bool` value mapping
+
+- `done := make(chan struct{})`
+    - this is a very cheap channel type with no space required
 ## go modules
 
 - generally, easiest to just add go mod file `go mod init <name>` at the top
-  level of a repo and only have 1
+level of a repo and only have 1
 
 - if you need a package that's not in the standard library yet, you need
 to run `go get <package name>`. This will create a go.sum file. You'll
@@ -548,52 +585,5 @@ fmt.Println(wish + !)
 
 #### fmt.Scan()
 
-gets user input. takes in 1 arg, a variable pre-pended by &
-
-fmt.Println("What's your favorite food?")
-fmt.Scan(&food)
-fmt.Printf("Cool! I like %v too!", food)
-
-#### fmt.Fprint
-
-- print to any writer like os.Stderr
-
-### package "math/rand"
-
-package `math/rand` is used for random nums
-
-rand.intn(100) will return num between 0 and 99
-
-HOWEVER, go uses `seeds` to generate random numbers so if the seeds themselves aren'
-
-### package "testing"
-
-- see go repo example file hello_test.go
-
-### packages related to file I/O
-
-#### Package os
-
-- stdin, stdout, stderr
-- functionality to open or create files, list directories, and hosts the File type
-- to do things on files as a whole from the os
-
-#### Package io
-
-- utils to read and write
-- unbuffered (better for small files)
-
-#### Package bufio
-
-- provides buffered I/O scanners
-- when an in/out is buffered, it is temporarily stored somewhere to process
-  a batch instead of continuous processing. useful for big files
-
-#### io/ioutil
-
-- additional utilities such as reading an entire file to memory, or writing all
-
-### package strconv
-
-- utils to convert to/from string representations
+gets user input. takes in 1 arg, a variable pre-p
 ```
