@@ -16,6 +16,52 @@ go work - will allow for multiple go.mod files if in root directory. - first `go
 go doc [packageName]
 go doc [packageName.funcName]
 
+## range loop gotcha
+
+- the value returned by the 2nd return statement from `range` is a COPY
+- if the iterator is big (above 64 bytes), avoid range looping!
+- also, if you need to mutate the original, you can't use the 2nd arg
+
+```
+s := []string{"hi", "bye"}
+for i, word := range s {
+        // word is a copy! to mutate original, use s[i] instead
+    }
+```
+
+- remember that both the index and item in a range loop will reuse the pointer
+
+```
+
+func ex2() {
+    // a slice of arrays
+items := [][2]byte{
+           {1, 2}, {3, 4}, {5, 6},
+       }
+
+items_2 := [][]byte{} // a slice of slices
+
+         for _, item := range items {
+             items_2 = append(items_2, item[:])
+                 // this does not work because item[:] is a POINTER.
+                 // item keeps reusing the same address, at the end of the loop, item[:] is
+                 // always the last loop, {5,6}
+         }
+
+         fmt.Println(items_2) // {5,6},{5,6},{5,6}
+
+// the way to fix this is to make a copy
+items_3 := [][]byte{}
+         for _, item := range items {
+            itemCopy := item   // since item is array, this is a value copy
+            items_3 = append(items_3, itemCopy[:]) // convert array to slice with [:]
+         }
+
+         fmt.Println(items_3)
+}
+
+```
+
 ## types
 
 - int int8 (-125 ish to +125) int16 int32 int64
@@ -423,6 +469,9 @@ is to limit the capacity when you first slice from an array. `s := someArray[2:4
 - since maps use a hash table that keeps changing the pointer of each entry,
   you will always see a map to struct POINTERS instead
 
+- assigning a map value as a pointer is not allowed, as the address will shift
+- in the same way, assigning a slice value with a pointer is also risky
+
 `company := map[string]\*Employee // good`
 
 - if you put literal structs in a map, a lot of operations would not work
@@ -467,6 +516,19 @@ level of a repo and only have 1
 - if you need a package that's not in the standard library yet, you need
 to run `go get <package name>`. This will create a go.sum file. You'll
 then need to sync your current go.mod will with `go mod tidy`
+
+
+## pointers
+
+- some objects can't be copied safely (mutex, wait groups) and must be used with a pointer
+    - any structs that has a mutext must be a pointer
+- when data size > 64 bytes, consider pointers (large structs)
+- some methods need to mutate the receiver, in which case a pointer is necessary
+- some functions like `json.Marshal` require a value to be outside the func
+
+      res := Response{} // struct defined elsewhere
+      err := json.Unmarshal(j, &res) // since there is no return val for the struct, needs pointer as 2nd arg
+- a pointer may be necessary to signal a `null` object
 
 ## packages and exporting
 
