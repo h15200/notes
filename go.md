@@ -48,7 +48,7 @@ items_2 := [][]byte{} // a slice of slices
                  // always the last loop, {5,6}
          }
 
-         fmt.Println(items_2) // {5,6},{5,6},{5,6}
+             fmt.Println(items_2) // {5,6},{5,6},{5,6}
 
 // the way to fix this is to make a copy
 items_3 := [][]byte{}
@@ -530,6 +530,53 @@ then need to sync your current go.mod will with `go mod tidy`
       err := json.Unmarshal(j, &res) // since there is no return val for the struct, needs pointer as 2nd arg
 - a pointer may be necessary to signal a `null` object
 
+## OOP in go
+- composition-based way of working in OO that has `polymorphism`, `encapsulation` and `abstraction`
+- Go does not do `inheritance`, when talking about subclassing (a subclass is always a type of the superclass)
+- `polymorphism` through interfaces and composition rather than subclasses and inheritance
+- a `class` in Go is a struct with methods
+- an `interface` specifies abstract behavior by available function(s). Named with `er` at end "Stringer"
+meaning the type must have a String() method available
+- a `concrete` type is any struct or other custom type that's declared
+```
+
+type Writer interface {
+Write([]byte) (int, error)
+// all Writers must have a Write() method with these input/output types
+}
+
+```
+many interfaces are already in the standard lib - fmt.Stringer is an interface
+- a `method` is set with a specific type of function with a receiver type that
+defines the behavior for that type
+- when using custom types that are not structs, you use `underlying` or `base` type
+to specify the concrete type
+
+- keep interfaces small, and use composition
+```
+
+type Reader interface {
+Read(p []byte) (int, error)
+}
+type Writer interface {
+Write(p []byte) (int, error)
+}
+
+// use a union. Name it so "er" is only at the very end
+type ReadWriter interface {
+Reader
+Writer
+}
+
+// to use this way of composition, you need all interfaces declared on same package
+
+```
+
+## method receivers gotchas
+
+- a method may take a `pointer` or `value` receiver, but not both
+- as a rule you need a pointer receiver for methods that mutate the type
+
 ## packages and exporting
 
 - go imports packages from libraries and other files
@@ -563,89 +610,4 @@ fmt.Printf("hello there, %v", name)
 %f - float -> string. option to set decimal place `fmt.Printf("Your test average is %.2f", gpa)` - 3.80
 %q - puts double quotes around string
 
-```
-
-func main() {
-a, b := 12, 345
-c, d := 1.2, 3.5
-
-    fmt.Printf("%d %d\n", a, b)
-    fmt.Printf("%x %x\n", a, b)   // base 16. an upper case X will make alphas upper case
-    fmt.Printf("%#x %#x\n", a, b) // adding # is more familiar for base 16
-
-    fmt.Printf("%f %f\n", c, d)     // floats default to a lot of decimals
-    fmt.Printf("%.3f %.2f\n", c, d) // add .<num> for number of decimals
-
-    fmt.Printf("|%4d|%4d|\n", a, b)   // using pipes will add columns. adding a number will right justify
-    fmt.Printf("|%-5d|%-5d|\n", a, b) // adding a - will left justify
-    fmt.Printf("|%05d|%05d|\n", a, b) // adding a number like 0 will fill extra space with zeroes
-
-    fmt.Printf("|%6f|%6.2f|\n", c, d) // 6.2 means 6 spaces total, 2 decimal points
-
-    s := []int{1, 2, 3}
-
-    fmt.Printf("%T\n", s)  // type of s
-    fmt.Printf("%v\n", s)  // value of s [1 2 3]
-    fmt.Printf("%#v\n", s) // type and value []int{1,2,3}
-
-    arr := [3]rune{'a', 'b', 'c'}
-
-    fmt.Printf("%T\n", arr)  // type [3]int32, which is same as rune
-    fmt.Printf("%v\n", arr)  // [97 98 99]
-    fmt.Printf("%q\n", arr)  // ['a', 'b', 'c'] prints the actual unicode characters
-    fmt.Printf("%#v\n", arr) // [3]int32{97, 98, 99}
-
-    m := map[string]int{"and": 1, "or": 2}
-
-    fmt.Printf("%T\n", m)  // map[string]int
-    fmt.Printf("%v\n", m)  // map[and:1 or:2]
-    fmt.Printf("%#v\n", m) // map[string]int{"and":1, "or":2}
-
-    st := "my string"
-    b_slice := []byte(st)
-
-    fmt.Printf("%T\n", st)  // string
-    fmt.Printf("%v\n", st)  // my string
-    fmt.Printf("%#v\n", st) // "my string"  adding # makes it more familiar
-
-    fmt.Printf("%v\n", b_slice)         // [109 121 32 etc..]
-    fmt.Printf("%v\n", string(b_slice)) // make sure to cast to string "my string"
-
-}
-
-```
-
-#### fmt.Sprint()
-
-fmt.Sprint(), Sprintln(), Sprintf will output the new string
-common usage is `myString := fmt.Sprinf("Let's make a new %v with Sprint", s
-meVar)`
-now myString is a new string
-
-since the first arg string can have %v inside, this is also possible:
-
-```
-
-package main
-
-import "fmt"
-
-func main() {
-template := "I wish I had a %v"
-pet := "puppy"
-
-var wish string
-
-wish = fmt.Sprintf(template, pet)
-
-fmt.Println(wish + !)
-}
-
-// PRINTS -> "I wish I had a puppy!"
-
-```
-
-#### fmt.Scan()
-
-gets user input. takes in 1 arg, a variable pre-p
 ```
