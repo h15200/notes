@@ -393,6 +393,7 @@ fmt.Println("counting")
 
 
 // prints DONE 9 8 7 6 ... to 0
+```
 
 "Generated" will print right after the return of either scenario
 
@@ -423,11 +424,11 @@ fmt.Println("counting")
   - `s := []int{1,2,3}` // this is empty but not equal to `nil`
   - `s:= make([]int, 3)` // this is empty but not equal to `nil`
 - you can still append to a `nil` slice, but it's very important for
-some methods lke `json.Marshal(s)`. A nil slice will show up as `null`, while
-an empty, non-nil slice will be `[]`
+  some methods lke `json.Marshal(s)`. A nil slice will show up as `null`, while
+  an empty, non-nil slice will be `[]`
 - gotcha: if you `s := make([]int, 5)` you are actually making {0,0,0,0,0}.
-Appending values to that will start on the 6th index! what you want for
-an empty slice is `s := make([]int, 0, 5)`
+  Appending values to that will start on the 6th index! what you want for
+  an empty slice is `s := make([]int, 0, 5)`
 - to check to see if a slice is empty for all 3 cases, check len(s) == 0
 - has methods like `append` and `copy`
 - can not be used as map key
@@ -440,10 +441,10 @@ an empty slice is `s := make([]int, 0, 5)`
 - slices are indexed like in python `s[3:5]`
 
 - if `s := someArray[2:4]` and you slice from that slice, `new_s := s[1:5]` you
-are actually slicing from the underlying ARRAY, not that slice. better practice
-is to limit the capacity when you first slice from an array. `s := someArray[2:4:2]`
-// means slice index 2 to 4, and keep the capacity to just those two!
-// by doing that, slicing that new slice out of bounds will fail properly
+  are actually slicing from the underlying ARRAY, not that slice. better practice
+  is to limit the capacity when you first slice from an array. `s := someArray[2:4:2]`
+  // means slice index 2 to 4, and keep the capacity to just those two!
+  // by doing that, slicing that new slice out of bounds will fail properly
 
 ### maps
 
@@ -487,57 +488,57 @@ is to limit the capacity when you first slice from an array. `s := someArray[2:4
 - the structure is `<keyword>:"<format>,<additionalOptions>"`
 
 type Response struct {
-	Page  int      `json:"page"`            // this says in json formatting, the property name will be lowercase "page"
-	Words []string `json:"words,omitempty"` // in json, property will be lowercase "words" and don't include if empty
+Page int `json:"page"` // this says in json formatting, the property name will be lowercase "page"
+Words []string `json:"words,omitempty"` // in json, property will be lowercase "words" and don't include if empty
 }
 
 - making the value lowercase is a common workaround because most structs need
-to be exportable, meaning uppercase! json values are conventionally lowercase.
-all fields of a struct MUST be uppercase for any kind of encoding!
-struct tags will override this formatting in json
-
-
+  to be exportable, meaning uppercase! json values are conventionally lowercase.
+  all fields of a struct MUST be uppercase for any kind of encoding!
+  struct tags will override this formatting in json
 
 #### empty structs
+
 - like empty Interfaces, empty structs can be useful in specific situations
 
 - there is no `set` in go, so the workaround is:
-`var isPresent map[string]struct{}`
-    - here we have a string set that's just using the key and the value is nothing, or an empty struct.
-    - this takes up less space than a `bool` value mapping
+  `var isPresent map[string]struct{}` - here we have a string set that's just using the key and the value is nothing, or an empty struct. - this takes up less space than a `bool` value mapping
 
 - `done := make(chan struct{})`
-    - this is a very cheap channel type with no space required
+  - this is a very cheap channel type with no space required
+
 ## go modules
 
 - generally, easiest to just add go mod file `go mod init <name>` at the top
-level of a repo and only have 1
+  level of a repo and only have 1
 
 - if you need a package that's not in the standard library yet, you need
-to run `go get <package name>`. This will create a go.sum file. You'll
-then need to sync your current go.mod will with `go mod tidy`
-
+  to run `go get <package name>`. This will create a go.sum file. You'll
+  then need to sync your current go.mod will with `go mod tidy`
 
 ## pointers
 
 - some objects can't be copied safely (mutex, wait groups) and must be used with a pointer
-    - any structs that has a mutext must be a pointer
+  - any structs that has a mutext must be a pointer
 - when data size > 64 bytes, consider pointers (large structs)
 - some methods need to mutate the receiver, in which case a pointer is necessary
 - some functions like `json.Marshal` require a value to be outside the func
 
       res := Response{} // struct defined elsewhere
       err := json.Unmarshal(j, &res) // since there is no return val for the struct, needs pointer as 2nd arg
+
 - a pointer may be necessary to signal a `null` object
 
 ## OOP in go
+
 - composition-based way of working in OO that has `polymorphism`, `encapsulation` and `abstraction`
 - Go does not do `inheritance`, when talking about subclassing (a subclass is always a type of the superclass)
 - `polymorphism` through interfaces and composition rather than subclasses and inheritance
 - a `class` in Go is a struct with methods
 - an `interface` specifies abstract behavior by available function(s). Named with `er` at end "Stringer"
-meaning the type must have a String() method available
+  meaning the type must have a String() method available
 - a `concrete` type is any struct or other custom type that's declared
+
 ```
 
 type Writer interface {
@@ -546,13 +547,16 @@ Write([]byte) (int, error)
 }
 
 ```
+
 many interfaces are already in the standard lib - fmt.Stringer is an interface
+
 - a `method` is set with a specific type of function with a receiver type that
-defines the behavior for that type
+  defines the behavior for that type
 - when using custom types that are not structs, you use `underlying` or `base` type
-to specify the concrete type
+  to specify the concrete type
 
 - keep interfaces small, and use composition
+
 ```
 
 type Reader interface {
@@ -572,11 +576,67 @@ Writer
 
 ```
 
+## interfaces
+
+- an interface is a type in Go, but an abstract type. All other types (structs, custom types)
+  are concrete types
+- an interface can be the input of a function or a method
+- if not initialized, the default value of an interface is `nil`
+  - digging in, an interface has 2 parts:
+  1. a value or pointer of some Type
+  2. a pointer to the the specific type information to check for methods
+  - an interface is `nil` if BOTH of these parts are `nil`
+- best practices
+  1. Let consumers define interfaces
+  2. Re-use standard interfaces when possible
+  3. Keep interface declarations small
+  4. Compose one-method interfaces into larger ones if needed
+  5. Avoid coupling interfaces to particular types. make sure it's generic to as many types as possible
+  6. Accept interfaces in functions, but return concrete types (exception being error interface should be returned)
+- put the least restriction on what params you accept (the minimal interface)
+- same for the output. Make it as flexible as possible
+
 ## method receivers gotchas
 
 - a method may take a `pointer` or `value` receiver, but not both
 - as a rule you need a pointer receiver for methods that mutate the type
 
+### method receiver type compatibility
+
+- Go will try to infer the passed in type (value or pointer) regardless of
+  what the method is specifying as a type. It will automatically deference or
+  add the address-of operator.
+
+- The ONLY exception, a concrete value which is an R-value (the right hand
+  side of a declaration) can NOT be used to call a method with a pointer receiver.
+  All other combos will work [value receiver, value method call], [value receiver,
+  pointer method call], [pointer receiver, pointer method call]
+
+- As best practice, if one method of a type needs to take a pointer receiver,
+  then ALL of its methods should take pointers!!! (though there are exceptions)
+
+### method values
+
+- a method can be stored to be used later. this will capture the receiver in a closure
+
+```
+func (p Person) Do(word string) string {
+        return something using p.Name and input word
+    }
+
+func main {
+        p := Person{Name: "Kai"}
+        DoLater = p.Do
+
+        // if you use it later, you have access to person p from within that DoLater
+    }
+```
+
+- when using this technique, it's important to note if the method takes in a value
+  or a pointer.
+- if it takes a value, the closure will be based on the author time of the DoLater call
+- if it's a pointer, any re-assignment of p Person, even after the author time of the DoLater
+  call will CHANGE the closure to the newer assignment
 
 ## Struct composition and promotion
 
@@ -584,6 +644,7 @@ Writer
 - `embedded` structs are PROMOTED to the level of the inner struct
 
 ex.
+
 ```
 
 type Dog struct {
@@ -604,16 +665,17 @@ dwff.Age // this is the way. Only ONE dot notation necessary
 dwff.Dog.Age // NO!
 
 ```
+
 - exception to above is if you had a function that took in a Dog type specifically,
-you can pass as an arg DogWithFavoriteFood.Dog
+  you can pass as an arg DogWithFavoriteFood.Dog
 
 - methods also get promoted! In the example above, any method on `Dog` can
-also be called with `DogWithFavoriteFood`. This only happens if DogWithFavoriteFood
-does NOT have the same method on itself.
-
+  also be called with `DogWithFavoriteFood`. This only happens if DogWithFavoriteFood
+  does NOT have the same method on itself.
 
 - often packages will lowercase struct fields that they want `encapsulated` and hidden,
-and simply make the method names Upper case to export it
+  and simply make the method names Upper case to export it
+
 ## packages and exporting
 
 - go imports packages from libraries and other files
@@ -646,5 +708,7 @@ fmt.Printf("hello there, %v", name)
 %d - type coercion of int -> string `fmt.Printf("You're %d years old", age)`
 %f - float -> string. option to set decimal place `fmt.Printf("Your test average is %.2f", gpa)` - 3.80
 %q - puts double quotes around string
+
+```
 
 ```
