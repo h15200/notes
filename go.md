@@ -577,6 +577,43 @@ Writer
 - a method may take a `pointer` or `value` receiver, but not both
 - as a rule you need a pointer receiver for methods that mutate the type
 
+
+## Struct composition and promotion
+
+- a struct can have another struct as a field, called `embedded stuct`
+- `embedded` structs are PROMOTED to the level of the inner struct
+
+ex.
+```
+
+type Dog struct {
+Age int
+Color string
+}
+
+type DogWithFavoriteFood {
+Dog
+FavoriteFood string
+}
+
+dwff := DogWithFavoriteFood{Dog{age 2, "black"}, kale}
+// note that in this declaration, you have to declare a Dog{} literal
+
+// to call the embedded struct, use the embedded fields immediately!
+dwff.Age // this is the way. Only ONE dot notation necessary
+dwff.Dog.Age // NO!
+
+```
+- exception to above is if you had a function that took in a Dog type specifically,
+you can pass as an arg DogWithFavoriteFood.Dog
+
+- methods also get promoted! In the example above, any method on `Dog` can
+also be called with `DogWithFavoriteFood`. This only happens if DogWithFavoriteFood
+does NOT have the same method on itself.
+
+
+- often packages will lowercase struct fields that they want `encapsulated` and hidden,
+and simply make the method names Upper case to export it
 ## packages and exporting
 
 - go imports packages from libraries and other files
