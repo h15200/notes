@@ -682,26 +682,7 @@ dwff.Dog.Age // NO!
 - when declaring a package, a name is exported ONLY if it begins with a capital letter
 - True also for making structs that you want to use inside another package to print
 
-### format package
-
-import "fmt"
-
-fmt.Println() - prints every word with a space and every instance with a new line
-fmt.Println("how", "are", "you") -> "How are you"
-
-fmt.Print() - no spaces, no line breaks
-
-fmt.Printf() - takes in a string and variable(s). the variable will replace the `verbs`
-
-```
-
-name := "Patti"
-
-fmt.Printf("hello there, %v", name)
-
-```
-
-#### fmt.Printf verb types
+### fmt.Printf verb types
 
 %v - the actual value of variable turned into a string
 %T - TYPE of value ex. num, string, float
@@ -709,6 +690,50 @@ fmt.Printf("hello there, %v", name)
 %f - float -> string. option to set decimal place `fmt.Printf("Your test average is %.2f", gpa)` - 3.80
 %q - puts double quotes around string
 
-```
+## concurrency
 
-```
+- parts of the program may execute independently in some non-deterministic (possibly partial) order
+- you can still have concurrency with a single-core processor. you're just going
+  back and forth between programs during idle time. ex do stuff while you wait
+  for a server response
+- `parallelism` can only happen on a multi-core processor. Parallelism makes
+  programs faster, but concurrency does NOT!
+
+- because concurrency has built in non-deterministic ordering, there will
+  always be race conditions when dealing with shared data. possible solutions include:
+
+  - not sharing anything (safe, but inconvenient)
+  - make the shared thing read-only (slightly more convenient)
+  - allow only one writer to the shared thing at a time (mutex)
+  - make certain operations sequential (transactions. makes program safe but slower)
+
+- in `go`, we use multiple cores for parallelism AND concurrency
+- solving concurrency (race condition) issues is done with `channels` and `go routines`
+
+### Channels
+
+- a go data type
+- a channel is a one-way communications pipe like the unix `|`
+- things go in one end and come out the other in the SAME order
+- channels can be closed, in which things stop coming out
+- send (write) always happens before a receive (read)
+- a way to transfer ownership of data. If only one routine at a time is writing
+  a specific data, there will be no race conditions
+- multiple readers & writers can share it safely
+
+- channels offer a way to schedule things by communicating sequential processes
+- if there are multiple cores, this can be done in parallel
+
+- when passing a `chan` to a function input, you can specify if it's a
+  `sender` (write operation) or a `receiver` (read operation).
+  - (ch chan<- int) is a write-end channel
+  - (ch <-chan) is a read-end channel
+
+### goroutine
+
+- a play on words based on `co-routine`
+- a `go routine` is NOT a `thread`. The thread organization happens under
+  the hood by the language itself, not the user
+- an orphaned go routine is a common issue. Make sure goroutines dont get
+  blocked by mistake
+- if you READ from a channel more than you WRITE, it will block the program
