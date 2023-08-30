@@ -737,3 +737,43 @@ dwff.Dog.Age // NO!
 - an orphaned go routine is a common issue. Make sure goroutines dont get
   blocked by mistake
 - if you READ from a channel more than you WRITE, it will block the program
+
+### select
+
+- a control structure that works on channels
+- allows multiplexing to listen to one or more channels
+- allows any "ready" alternative to proceed among
+  - a channel we can write to
+  - a challen we can read from
+  - a default action that's always ready
+- will often be inside a `for loop`
+
+- often will be used with time.After and time.Ticker for `polling`
+
+```
+func main() {
+	const tickRate = 2 * time.Second
+
+	stopper := time.After(5 * tickRate) // a channel where data is sent after 5 seconds
+	ticker := time.NewTicker(tickRate)  //  a channel where data is sent every tick
+
+	log.Println("start")
+outer:
+	for {
+		select {
+		case <-ticker.C:
+			log.Println("tick")
+		case <-stopper:
+			break outer
+		}
+        default:
+           // if no channel is ready, it will fall here
+           // never use a default inside a loop as it will busy wait and waste CPU
+           // often used to DROP a service if some channel is overwhelmed
+	}
+
+	log.Println("finish")
+    // will tick until stopper channel has data
+}
+
+```
