@@ -712,6 +712,11 @@ dwff.Dog.Age // NO!
 
 ### Channels
 
+- 2 main usages:
+
+  - communications tool
+  - synchronization tool
+
 - a go data type
 - a channel is a one-way communications pipe like the unix `|`
 - things go in one end and come out the other in the SAME order
@@ -726,8 +731,50 @@ dwff.Dog.Age // NO!
 
 - when passing a `chan` to a function input, you can specify if it's a
   `sender` (write operation) or a `receiver` (read operation).
+
   - (ch chan<- int) is a write-end channel
   - (ch <-chan) is a read-end channel
+
+- A channel is ready to write if:
+
+  - it has buffer space or
+  - at least one reader is ready to read
+
+- A channel is ready to read if:
+
+  - it has unread data in its buffer, or
+  - at least one writer is ready to write, or
+  - it is closed (yes, you can ready from a closed channel!)
+    - in this case, if it was a buffered channel, the receiver will continue
+      reading values from a closed channel until you reach the end, where you'll
+      get the zero value and !ok
+
+- when closing a channel, there is still a zero value of that channel type inside,
+  so receiving from a closed `chan int` will yield `0`. the second `ok` val will be false in this case
+
+- what's the point of having a nil channel?
+
+  - a nil channel always blocks!
+  - when trying to close goroutines, you can only close once
+  - however, you can suspend a channel by changing to `nil`, then unsuspend later
+  - usually safer to just close a channel once it's done
+  - as an edge case: all nil channels are ignored in `select` blocks, making `nil` a great way
+    to PAUSE a channel process to resume later. Closing will be permanent
+
+- Unbuffered vs buffered
+  - function wise, an unbuffered channel is a synchronization tool and
+    a buffered channel is a communications tool which requires no rendezvous
+  - an unbuffered channel has more back and forths and will take more energy, but
+    don't buffer until it's needed! Buffering makes it harder to see race conditions and deadlocks
+
+#### counting semaphores
+
+- limits work in progress once it's "full"
+- once full, one unit of work must leave for another to enter like a queue in a store up to capacity
+- this is modelled with a buffered channel:
+  - attempt to send before starting work at an interval
+  - if blocked (buffer is full), nothing happens
+  - receive when the work is done and the next worker will start by sending
 
 ### goroutine
 
@@ -777,3 +824,19 @@ outer:
 }
 
 ```
+
+## Context package
+
+- used to cancel requests and carry data such as logId
+- can be used explicitly (if this happens, cancel)
+- more commonly, implicit cancellation based on a timeout or deadline
+- offers two controls:
+  - a channel that closes when the cancellation occurs
+  - an error that's readable once the channel closes. error val tells if
+    req was cancelled or timed out
+- is an immutable tree structure which is goroutine-safe, as changes to a context
+  does not influcence its ancestors
+
+  - cancellation applies to the current context and its `subtree` but not its ancestors
+
+- use private context key instead of some string to avoid key collisions
