@@ -710,6 +710,12 @@ dwff.Dog.Age // NO!
 - in `go`, we use multiple cores for parallelism AND concurrency
 - solving concurrency (race condition) issues is done with `channels` and `go routines`
 
+- in `go`, goroutines, channels, and wait groups abstract a lot of concurent
+  and parallel programming, but traditional synchronization tools like `mutex` are
+  availble in package `sync` and `sync atomic`
+  - a `mutex` is better than using a semaphore counter of cap 1 with a channel
+  - use a `R(ead)W(rite)Mutex` to optimize for reading
+
 ### Channels
 
 - 2 main usages:
@@ -752,91 +758,4 @@ dwff.Dog.Age // NO!
 - when closing a channel, there is still a zero value of that channel type inside,
   so receiving from a closed `chan int` will yield `0`. the second `ok` val will be false in this case
 
-- what's the point of having a nil channel?
-
-  - a nil channel always blocks!
-  - when trying to close goroutines, you can only close once
-  - however, you can suspend a channel by changing to `nil`, then unsuspend later
-  - usually safer to just close a channel once it's done
-  - as an edge case: all nil channels are ignored in `select` blocks, making `nil` a great way
-    to PAUSE a channel process to resume later. Closing will be permanent
-
-- Unbuffered vs buffered
-  - function wise, an unbuffered channel is a synchronization tool and
-    a buffered channel is a communications tool which requires no rendezvous
-  - an unbuffered channel has more back and forths and will take more energy, but
-    don't buffer until it's needed! Buffering makes it harder to see race conditions and deadlocks
-
-#### counting semaphores
-
-- limits work in progress once it's "full"
-- once full, one unit of work must leave for another to enter like a queue in a store up to capacity
-- this is modelled with a buffered channel:
-  - attempt to send before starting work at an interval
-  - if blocked (buffer is full), nothing happens
-  - receive when the work is done and the next worker will start by sending
-
-### goroutine
-
-- a play on words based on `co-routine`
-- a `go routine` is NOT a `thread`. The thread organization happens under
-  the hood by the language itself, not the user
-- an orphaned go routine is a common issue. Make sure goroutines dont get
-  blocked by mistake
-- if you READ from a channel more than you WRITE, it will block the program
-
-### select
-
-- a control structure that works on channels
-- allows multiplexing to listen to one or more channels
-- allows any "ready" alternative to proceed among
-  - a channel we can write to
-  - a challen we can read from
-  - a default action that's always ready
-- will often be inside a `for loop`
-
-- often will be used with time.After and time.Ticker for `polling`
-
-```
-func main() {
-	const tickRate = 2 * time.Second
-
-	stopper := time.After(5 * tickRate) // a channel where data is sent after 5 seconds
-	ticker := time.NewTicker(tickRate)  //  a channel where data is sent every tick
-
-	log.Println("start")
-outer:
-	for {
-		select {
-		case <-ticker.C:
-			log.Println("tick")
-		case <-stopper:
-			break outer
-		}
-        default:
-           // if no channel is ready, it will fall here
-           // never use a default inside a loop as it will busy wait and waste CPU
-           // often used to DROP a service if some channel is overwhelmed
-	}
-
-	log.Println("finish")
-    // will tick until stopper channel has data
-}
-
-```
-
-## Context package
-
-- used to cancel requests and carry data such as logId
-- can be used explicitly (if this happens, cancel)
-- more commonly, implicit cancellation based on a timeout or deadline
-- offers two controls:
-  - a channel that closes when the cancellation occurs
-  - an error that's readable once the channel closes. error val tells if
-    req was cancelled or timed out
-- is an immutable tree structure which is goroutine-safe, as changes to a context
-  does not influcence its ancestors
-
-  - cancellation applies to the current context and its `subtree` but not its ancestors
-
-- use private context key instead of some string to avoid key collisions
+- what's the poi
