@@ -67,6 +67,8 @@ items_3 := [][]byte{}
 - int int8 (-125 ish to +125) int16 int32 int64
 - uint uint8 (0 to 255) uint16 uint32 uint64 uintptr
   - best practice is to just use default `int` or `uint` with no number to let Go figure out if your machine is using 32-bit or 64-bit architecture
+  - uint may be used in low level protocol tcp/ip stuff, but it's somewhat rare
+- don't type a bigger into to a smaller one. Always bring the smaller one up to avoid weird bit wise behavior
 - byte // alias for uint8 - same as `utf-8`
   - when sending data over the network, data is usually converted into []byte
 - rune // alias for int32
@@ -229,16 +231,45 @@ convention to capitalize const but only inside functions. Otherwise, it will sig
 
 ### enumerated consts and enumerated expressions with iota
 
+- go doesn't have `enums` but `iota` is used for the same mechanism
+- use a `const` block and set the first item as iota, which starts at `0` by default
+
 ```
 
 const (
-\_ = iota
-blueCar
-greeCar
-redCar
+_ = iota
+blueCar // this is 1
+greeCar // this is 2
+redCar // 3
 )
 // iota starts at 0, then increments automatically
 
+```
+
+- often used with bitwise operators
+
+```
+Flagup Flags = 1 << iota // iota is 1
+FlagBroadcast   // 2
+FlagLoopback         // 4
+FlagPointToPoint       // 8
+FlagMulticast     // 16
+
+// makes it easy to combine Flagup | FlagLoopback with bits
+
+```
+
+- possible to ignore values with underscore
+
+```
+const (
+_            = iota // ignore 0
+KiB ByteSize = 1 << (10 * iota) // sets the pattern starting here at iota = 1
+GiB
+TiB
+PiB
+EiB
+)
 ```
 
 ## scoping
@@ -374,6 +405,20 @@ fmt.Println("non defer a", a)
 
 ```
 
+### multiple unknown arguments
+
+- the `...` operator AFTER the arg but BEFORE the type, it's an unknown amount
+- only the LAST parameter in the list can be variable
+
+```
+
+func do(name string, nums ...int) int {
+
+   // nums is a slice of ints
+
+}
+```
+
 #### multiple defer - stack
 
 defer func returns are stored in a stack (last in, first out) so if there are multiple defer funcs, the LAST one in the code will execute first (in reverse order of appearance of `defer`)
@@ -445,6 +490,23 @@ fmt.Println("counting")
   is to limit the capacity when you first slice from an array. `s := someArray[2:4:2]`
   // means slice index 2 to 4, and keep the capacity to just those two!
   // by doing that, slicing that new slice out of bounds will fail properly
+
+#### Unpacking a slice
+
+- use `...` AFTER the slice to unpack
+- `s:= []int{1,2,3,4}   someFunc(s...)`
+
+```
+s := []string{"a", "b", "c"}
+s = append(s, s) // does not work because you can't add a slice as a string (in this case)
+s = append(s, s...) // now s is {"a", "b", "c", "a", "b", "c"}
+
+// used often in splicing a slice
+
+s := []int{1,2,2,3,4,5}
+s = append(s[:2], s[3:]...) // the first param is an actual slice, but the second param are multiple ints -> {1,2,3,4,5}
+
+```
 
 ### maps
 
@@ -758,4 +820,195 @@ dwff.Dog.Age // NO!
 - when closing a channel, there is still a zero value of that channel type inside,
   so receiving from a closed `chan int` will yield `0`. the second `ok` val will be false in this case
 
-- what's the poi
+- a nil channel can be reverted back unlike a closed channel. Can be used to block
+  a channel until a later time
+
+### wait groups
+
+- a wait group is used to wait until all go routines finish
+- the flow is Add to wait group, do a go routine, then call Done, then the
+  execution will pick up from after Wait()
+- always call wg.Add(1) BEFORE a goroutine starts or a wg.Wait() is called!
+
+### concurrency gotchas
+
+1. race conditions where unprotected read & writes overlap
+
+   - can be detected with the `-race` arg after `go run`
+   - there is some data that is written to and two goroutines can do it at the same time
+   - can be fixed with a mutex or a channel
+   - often happens with web server logic since go http library uses concurrency
+     and paralellism (with multi core machines0)
+
+   ```
+   // example of race condition
+
+   var someInt = 0
+   func handler(w http.ResponseWriter, req *http.Request) {
+       // for every request, increment
+       someInt++  // this is UNSAFE because a server may take requests at
+       // the same time in parallel. int will probably be LOWER than
+       // total number of requests
+
+       }
+   ```
+
+2. deadlocks when no goroutine can make progress
+
+   - goroutines are blocked on empty channels
+   - goroutines are blocked waiting on a mutext that never unlocks
+   - goroutines are prevented from running
+   - some deadlocks will be detected automatically, but not all
+   - often happens in unbuffered channels with no actions or forgetting
+     to unlock a mutex
+
+   ```
+   // deadlock ex 1
+
+   func main() {
+           ch := make(chan bool)
+
+           go func(ok bool) {
+               // this never runs, so nothing is sent to ch
+               if ok {
+                       ch <- ok
+                   }
+
+
+               }(false)
+       }
+
+    // this will never run since there is no data on the channel
+       <-ch   // since there is no sending, there is no receiving
+   ```
+
+```
+// deadlock ex 2
+
+func main() {
+var m sync.Mutex
+
+      done := make(chan bool)
+
+      go func() {
+                m.Lock()
+                // forgets to unlock here
+          }()
+
+      go func() {
+          time.Sleep(1)
+
+          m.Lock()
+          defer m.Unlock()
+
+          done <- true
+          }()
+
+        <-done // this will never run since the first func does not unlock
+
+```
+
+3. goroutine leaks
+
+- hangs on an empty or locked channel
+- not a deadlock; other routines make progress
+- often found by looking at pprof output
+- typically a leaking socket will cause this
+
+```
+// ex of goroutine leak
+func finishReq(timeout time.Duration) *obj {
+        ch := make(chan obj)
+
+        go func() {
+            ... // some kind of work that takes a long time
+                ch <- fn()
+            }()
+
+        select {
+                case res := <-ch:
+                  return res
+                case <-time.After(timeout):
+                  return nil
+            }
+            // since the channel is never written to, this is a bug
+            // the solution is to add a buffer to the channel. It will still
+            // not reach case res := <-ch, but the go func will still run since
+            it's able to write to the buffer, even if that info is never used
+    }
+```
+
+4. channel errors
+
+- trying to send on a closed channel
+- trying to send or receive on a nil channel
+- closing a nil channel
+- attempting to close a channel twice
+
+5. other errors
+
+- goroutine closure capture over a reference that mutates
+
+```
+// BAD example
+for i := 0; i < 10; i++ {
+        go func() {
+            fmt.Println(i) // i uses the same pointer on every loop, so this is a mutating value
+            // the goroutine is closing over i, which keeps changing. not good
+            // in this example, all goroutines will print the LAST idx of the loop
+
+
+            }()
+    }
+
+// GOOD example
+for j := 0; < 10 ; j++ {
+        go func(j int) {
+            // stuff with j is ok here since it's the value at that moment
+
+            }(j)
+    }
+
+// also you can do localI = i // closure capture
+
+```
+
+- misuse of Mutext
+
+  - deadlock ex. 3 the DINING PHILOSPHERS problem. There are 2 philosphers, one knife, and one fork if one grabs a fork and looks for a knife, but the other grabbed a knife and is looking for a fork, neither eats
+
+  ```// highlights drawbacks of mutex. Ordering matters func main() { var m1, m2 sync>Mutex done := make(chan bool) go func() { m1.Lock() defer m1.Unlock() time.Sleep(1)
+    m2.Lock()
+    defer m2.Unlock()
+
+  done <- true
+  }()
+
+  go func() {
+  m2.Lock()
+  defer m2.Unlock()
+  time.Sleep(1)
+  m1.Lock()
+  defer m1.Unlock()
+
+            done <- true
+
+  }()
+
+  <-done
+  <-done
+
+  }
+
+  // SOLUTION - when using multiple mutex, always use them in the SAME ORDER!
+
+  ```
+
+- misuse of WaitGroup
+  - always call wg.Add() BEFORE starting any go routines or calling wg.Wait()
+- misuse of select: possibly the most difficult one to debug
+  1. `default` is ALWAYS active
+  2. a `nil` channel is always ignored
+  3. a full channel for send is always skipped over, and an empty channel for read is skipped over
+  4. a "done" (closed) channel is just another channel
+  5. available channels are selected at RANDOM, and the ordering of the code doesn't matter!
