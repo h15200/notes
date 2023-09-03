@@ -1032,3 +1032,41 @@ for j := 0; < 10 ; j++ {
   - we want the reason of failure as close as possible in time and space to the code
   - in a distributed system, crash failures are the safest type to handle
     - better to fail than to be a zombie and corrupt the DB or crasy other systems
+
+## reflection (as in self-reflection)
+
+- `interface{}` has no methods, so it doesn't restrict any behavior. `any` type
+- an empty interface is a generic type, but sometimes we need a "real" type
+- solution is to use `type assertion` or `downcast` with the syntax `value.(T)`
+
+```
+// when given a deep struct that was Unmarshalled from an unknown json
+
+switch r.Item {
+    case "itemTypeOne" :
+      inner, ok := raw["itemTypeOne"].(string); ok {
+              // if the value is string, do something
+          }
+
+    case "itemTypeTwo" :
+       // etc.
+
+
+    }
+
+```
+
+- the `reflect` package can be used to compare things you can't compare like slices
+
+### switching on type
+
+- a switch statement can be used to look at types. It can be a concrete type OR an interface!
+
+```
+switch a := unknownThing.(type) { // note that "type" is a keyword here
+        case string: // the cases do not need quotes, just type names
+           // stuff using a
+        case Stringer:
+          // stuff using a.String()
+    }
+```
