@@ -1012,3 +1012,23 @@ for j := 0; < 10 ; j++ {
   3. a full channel for send is always skipped over, and an empty channel for read is skipped over
   4. a "done" (closed) channel is just another channel
   5. available channels are selected at RANDOM, and the ordering of the code doesn't matter!
+
+## error handling
+
+- an error in Go is an `interface`
+- good practice to wrap errors to show the stack. `fmt.Errorf with %w` will do the trick
+
+- failing vs exception handling (aka graceful degradation)
+  - exception handling introduces invisible control paths and is harder to analyze
+- in Go, exception handling is not supported OFFICIALLY
+- Practically, it does in the form of `panic & recover`
+  - `panic` in a function will still cause deferred function calls to run after
+  - if you have `recover` logic in a defer statement, you can unwind and keep the program going
+- generally, `panic` and `recover` are NOT recommended in Go.
+
+- when your program has a logic bug, "fail hard, fail fast!". exit the program, don't abuse `recover`
+  - logs are often noisy
+  - better to immediately crash a server than to log
+  - we want the reason of failure as close as possible in time and space to the code
+  - in a distributed system, crash failures are the safest type to handle
+    - better to fail than to be a zombie and corrupt the DB or crasy other systems
