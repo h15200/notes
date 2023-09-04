@@ -1071,9 +1071,28 @@ switch a := unknownThing.(type) { // note that "type" is a keyword here
     }
 ```
 
-### mechanical sympathy in go
+## mechanical sympathy in go
 
 - a slice or struct with values is more performant than a linked list or other
   data types that use pointers because they use continguous, sequential blocks of memory
 - in the same way, chaining functions/methods is chaining pointers. Don't make
   unnecessary methods that call other methods.
+
+## benchmarking
+
+- Go has standard tools for benchmarking
+  - you simply run benchmarks with `go test -bench=. <filePath>` (not go run -bench)
+  - benchmarks are done in test files ending with `_test.go`
+- the actual benchmark function must start with Benchmark
+  - often used with a for loop to run N times
+
+```
+func BenchmarkSomeFunc(b *testing.B) {
+        for n := 0; n < b.N; n++ {
+                SomeFunc(20, "hi") // test this b.N times
+            }
+    }
+```
+
+- the output will say the number of iterations it's possible to run in 1 second!
+- b.N will keep increasing until it can no longer compute in 1 sec
