@@ -31,3 +31,15 @@
 
 - contains all components
 - possibly to replace/swap out components like memory, secondary storage, CPU
+
+## caching
+
+- Generally, "Computational Cost" is MEMORY ACCESS COST, which is why caching is important!
+- each computer core has its own caching (l1 and l2 cache) that is contained within a core
+- Each level of cache adds a significant "cost" in caching. L3 goes outside the core and
+  is a shared cache between all available cores
+- The next level is the DRAM (main memory), then SSD, then the Network
+
+- caching is effective when we access memory in predictable patterns in SEQUENCE! so
+  a block of consecutive memory is more efficient then random pointers. A js array
+  or go slice is less expensive than a linked list.

@@ -97,3 +97,23 @@
 
 - weakly means you can combine types "hello" + 3 = "hello3". 3 is a num but is coerced into a string
 - JS is weakly typed and Python is strongly typed. Both are dynamically typed
+
+## mechanical sympathy
+
+- the more you know about computers, the more you can get out of them
+- "The most amazing ahievement of the computer software industry is its continuing cancellation of the
+  steady and stagggering gains made by the computer hardware industry" - Henry Petroski
+- optimizing top-down:
+  - Architecture : latency, cost of communication
+  - Design : algos, concurrency, layers
+  - Implementation: programming language, memory use
+- Interpreted languages may cost 10x more to operate due to their inefficiency
+
+- generally, computer chips (CPU) have not gotten that much faster in recent years, but
+  number of logical cores have increased
+- CPU is faster than memory (DRAM) in general
+- software gets slower more quickly (inefficiencies, bloat, use of interpreted languages) than CPUs get faster!!
+
+  - software development costs exceed hardware costs
+
+- `Golang` leveraging multiple cores is an example of working WITH the machine

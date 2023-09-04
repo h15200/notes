@@ -1070,3 +1070,10 @@ switch a := unknownThing.(type) { // note that "type" is a keyword here
           // stuff using a.String()
     }
 ```
+
+### mechanical sympathy in go
+
+- a slice or struct with values is more performant than a linked list or other
+  data types that use pointers because they use continguous, sequential blocks of memory
+- in the same way, chaining functions/methods is chaining pointers. Don't make
+  unnecessary methods that call other methods.
