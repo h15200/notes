@@ -1096,3 +1096,41 @@ func BenchmarkSomeFunc(b *testing.B) {
 
 - the output will say the number of iterations it's possible to run in 1 second!
 - b.N will keep increasing until it can no longer compute in 1 sec
+
+## profiling
+
+- using a tool like prometheus can detect goroutine leaks and socket leaks, threads, etc..
+- open FDs (file descriptors) that keep going up every time you run a server
+  is an indication of a leaking socket
+
+## static analysis
+
+- "static" means the program isn't running, ie not during compile time
+- static analysis tools including editor linters, auto complete etc..
+  - format the code
+  - fix the imports
+  - look for other issues
+- this should all be done BEFORE unit testing or even compiling
+- `gofmt`, `golint` are popular choices
+
+### other tools to pick up errors not recognized by go compiler
+
+- `go vet` on the cli will find some issues the compiler won't
+- `goconst` finds literals that should be declared with const
+  `gosec` security issues
+  `ineffasign` finds ineffective assignments
+  `gocyclo` reports high cyclomatic complexity in functions
+  `deadcode`, `unused`, `varcheck` will find unused code
+  `unconvert` finds redundant type conversions
+
+- all of these can be run using `golangci-lint` but many of these are covered by IDE tooling
+
+## testing
+
+- package `testing` does both testing and benchmarking
+- unit tests are completely self contained.
+  - simplest version is testing one function
+  - table-driven test: tests a bunch of inputs on the same function
+  - table-driven subtests: using `t.Run()` for more complex functions using methods and test cases.
+    useful when the setup is similar across subtests
+- integration testing communicate with other systems like services
