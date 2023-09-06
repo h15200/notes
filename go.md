@@ -578,6 +578,48 @@ Words []string `json:"words,omitempty"` // in json, property will be lowercase "
   to run `go get <package name>`. This will create a go.sum file. You'll
   then need to sync your current go.mod will with `go mod tidy`
 
+- `go.mod` handles direct dependency requirements (what you directly import)
+- `go.sum` handles all transitive (indirect) dependencies
+- they must both be commited to your repo for your code to work
+
+## How to build and structure Go programs
+
+- `go build` makes a binary
+- `go install` makes one and copies it to $GOPATH/bin
+
+- if you are making a pure Go program with no dependencies (like libc which is part of your os), you
+  can put the program in an empty, from-scratch container and keep it very small
+
+  - also possible to cross-compile to other os using:
+  - $GOARCH dfines the architecture (amd64, arm64)
+  - $GOOS os (linux, darwin,)
+  - $GOARM for the ARM chip version
+
+### PROJECT LAYOUT!
+
+- At the root level:
+
+- README (document everything. directory structure, how to build, how to containerize, test, etc..)
+- Makefile (often used for versioning of main program code)
+- build/ (if necessary)
+  - Dockerfile
+- cmd/ (utility programs)
+  - programs
+- deploy/ (if necessary)
+  - K8s files
+- go.mod
+- go.sum
+- pkg/ (this depends on number. if only 1 or 2 packages, just put them on the top level as directories)
+  - libraries
+- scripts/
+  - misc (optional scripts required as part of the build process)
+- test/ (if separate integration tests exist)
+  - integration tests (regular unit tests can live in the same dir as other packages)
+- vendor/ (if necessary)
+  - modules
+
+
+
 ## pointers
 
 - some objects can't be copied safely (mutex, wait groups) and must be used with a pointer
@@ -1134,3 +1176,10 @@ func BenchmarkSomeFunc(b *testing.B) {
   - table-driven subtests: using `t.Run()` for more complex functions using methods and test cases.
     useful when the setup is similar across subtests
 - integration testing communicate with other systems like services
+- testing should TRY to break things and all devs should be responsible for adding/editing
+  unit tests based on code changes
+- aim for 75-80% coverage. going for 100% will cause you to do weird stuff and give
+  false sense of security
+- seeing test coverage:
+  - `go test <file> -cover` for a percentage
+  - `go test <file> -coverprofile=c.out -covermode=count`, then `go tool cover -html=c.out` for graphical heatmap
