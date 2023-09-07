@@ -618,8 +618,6 @@ Words []string `json:"words,omitempty"` // in json, property will be lowercase "
 - vendor/ (if necessary)
   - modules
 
-
-
 ## pointers
 
 - some objects can't be copied safely (mutex, wait groups) and must be used with a pointer
@@ -1183,3 +1181,101 @@ func BenchmarkSomeFunc(b *testing.B) {
 - seeing test coverage:
   - `go test <file> -cover` for a percentage
   - `go test <file> -coverprofile=c.out -covermode=count`, then `go tool cover -html=c.out` for graphical heatmap
+
+## Generics in Go
+
+- `generics` is shorthand for parametric polymorphism
+- we have a `type parameter` on a type or function
+
+```
+type MyType[T any] struct {
+        v T
+        n int
+    }
+```
+
+- when should we use generics? To replace DYNAMIC typing with static typing
+
+  - basically, it should be replacing empty interfaces that would require to
+    down cast it to every possible type
+
+- don't be clever. Keep it as simple as possible
+
+- syntax: uses square brackets, not <>
+
+```
+type Stack[T any] []T
+
+func (s *Stack[T]) Push(x T) {
+	*s = append(*s, x)
+}
+
+func Map[F, T any](s []F, f func(F) T) []T {
+	// Takes in a slice of any F, and a callback (which takes in type F and returns T) and return a new slice
+	r := make([]T, len(s))
+
+	for i, v := range s {
+		r[i] = f(v)
+	}
+
+	return r
+}
+
+func main() {
+	// instantiate a generic type with []
+	s := Stack[int]{1, 2, 3}
+	// you can also declare with var this way
+	// var s Stack[int] = []int{1, 2, 3}
+
+	s.Push(4)
+	fmt.Println("s is ", s) // 1,2,3,4
+
+	// you don't need [] to instantiate the type because they are both
+    used inside the input parameter in the Map function declaration
+
+	s2 := Map(s, func(i int) string {
+		return strconv.Itoa(i)
+	})
+
+	fmt.Printf("m is %#v\n", s2)
+
+}
+
+```
+
+- it's also possible to limit the surface area to avoid using any by creating custom types
+
+```
+package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+type StringableVector[T fmt.Stringer] []T // T must have a String() method
+
+type CustomString string
+
+func (s StringableVector[T]) String() string {
+
+	var sb strings.Builder
+
+	for _, v := range s {
+		sb.WriteString(v.String() + "\n")
+	}
+	return sb.String()
+}
+
+func (cs CustomString) String() string {
+	return "Weee " + string(cs)
+
+}
+
+func main() {
+
+	sv1 := StringableVector[CustomString]{"hello", "there"}
+	fmt.Println(sv1.String())
+}
+
+```
