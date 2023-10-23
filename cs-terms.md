@@ -141,6 +141,7 @@
 
 ## streaming
 
+- sending a finite OR infinite set of data via JSON, raw bytes, binaries etc..
 - unlike buffering (or traditional chunking) where you wait for the "whole piece"
   of the data to arrive before processing, data flows in and the recipient
   starts the work right away
