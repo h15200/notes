@@ -37,7 +37,9 @@ WARNING! A database instance that is part of your environment is tied to the lif
 
 ## S3
 
-Data is stored as objects in buckets that can be accessed using a key. Not a server
+- Data is stored as objects in buckets that can be accessed using a key. Not a server, so technically serverless
+- scales automatically
+
 
 ## RDS (relational database service), DynamoDB is for non-relational db
 
@@ -51,3 +53,47 @@ used for static file serving
 ## IAM
 
 Amazon's tool to control account level security. This allows you to control who can access what in your AWS account.
+
+## Route 53
+- dns 
+
+## Cloudfront
+- a CDN that's usually backed by S3
+
+## Shield
+- a WAF (Web application firewall) used to protect against DDoS (Distributed Denial of Service)
+
+## LBs
+
+- ELB (elastic Load Balancer) was used at L4 (network) and L7(application) previously,
+but now is named "Classic Load Balancer"
+
+- NLB (Network Load balancer) is the new and improved product at layer 4
+
+- ALB (Application Load balancer) is the new and improved product at layer 7
+
+- Nginx still has features that are not supported in ALB such as caching in the LB,
+supporting UDP and TCP so it is often useful to have an nginx proxy AFTER ALB
+
+## Elasticache
+
+- an in-memory k-v store like `Redis`
+- fast data stores are used to rate limit requests
+
+## Elastic Search
+
+- a way to search through logs and metrics quickly. 
+
+## VPC
+
+- Virtual Private Clouds provided high security
+- only subnets within the same VPC can communicate with each other
+- as an exception, a `NAT Gateway` (Network Address Translation) can be 
+opened from a service within a VPC to reach outside. This connection can 
+only be initiated from the secure, VPC side
+
+### VPC Peering, VPC Private Linking to connect to other cloud networks
+
+- VPC Peering is bi-directional. This is slightly
+more risk as both parties can send data
+- Private Linking is unidirectional and more secure but less flexible
