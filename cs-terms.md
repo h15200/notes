@@ -117,3 +117,17 @@
   - software development costs exceed hardware costs
 
 - `Golang` leveraging multiple cores is an example of working WITH the machine
+
+## buffer
+
+- a buffer is temporary storage used when transfering data from 2 devices,
+  or from 2 processes within the same machine
+
+- it allow decoupling of the send speed with the process speed. The sender
+  can send as quickly as possible -> store in buffer -> receiver reads from buffer
+
+- prevents data loss, and slow down of sender
+- uses extra memory and latency since there is an additional relay point
+
+- this concept expanded to distributed systems leads to message queues, which
+  allows for async processing by workers
