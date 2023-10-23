@@ -131,3 +131,20 @@
 
 - this concept expanded to distributed systems leads to message queues, which
   allows for async processing by workers
+
+### chunking
+
+- an http1.1 data transfer mechanism.
+- the sender sends a series of packets, and the recipient waits until the
+  last one is done
+- is a finite amount of data
+
+## streaming
+
+- unlike buffering (or traditional chunking) where you wait for the "whole piece"
+  of the data to arrive before processing, data flows in and the recipient
+  starts the work right away
+
+- usually used if the pieces of data exceed max buffer size
+
+- more memory efficient since there is no intermediary buffer
