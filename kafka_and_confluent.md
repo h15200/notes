@@ -44,7 +44,7 @@
 
 - a distributed architecture where it can be run as a cluster on different machines.
 
-  - when a new cluster (computer) is added to the system, the logs are distributed evenly again (lke adding a new server)
+  - when a new cluster (computer) is added to the system, the logs are distributed evenly again (like adding a new server)
 
 - with this system, all you need to get data is to subscribe to the topic.
 
@@ -236,6 +236,12 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 - physical cluster is a traditional kafka cluster (non cloud)
 - logical cluster is the cloud native version of a kafka cluster that leverages cloud scaling
 
+- a `topic` is the name of the stream
+- a `kafka cluster` (the smallest unit of kafka) can be thought of as the producer or consumer server itself.
+- a `partition` is how how many clusters you want a topic to be on
+- zookeeper (before v3) or `kraft` is the leader election algo that keeps track of
+  all partitions/clusters within a topic
+
 ### Kafka data model Confluent Cloud org
 
 - a confluent cloud `organization` has 2 tiers
@@ -245,7 +251,7 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 
 ### resiliency
 
-- Apache `ZooKeeper` (key-value store) is used to manage kafka clusters
+- Apache `ZooKeeper` (key-value store) is used to manage kafka clusters (now kRaft as of v3)
 - typically run in a cluster of 3 or 5 servers, called an `ensemble`
 - uses `ZAB` consensus algorithm to achieve a quorum and elect leader
 - stores `ACLs` and `secrets`
@@ -317,3 +323,7 @@ Notice how all of them are using different accounts to keep them 100% isolated f
   2. Cluster Management and Operations
   3. Resiliency
   4. Monitoring
+
+#### Fan out
+
+- when a single topic gets read by multiple consumers
