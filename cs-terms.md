@@ -118,7 +118,7 @@
 
 - `Golang` leveraging multiple cores is an example of working WITH the machine
 
-## buffer
+## buffer - related to chunking, message queues
 
 - a buffer is temporary storage used when transfering data from 2 devices,
   or from 2 processes within the same machine
@@ -139,7 +139,13 @@
   last one is done
 - is a finite amount of data
 
-## streaming
+### message queue (rabbitMQ)
+
+- concept of decoupling producer and consumer for async operations
+- a message queue can be thought of as a type of buffer, an intermediary
+  entity that keeps all future "work"
+
+## streaming Kafka, red panda (different from concepts like buffers, chunking, mq)
 
 - sending a finite OR infinite set of data via JSON, raw bytes, binaries etc..
 - unlike buffering (or traditional chunking) where you wait for the "whole piece"
@@ -149,3 +155,4 @@
 - usually used if the pieces of data exceed max buffer size
 
 - more memory efficient since there is no intermediary buffer
+- great for processing vast amounts of data in real time
