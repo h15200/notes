@@ -236,11 +236,15 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 - physical cluster is a traditional kafka cluster (non cloud)
 - logical cluster is the cloud native version of a kafka cluster that leverages cloud scaling
 
-- a `topic` is the name of the stream
-- a `kafka cluster` (the smallest unit of kafka) can be thought of as the producer or consumer server itself.
-- a `partition` is how how many clusters you want a topic to be on
-- zookeeper (before v3) or `kraft` is the leader election algo that keeps track of
-  all partitions/clusters within a topic
+### Streams
+
+- stream == message == topic
+- within ONE stream:
+  - a `topic` is the name of the stream
+  - a `partition` can be thought of as substreams
+  - `producer/consumer` the author or reader of a stream
+  - zookeeper (before v3) or `kraft` is the leader election algo that keeps track of
+    all partitions/clusters within a topic
 
 ### Kafka data model Confluent Cloud org
 
