@@ -74,6 +74,23 @@
 - if a small system, may consist of classes
 - if a big system, will consist of other sub-systems
 
+## CPU
+
+- a clock cycle or clock speed refers to number of "work" that a cpu can do.
+- a CPU register computation takes a few nanoseconds, so it's in the 1/billionths (10 \* 9) per second
+
+## i/o
+
+- i/o operations are "wait" times when data is moved from memory, storage, network etc..
+- i/o can run in parallel with CPU computations
+
+### CPU-bound vs Memory-bound vs i/o-bound ops
+
+- CPU-bound operations and workload can be calculated by number of cores and
+  individual cpu clockspeed. Multiple cores == parallel work
+- memory bound ops are based on RAM
+- i/o bound ops are based on the idle time
+
 ## Routine
 
 - what is generally known as functions
