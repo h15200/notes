@@ -341,3 +341,7 @@ as bulk processing) and has more
 features than ksqlDB. 
     - Spark is also a stream/bulk processing app, but it is mostly for bulk
     processing, often metrics alongside Druid.
+
+- Flink is not a db, but the processing itself. You need to bring your own db and system
+- Flink does not work directly with streams, but "dynamic tables".
+    - every change is made to a changelog
