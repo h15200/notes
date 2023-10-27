@@ -331,3 +331,13 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 #### Fan out
 
 - when a single topic gets read by multiple consumers
+
+## Kafka vs Flink
+
+- kafka is mainly about the streaming itself, not processing in a streams
+    - still possible with ksqlDB, but it's a bit cumbersome
+- Flink specializes in persistent, reliable stream processing (as well
+as bulk processing) and has more
+features than ksqlDB. 
+    - Spark is also a stream/bulk processing app, but it is mostly for bulk
+    processing, often metrics alongside Druid.
