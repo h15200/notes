@@ -559,6 +559,12 @@ Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
 
 ### blob db vs distributed file system
 
+- Blob storage is the SAME as object store (S3), but they are different from K-V stores/db (Redis), also different from Block Storage (AWS EBS) and different from DFS (AWS EFS)
+
+  - Blob storage is useful for unstructured data (metadata, images)
+  - DFS is useful when you need a hierarchy (., ..) and a tree structure and dynamic sizing
+  - Block Storage is useful when the data is uniform since it divides each block into equal size
+
 - a blob store can be relational or non-relational key-value pair
   - if it's relational, it is ACID compliant.
   - use a blob store if the info is unstructured and sensitive
@@ -624,3 +630,10 @@ Update
 - some companies like uber will use a tool like `hailstorm` that randomly shuts down a microservice and logs what happens to find weaknesses
 
 - distributed systems can be so large and complex that it's possible to lose track of all service dependencies. Ex.. an owner of a microservice may not be completely clear on what other services it's relying on, and what other services it's being relied on
+
+## Metrics
+
+- Most companies have a metrics service for both current systems and later analysis
+- for later analysis, either a `Data Lake` (raw, unprocessed data) or a `data warehouse` (collection of formatted data) or both are used
+  by some `etl` (Extract, Transform Load. Usually to send to data warehouse) or `cdc` (change-data collect. maybe lake or wareshouse) pipeline.
+- common tools include `Prometheus`, `Apache Druid`, and `Apache Spark`

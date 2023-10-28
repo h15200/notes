@@ -332,16 +332,36 @@ Notice how all of them are using different accounts to keep them 100% isolated f
 
 - when a single topic gets read by multiple consumers
 
+## streaming concepts
+
+### ETL (extract, transform, load)
+
+- take data from sources, change the data, then dump them somewhere, often
+  a data warehouse (where historical data lives often for analysis)
+
+### CDC (Change-Data Capture)
+
+- the source data is monitored for any changes
+- when data is changed, that change is captured in a log
+
 ## Kafka vs Flink
 
 - kafka is mainly about the streaming itself, not processing in a streams
-    - still possible with ksqlDB, but it's a bit cumbersome
+  - still possible with ksqlDB, but it's a bit cumbersome
 - Flink specializes in persistent, reliable stream processing (as well
-as bulk processing) and has more
-features than ksqlDB. 
-    - Spark is also a stream/bulk processing app, but it is mostly for bulk
-    processing, often metrics alongside Druid.
+  as bulk processing) and has more
+  features than ksqlDB. - Spark is also a stream/bulk processing app, but it is mostly for bulk
+  processing, often metrics alongside Druid.
 
 - Flink is not a db, but the processing itself. You need to bring your own db and system
 - Flink does not work directly with streams, but "dynamic tables".
-    - every change is made to a changelog
+  - every change is made to a changelog
+
+## Apache Druid, Spark
+
+- Druid is used for metrics alongside Spark, which bulk processing
+
+## Apache JMeter
+
+- used for load testing (testing an app's capacity)
+- and stress testing (high load to servers to test APIS)

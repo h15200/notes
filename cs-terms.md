@@ -182,3 +182,12 @@
 
 - more memory efficient since there is no intermediary buffer (RAM)
 - great for processing vast amounts of data in real time
+
+## Languages
+
+- Compiled (faster since CPU just reads machine code)
+- Interpreted (easier to use, usually slower)
+- Java (faster than most interpreted) because it first compiles to byte-code, which
+  is an intermediary step. CPUs can't read byte code directly, but an interpreter
+  can like JVM (Java Virtual Machine) significantly faster than reading js or python.
+  JVM can also compile to any OS (idea of containerization)
