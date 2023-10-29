@@ -111,6 +111,22 @@ To see tables in the terminal, use `\d`
 
 See more inside MYSQL.md
 
+- Postgres also has support for json and jsonb (binary) semi-structured data, but
+  any schema changes will require migrations so as a nosql db, it is not as robust
+  or flexible as a "true" noSql like Mongo.
+
+  - generally, when an ACID compliant relational db adapts characteristics
+    of a noSql db like json, the main benefit is keeping ACID while having
+    noSql like properties. If the main purpose is to use unstructured data
+    and ACID compliance (strong consistency) is not a conern, it is better
+    to use a "true" noSql
+
+- It is possible to horizontally scale Postgres, but only by using 3rd party
+  tools. It was originally meant as a monolothic model, allowing for only
+  vertical scaling. In this way, something like Mongo which is meant for a
+  distributed system with built in replication, sharding, self-healing out
+  of the box.
+
 ## MongoDB
 
 a non-relational database that is common in the JS stack.

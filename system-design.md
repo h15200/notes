@@ -406,6 +406,16 @@ quad trees are trees that have 0 or 4 children used to do location searches used
   - For example, if the "likes" service that tracks the number of likes is the issue, probably ok to prioritize `availability` and keep allowing users continue
   - for something like a bank statement, that's not the case
 
+### Consistency models
+
+1. Strictly Consistent (locks all other threads during reads and writes). Distributed
+   systems are rarely strictly consistent
+2. Sequentially Consistent. Don't care about reads, but writes stall system and stays consistent.
+   Works well when there are more reads than writes
+3. FIFO (PRAM) Consistency - both reads and writes are not locked, ordering within one system
+   is good, but not other systems
+4. Eventual Consistency - no ordering. On write, update the cache eventually
+
 ### Peer-to-peer networks
 
 - used often in file distribution systems
