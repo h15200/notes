@@ -9,13 +9,24 @@ In dev, databases might be stored on the same machine but it is best in producti
 SQL = Relational DB
 NoSQL = Non relational
 
-## 3 Types of Storing Databases
+## Database types
 
-Tables - SQL
-Documents - NoSQL
-Key-Value
+- Tables - SQL
+- NoSql
+  - key-value db (uses a simple schema of k:v)
+  - document model is a subset of key-value, but allows for more
+    complex, nested data and a flexible schema
 
-Both Documents and Key-Value are classified as non relational, NoSQL.
+### History
+
+- in the 80s, many databases were tree structures, organized by hierarchy.
+  this proved difficult to represent m-t-m (many to many) relationships, which
+  lead to the popularity of relational dbs
+
+- for use cases that don't fit relational dbs (noSql), there are 2 main directions:
+  - document (object) dbs used for when data comes in self-contained documents and
+    relationships with one another are rare
+  - graph model where anything is potentially related to everything
 
 ## SQL & Tables
 
@@ -32,21 +43,33 @@ Rows are also known as `records`
 
 you cannot have a table INSIDE of a table but you can reference other tables through ids.
 
-## NoSQL & Collections
+## key-value db
+
+- A Key-Value store are stored WITHOUT nesting
+- `Redis` is a prime representative of a key-value system db.
+
+- The data does NOT persist if there is a power outage.
+- Sensitive or valuable data is not used in a key-value store.
+- many popular noSql dbs support both simple k-v as well as document models
+
+## Document db
+
+- technically, a subset of k-v databases
+- NoSql dbs are easier to scale horizontally (sharding) because there is no
+  need to preserve join logic
 
 NoSQL are NOT ACID Compliant.
 There are SOME ACID compliant qualities, but generally NOT completely ACID compliant.
 
-A non relational database (NoSQL) 'mode' is defined as `documents`
 Documents are written close to JSON.
 
 Instead of tables like in SQL, you have a collection of documents.
 
-- each document is a JS object
+- each document is like a JS object
 - You have the ability to nest tables
 - Built with an emphasis on SPEED.
 
-The most popular db in the js stack is `MongoDB`
+- `MongoDb`, `DynamoDb`
 
 NoSQL dbs are used in big data and real-time web applications. (e-commerce)
 Motivations include simplicity of design, simpler horizontal scaling of clusters of machines, and finer control over availability.
@@ -54,16 +77,6 @@ Generally considered FASTER and more FLEXIBLE.
 NoSQL's don't use schemas, so it's not as solid but more flexible.
 
 THE MORE Acid compliant you make a NoSQL db, the less fast/flexible it will be.
-
-## key-value store
-
-The third type after Tables, Documents
-
-A Key-Value store are stored WITHOUT nesting (as opposed to NoSQL).
-Redis is a prime representative of a key-value system db.
-
-The data does NOT persist if there is a power outage.
-Sensitive or valuable data is not used in a key-value store.
 
 ## ACID compliance
 
@@ -83,6 +96,9 @@ Since SQL databases are ACID compliant, it is more 'solid' in general.
 Important database transactions like financial processes all use SQL.
 
 NoSQL databases are not as solid but faster and more flexible BECAUSE it doesn't use a traditional schema. NoSQL lookups are fast because the data is formed as JSON (object lookup)
+
+- sql enforces an `explicit` schema on write.
+- not that noSql still has schemas, but it is `implicit`, handled on read
 
 For HUGE apps, possible to use both an SQL and a NoSQL in one app.
 
