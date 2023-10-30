@@ -100,6 +100,22 @@ apply fundamental principles of scalable system design
 - do we have enough copies of different services running, such that a few failures will not cause a total system shutdown?
 - how are we monitoring the performance of our service? Do we get alerts whenever critical components fail?
 
+## network failure
+
+- when the network is down, let network protocols (ip/tcp) handle the errors.
+- if individual nodes fail, see below
+
+## types of node failures
+
+- fail stop (a crash)
+
+  - solution 1 restart and load last good state (more latency)
+  - solution 2 replicate state and fail over to another node (expensive)
+
+- byzantine failure (all node failures that do NOT crash)
+  - best bet is to add some code so that this turns into a proper fail stop
+  - better assertions
+
 ## Main tools
 
 ### Microservice architecture
@@ -400,6 +416,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 ### Consistency, Availability, CAP Theorem
 
 - availability is measured by `9s`. Five 9s means there are outages of seconds over a year
+- in reality, most major cloud vendors promise `99.95%`, which is about 20 minutes of down time a month
 - Strong Consistency means data is rarely stale. Eventual consistency means the data will sync over a period of time (seconds or minutes) when the network traffic is low.
 - CAP theorem (Consistency, Availability, Partition)
   - in the event of a `Network Partition (server failure, network failure)` a system must prioritize either `consistency` (pause user operations until network is back up) or `availability` (continue allowing users to make API calls, but data is not consistent)
@@ -597,22 +614,6 @@ The final product of "design Stripe Api" should look like a proto file like this
 - id: uuid
 - name: string
 - email: string
-- card: Card[]
-- charge: Charge[]
-
-## Card
-- id: uuid
-- customer_id: uuid (User.id)
-- number: string
-
-## Charge
-- id: uuid
-- customer_id: uuid (User.id)
-- amount: number
-- currency: enum
-- status: enum ["cleared", "pending", "failed"]
-
-# APIs
 
 ## User
 CreateUser(user: User) returns User
@@ -640,10 +641,3 @@ Update
 - some companies like uber will use a tool like `hailstorm` that randomly shuts down a microservice and logs what happens to find weaknesses
 
 - distributed systems can be so large and complex that it's possible to lose track of all service dependencies. Ex.. an owner of a microservice may not be completely clear on what other services it's relying on, and what other services it's being relied on
-
-## Metrics
-
-- Most companies have a metrics service for both current systems and later analysis
-- for later analysis, either a `Data Lake` (raw, unprocessed data) or a `data warehouse` (collection of formatted data) or both are used
-  by some `etl` (Extract, Transform Load. Usually to send to data warehouse) or `cdc` (change-data collect. maybe lake or wareshouse) pipeline.
-- common tools include `Prometheus`, `Apache Druid`, and `Apache Spark`
