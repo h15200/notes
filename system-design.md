@@ -160,6 +160,11 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 ## protocols
 
 - `ip/tcp` (ensures delivery with handshakes and acknowledgements).
+  - guarantees FIFO delivery. If the same process sends two messages, the
+    first one will be processed by the receiver first. Implemented with
+    an ack step. A sends to B, B sends ack back. Only then can A send another
+    message to B. The roundtrip network call makes it safe and guarantees ordering,
+    but is slower
   - tcp have built in encryption using TLS
   - web sockets are built with ip/tcp
   - is not a strict client-server model. Data can go both ways in any order
@@ -167,6 +172,7 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
   - is a client-server model. The client must first request, and the server replies
 - `smpp` (short message texting) twilio
 - `udp` (no acknowledgement flow, so FASTER but some packets will be lost) video, voice
+  - does not guarantee FIFO delivery
 - `xmpp` peer network (peer-to-peer networks can be built with xmpp or with tcp)
   - `xmpp` is slower but more secure than `tcp` websocket. It has additional encryption logic on top of TLS, which TCP also has
 
@@ -219,6 +225,12 @@ Anything that makes in data, and returns an integer that points to an index of a
 2 main hashing algos in systems design
 
 Consistent Hashing (often used by Load balancers) and Rendezvous Hashing (highest random weight hashing)
+
+### types of faults
+
+- crash fault - server crashes
+- ommision fault - a message is lost
+- Byzantine fault - all others. malicious info, compromised node
 
 #### Consistent hashing in load balancers
 

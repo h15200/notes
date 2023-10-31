@@ -191,3 +191,16 @@
   is an intermediary step. CPUs can't read byte code directly, but an interpreter
   can like JVM (Java Virtual Machine) significantly faster than reading js or python.
   JVM can also compile to any OS (idea of containerization)
+
+## clocks
+
+- time-of-day clocks
+  - each machine is slightly different
+  - not good for intervals or durations
+- monotonic
+  - each machine is different
+  - great for duration for that 1 machine
+  - only counts forward
+- logical clocks
+  - only cares about ordering of events
+  - if A comes before B, A could have caused B but not the other way around
