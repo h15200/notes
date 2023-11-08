@@ -168,13 +168,39 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
   - tcp have built in encryption using TLS
   - web sockets are built with ip/tcp
   - is not a strict client-server model. Data can go both ways in any order
+  - eventual consistency
+- `udp` (no acknowledgement flow, so FASTER but some packets will be lost) video, voice
+  - does not guarantee FIFO delivery and has weak consistency but is fast
+  - used in `DNS` and voice/video apps
 - `http` built on top of ip/tcp with encryption and identify verification
   - is a client-server model. The client must first request, and the server replies
 - `smpp` (short message texting) twilio
-- `udp` (no acknowledgement flow, so FASTER but some packets will be lost) video, voice
-  - does not guarantee FIFO delivery
-- `xmpp` peer network (peer-to-peer networks can be built with xmpp or with tcp)
-  - `xmpp` is slower but more secure than `tcp` websocket. It has additional encryption logic on top of TLS, which TCP also has
+  - based on TCP
+- `websocket` peer network
+  - built on top of TCP, and is faster than `xmpp` but less secure
+- `xmpp` peer network
+  - `xmpp` built with TCP, but is slower but more secure than websocket. It has additional encryption logic on top of TLS, which TCP also has
+- `smtp` (simple mail tranfser protocol)
+  - used to send email via ip/tcp. tcp ensures eventual delivery
+- `ftp` (file transfer protocol)
+  - based on TCP and is faster than `http` as it is a "pure" tcp protocol with no additional headers
+
+## DNS
+
+- "Domain Name System"
+- how does it work? Basically, a gigantic key value pair of human readeable text to ip address
+- from a local machine adding a url:
+
+  - your most local dns router (usually Internet Service Provider) will first see if
+    they have the result in cache
+  - if not, it will look for another dns that might have it
+  - keeps going until the `root` dns
+  - at each layer, this search will be cached for a certain amount of time
+  - this caching policy is based on `TTL` (time to live) set on each dns server
+
+- managed solutions include `AWS Route 53` and `Cloudflare`
+- usually will also load balance traffic and keep track of services that are down
+  due to maintenance
 
 ### Proxies
 
@@ -399,6 +425,9 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - Vertical partitioning separates columns (categories) into shards (or partitions) for ex when a column is rarely used, it is stored elsewhere.
 
+  - don't confuse vertical partitioning with vertical scaling. Both horizontal and vertical partitioning is a form of horizontal
+    scaline since it requires multiple machines rather than upgrading one machine
+
 - when sharding, just like in servers and load balancers, must take into account hot spots and aim for an even distribution by using a good hashing function that guarantees uniformity.
 
 - Pros and Cons
@@ -409,6 +438,9 @@ quad trees are trees that have 0 or 4 children used to do location searches used
     joins can be expensive over different shards
 
 - different for SQL vs NO-SQL dbs.
+
+- note that sharding is much simpler in noSql because you don't have to worry about joins and dependencies within a table
+- dyanamoDb has built in funcationalities out of the box
 
 ### Leader Election
 
@@ -431,9 +463,21 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 - in reality, most major cloud vendors promise `99.95%`, which is about 20 minutes of down time a month
 - Strong Consistency means data is rarely stale. Eventual consistency means the data will sync over a period of time (seconds or minutes) when the network traffic is low.
 - CAP theorem (Consistency, Availability, Partition)
+
   - in the event of a `Network Partition (server failure, network failure)` a system must prioritize either `consistency` (pause user operations until network is back up) or `availability` (continue allowing users to make API calls, but data is not consistent)
   - For example, if the "likes" service that tracks the number of likes is the issue, probably ok to prioritize `availability` and keep allowing users continue
   - for something like a bank statement, that's not the case
+
+- real life examples:
+  - weak consistency
+    - Tech: Memcache
+    - examples: Voice app, real time video game, video chat
+  - eventual consistency
+    - tech: Amazon S3, Amazon SimpleDB, SMTP (email protocol)
+    - examples: social media likes, DNS
+  - strong consistency
+    - tech: RDBMS, file systems
+    - examples: bank transactions
 
 ### Consistency models
 
@@ -550,19 +594,40 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - Implementation can be done with a key-value in memory store like `redis`. The server gets a request, then asks redis "hey are we doing ok with rate limiting?" before responding
 
+## Online vs Offline systems
+
+- Online systems or `services` wait for a request and try to handle them quickly.
+  - low latency and availability is prioritized
+  - ex. web servers, dbs, caches
+- Offline systems or `batch processing` systems process lots of data
+  - high throughput is prioritized
+  - `mapReduce` is a classic example of an offline system
+- streaming systems are between the two
+
 ### MapReduce
 
+- https://youtu.be/sGuGBkH79iI?si=T2Y0gEMikXRNNS6u
+
 - processing data set over multiple machines (as a result of horizontal scaling) is challenging
+- is a way to get derived data
 - a framework that allows processing of very large data in a distributed system quickly
   2 main steps:
 
-map - take the dataset and map to key-value pairs, then shuffle them to organize these pairs such that the pairs of the same key are routed to the same machine
+map - take the dataset and map to key-value pairs, then shuffle them to organize these pairs such that the pairs of the same key are routed to the same machine - example. if there were 10 documents, each word might have all the documents where it appears "the": [1,4,5]
 
-reduce - reduce the shuffled key-value pair and transform them into more meaningful data.
+reduce - reduce the shuffled key-value pair and transform them into more meaningful data. - all the mapper servers pool info into reducer machines. one reducer will be in charge of tallying all "the": occurences
 
-- this allows for a `distributed file system`, an abstraction over a cluster of machines that allows them to act like one large file system. implementations include `Google File System` and `Hadoop Distributed File System`. Files are split into chunks of a certain moderate size < Gb and those chunks are sharded across a cluster of machines.
+- the results are all stored in a `distributed file system`, an abstraction over a cluster of machines that allows
+  them to act like one large file system.
+  implementations include `Google File System` and `Hadoop Distributed File System`.
+  Files are split into chunks of a certain moderate size < Gb and those chunks are sharded across a cluster of machines.
 
+- also used in batch processors like apache `Spark` and `Flink`
 - MapReduce algos have fault tolerance by using Idempotent Operations in both the Map and Reduce steps to shield against outages
+- common tasks including sorting, word count, grep
+- for every mapReduce task, you already know the volume of data you're working with since it's an `offline` system. There
+  are no uncertainties like users making requests from a UI. You don't have to add a server for a spike or worry
+  about consistent hashing!
 
 ### Security http and https
 
