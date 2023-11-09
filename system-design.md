@@ -243,6 +243,12 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 - Load Balancers can use different algos to choose a server.
   - round robin, IP based (L4 ex AWS NetworkLoadBalancer), app info based
     (L7 AWS ApplicationLoadBalancer)
+- because L4 only has access to basic info like IP address, it is simpler
+  to configure and requires less computation power. On the other hand, l7
+  is more config and computation but has access to all application layer
+  headers, so is more efficient for load balancing
+
+- some load balancers don't support certain protocols like UDP (AWS)
 
 ### reverse proxy
 
