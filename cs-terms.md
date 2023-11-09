@@ -50,6 +50,13 @@
 - a web server is a specific type of servers that communicate data via RPCs
 - a Windows background server is a service that runs in the same machine
 
+### Web Server vs Web API
+
+- Web API is the broader term, since the implementation doesn't matter. it just
+  refers to any exchange of data over the wire
+- Web Server usually implies a SOAP protocol to transfer data
+- Web servers usually encode using XML instead of JSON
+
 ## Runtime
 
 - `runtime` describes software instructions that are executed WHILE your main program is running. Runtime code is not in the main program itself, but is needed for execution of the main program.

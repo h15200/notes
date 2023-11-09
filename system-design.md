@@ -202,6 +202,17 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 - usually will also load balance traffic and keep track of services that are down
   due to maintenance
 
+### CDN
+
+- "content delivery networks" works very similarly to DNS.
+- it leverages data centers around the world and serves the end user from
+  the closest `edge`
+- You can have a Push policy where the CDN gets data every time the original sever gets updated
+- or a Pull policy where the CDN gets data from the server when a customer makes a request. This is
+  cached, so the 2nd customer will get a cached result. This is better for high traffic content
+- like DNS, there is a TTL policy set on CDN
+- Akamai, Aws CloudFront
+
 ### Proxies
 
 - Forward (default) proxies sit between the client and server on behalf of the CLIENT. It can be used as a cache, add/remove headers. It masks the client IP to the server. Most notable example is a VPN (Virtual Private Network).
@@ -214,17 +225,36 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 
 ### Load balancers
 
+- Client -> load balancer -> a specific server -> Client
+- (note that the load balancer doesn't get the data back from server)
+
 - Hardware vs Software
 
-  - Hardware load balancers are actual structures.
+  - Hardware load balancers are actual structures. expensive
   - Software load balancers are USUALLY what systems design interviews are referring to. Software is more flexible in what you can do.
+    - ex. HAProxy, nginx
 
 - is a type of reverse proxy (most of the time) as a reverse proxy sits in between the client and server on behalf of the server.
 - can be set for the database, or even on the dns layer (google.com has many IPs and the DNS round robin will assign a request to the correct dns server to respond with a domain name)
 - helps scale horizontally by distributing requests to multiple servers
 - avoids duplicate requests
+- ONLY makes sense if you have multiple servers to route to
 
-Load Balancers can use different algos to choose a server.
+- Load Balancers can use different algos to choose a server.
+  - round robin, IP based (L4 ex AWS NetworkLoadBalancer), app info based
+    (L7 AWS ApplicationLoadBalancer)
+
+### reverse proxy
+
+- Client -> proxy -> a server -> BACK to proxy -> client
+- although techcnically load balancers are a type of reverse proxy, it could
+  also be thought of a different thing
+- reverse proxies usually handles auth, security, etc.. things that need to be done on all of your servers
+- nginx has both L7 load balancing AND web server capabilities
+
+- while a load balancer is only useful when you have multiple services,
+  a reverse proxy is useful even with one server as it's just the gateway that
+  handles logic
 
 #### Server-Selection Strategy with load balancers
 
