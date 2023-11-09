@@ -724,3 +724,17 @@ Update
 - most service health checks are simple.
 - calls a synthetic endpoint (an endpoint that is not used for metrics or KPI) with a reponse
   that just echos 200ok
+
+## history of server types and deployments
+
+- early days was all physical "bare metal" server racks. some companies still
+  do this with IBM mainframe machines
+- then came VMs. This made servers much more flexible, but was still a lot of config.
+  Some machines can be set up to do both "normal" server and VM in one
+- Containers (docker) came which helped package applications in a more lightweight way
+  with less config.
+- To manage those containers, tools like kubernetes came to to support fully
+  cloud solutions
+- products like AWS EC2 (IaaS) allowed users to work with an existing virtualized
+  computers, but still had a lot of set up work
+- then the emergence of Paas which fully managed the set up work as well
