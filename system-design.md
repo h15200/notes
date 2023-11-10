@@ -27,6 +27,7 @@ so sending 1GB over the network would take 10 seconds
 - three 9s: 9 hours
 - four 9s: 1 hour
 - five 9s: 5 minutes
+- most major cloud services offer 99.95% so just under 4 9s
 
 ## Scoping the problem
 
@@ -493,6 +494,16 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - example of apps that use a consensus algo under the hood - `zookeeper`, `Etcd` (EtsyDee) are both strongly consistent and highly available key-value storage that's often used to implement leader election
 
+#### Zookeeper (leader follower model) in detail
+
+- when you have replication, you need consensus.
+- In a zookeeper service, the same set of data is held in multiple machines
+- one machine is the leader.
+- clients connect to any instance of those nodes to get data
+- reads can be done from any node, leader or follower
+- writes must go through leader
+- uses distributed locks, so read consistency is guaranteed
+
 ### Consistency, Availability, CAP Theorem
 
 - availability is measured by `9s`. Five 9s means there are outages of seconds over a year
@@ -638,6 +649,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 - Offline systems or `batch processing` systems process lots of data
   - high throughput is prioritized
   - `mapReduce` is a classic example of an offline system
+  - message queues are also offline
 - streaming systems are between the two
 
 ### MapReduce
@@ -753,24 +765,4 @@ Update
 
 - some companies like uber will use a tool like `hailstorm` that randomly shuts down a microservice and logs what happens to find weaknesses
 
-- distributed systems can be so large and complex that it's possible to lose track of all service dependencies. Ex.. an owner of a microservice may not be completely clear on what other services it's relying on, and what other services it's being relied on
-
-## health check
-
-- most service health checks are simple.
-- calls a synthetic endpoint (an endpoint that is not used for metrics or KPI) with a reponse
-  that just echos 200ok
-
-## history of server types and deployments
-
-- early days was all physical "bare metal" server racks. some companies still
-  do this with IBM mainframe machines
-- then came VMs. This made servers much more flexible, but was still a lot of config.
-  Some machines can be set up to do both "normal" server and VM in one
-- Containers (docker) came which helped package applications in a more lightweight way
-  with less config.
-- To manage those containers, tools like kubernetes came to to support fully
-  cloud solutions
-- products like AWS EC2 (IaaS) allowed users to work with an existing virtualized
-  computers, but still had a lot of set up work
-- then the emergence of Paas which fully managed the set up work as well
+- distributed systems can be so large and complex that it's possible to lose track of all service dependencies. Ex.. an owner of a microservice may not be completely clear on what othe

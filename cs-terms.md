@@ -50,12 +50,23 @@
 - a web server is a specific type of servers that communicate data via RPCs
 - a Windows background server is a service that runs in the same machine
 
-### Web Server vs Web API
+### Web Server vs Application Server (Platform Server) vs Web API
 
-- Web API is the broader term, since the implementation doesn't matter. it just
-  refers to any exchange of data over the wire
-- Web Server usually implies a SOAP protocol to transfer data
+- Web Server usually implies a SOAP/http protocol to transfer static data back to a client,
+  while an application server is usually responsible for business logic. Application
+  servers usually use other RPC calls like gRPC
+
+- The web server usually serves as a reverse proxy that is in between the client
+  and the rest of the business logic (application server, dbs)
+
 - Web servers usually encode using XML instead of JSON
+
+- Web API just refers to any exchange of data over the wire. A web server
+  or an application may or may not expose an API.
+
+- when making a distinction between web server and platform server, the web
+  server is the one closest to the client while the platform server is the
+  one closer to dbs
 
 ## Runtime
 
