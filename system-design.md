@@ -188,6 +188,8 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 ## protocols
 
 - `ip/tcp` (ensures delivery with handshakes and acknowledgements).
+  - at least one time delivery. Uses a checksum to see if the entire package
+    was delivered successfully before sending back an ack
   - guarantees FIFO delivery. If the same process sends two messages, the
     first one will be processed by the receiver first. Implemented with
     an ack step. A sends to B, B sends ack back. Only then can A send another
@@ -213,7 +215,18 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 - `ftp` (file transfer protocol)
   - based on TCP and is faster than `http` as it is a "pure" tcp protocol with no additional headers
 
-## DNS
+### REST vs RPC
+
+- rpc describes the behavior, not the resource
+- rpc is often used between services
+
+- RPC and REST calls comparison
+  Operation RPC REST
+  Signup POST /signup POST /persons
+  Resign POST /resign DELETE /persons/1234
+- https://github.com/donnemartin/system-design-primer#hypertext-transfer-protocol-http
+
+### DNS
 
 - "Domain Name System"
 - how does it work? Basically, a gigantic key value pair of human readeable text to ip address
@@ -423,6 +436,7 @@ Reasons for:
 
 #### Non relational db (no sal)
 
+- BASE (basically available, soft state, eventual consistency)
 - is essentially a hash table. constant time operations
 - has less structure and less querying power
 - makes the most of cloud computing and storage for horizontal scaling.
@@ -430,6 +444,35 @@ Reasons for:
 - key-value store dbs (the majority of non-relational dbs) are used often to cache
 - examples DynamoDb, Redis (in-memory storage only, often used for rate-limiting), Etcd (used for leader election), ZooKeeper (used for leader election)
 - some may offer strong consistency, but since no sql dbs are not ACID compliant, some may only offer eventual consistency (usually with a trade-off of having faster performance)
+
+#### Types of nosql dbs
+
+1. k-v store (redis, memcached)
+   - simple data used for caching
+2. document store (mongo, dynamo, elastic search, s3)
+   - for storing XML, JSON, BSON.
+   - high flexibility with changing data structure
+3. wide column store (Facebook cassandra, Apache HBase, Google BigTable)
+   - a "super" key-value store where the key is an entire column, allowing
+     for nested complex data
+4. graph (neo4j)
+   - used best to store data like social media relationships
+
+- Other slight variations for data storage
+  - Blob/object store (can be relational or not relational) - s3
+  - Block Storage (AWS EBS) which has the same set blocks of memory
+  - Distributed File Storage (gfs, aws efs)
+
+#### differences SQL, NoSql
+
+- at the highest scale (Terra or petabytes of data), a sql solution will slow
+  down with joins and write operations despite optimizations. At that point,
+  the only solution is the easily scale with a noSql solution like DynamoDB
+- any point before that level of scaling, most companies will benefit with the
+  structure of a sql solution like postgres as the single point of truth
+  - parts of the Sql db can splinter off for ex. metrics to a nosql db or
+    an async offline system that does batch processing (ETL) with something
+    like Spark and Druid. Searchable data can go to Elastic Search
 
 #### metrics and analytics
 
@@ -439,11 +482,8 @@ Reasons for:
 ### Other specialized Storage Paradigms
 
 - BLOB (Binary Large Object) Store is used to store an arbitrary unstructured source of data (video, image, audio, binary). A relational db can't store blobs. Usually functions like a key-value store, but a blob store is optimized for big unstructured data. A key-value store is optimized for simple value. Examples - `GCS (google cloud storage)` `S3 (amazon)`
-
 - Time Series - used for monitoring by storing timestamps. Can be set so certain events can trigger read/write. example `InfluxDb`, `Prometheus`
-
 - Graph db - SQL and no SQL dbs rely on a table format. But if the data has a ton of relationships with individual data points, a graph may be a better representation. Social Networks are a good use case. Ex - `Neo4j`. The language used to parse graph databases is `cypher`. Cipher queries make finding graph connections much easier
-
 - Spatial db optimized for spatial data like locations on a map. Queries based on locations can not be optimized based on column indexing like with regular data. Doing queries like "locations in the vicinity of x" is done much better using tree data structures. Usually uses a `quad tree` algorithm
 
 quad trees are trees that have 0 or 4 children used to do location searches used to index two-dimensional spatial data (like longitude, latitude)
@@ -456,50 +496,60 @@ quad trees are trees that have 0 or 4 children used to do location searches used
         4 more nodes
 ```
 
-#### Optimizing queries
+### database partition tolerance strategies
 
-#### Indexing (read-optimization)
+- leader follower replication
+- leader leader replication
+- federation
+- sharding
+- denormalization
+- sql tuning
 
-- a sorted record will allow binary search O(log2 N), but an unsorted one will require linear time.
-
-- indexing will create another data structure which holds the field value and a pointer to the record, allowing binary searches to be performed. Like a table of contents.
-
-- Downside is that these index structures will require more disk space, so you are sacrificing space for time. ALSO, this will optimize for read, but slow down write operations slightly because you'd have to write to the normal db, then write to the index as well
-
-- this strategy needs to be implemented in relational dbs on frequent rows. SOME no-sql dbs have this baked in, some do not but it's case-by-case
-
-### database failures
-
-- two main ways of ensuring backup
-  - replicating, or duplicating the main db. The backup will take over if the main goes down.
-  - sharding (splitting up) a db will increase throughput by lessening the load and distributing
-
-#### Replication - preventing an outage with
+#### Replication
 
 - prevent a single point of failure by replicating a db to a backup in case the main fails.
-- the replica must be `synced` have the exact info the main db has. As such, if any write function fails to the Replica, it should NOT be done to the main at all
-  - this is not the case with most regional databases. Ex. if a facebook db server in north america is updated, then a db in asia doesn't need to have Immediate sync. It can update async such that a fb user in Asia receives an updated feed slightly after North American users.
-  - this strategy of NOT syncing regional dbs will give you better latency to avoid the round trip syncing immediately.
 - if set up correctly, a main db failure will seamlessly be taken over by the replica until the main is back online again. once it's back, the main will resume as the primary db
-  - you can replicate primary dbs (two-way syncing necessary) or replicate a read-only db which only steps up as the primary when the current primary goes down
+- two ways
+  1. leader-follower replication
+     - if requirement is strongly consistent, the write happens only if all
+       writes to follwers are complete. Realistically, this is not worth it
+       for data centers that are far away because the round trips are too laggy.
+       For that, the compromise is eventually consistency and higher throughput
+     - CON the more followers there are, the more latent it becomes
+     - CON you need logic (consensus algo) to promote a follower as a leader (Raft , Pax)
+  2. leader-leader replication
+     - will need additional load balancing logic for writes
+     - all replicas can write and read and sync with each other
+     - can't be stongly consistent as syncing is not guaranteed
 
-#### Sharding - Data partitioning over multiple databases
+#### Federation
 
-- if scaling horizontally (adding machines) with state-less servers, all you need is to copy the business logic. sometimes if you have an in-memory key-value storage like Redis for caching, you need to worry about hash strategies (use `consistent hashing` or `rendezvous hashing`). with dbs, there's an extra layer as it carries its own data
+- also called `functional partitioning`
+- instead of using one huge db, smaller dbs are in charge of a piece of the whole data
+- eg a separate db per topic. Different from sharding where each db still has
+  a subset of the entire data
+- example might be separating audio into the actual audio (to some blob storage like s3)
+  and metadata (a document storage db)
+- CONS adds additional logic, data is not as organized, hard to figure out where
+  to get the appropritate data, may not work with certain business logic
 
-- it's not efficient for all dbs to have the same data. Better to break up a big db into many smaller parts.
-- this logic is usually written in a reverse-proxy (on behalf of the db) so that certain data goes to a particular shard
+#### Partitioning (horizontal scaling) Data partitioning over multiple databases
+
+- each database still has the whole data, but only a subset of it
+  - eg for all users, one db will be in charge of lastName A-D, then E-H etc..
 
 `Partitioning` or `sharding` will decrease latency, increase throughput and can be done in 2 ways:
 
 - Horizontal partitioning separates (users a-j, j-z) into smaller shards (or partitions) of the same columns
-
+  - can be done in RDBSM and no-SQL, but much easier with noSQL
 - Vertical partitioning separates columns (categories) into shards (or partitions) for ex when a column is rarely used, it is stored elsewhere.
 
   - don't confuse vertical partitioning with vertical scaling. Both horizontal and vertical partitioning is a form of horizontal
     scaline since it requires multiple machines rather than upgrading one machine
 
 - when sharding, just like in servers and load balancers, must take into account hot spots and aim for an even distribution by using a good hashing function that guarantees uniformity.
+- consistent hashing strategy is necessary to keep cache misses to a minimum when
+  instances go down
 
 - Pros and Cons
 
@@ -511,7 +561,20 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 - different for SQL vs NO-SQL dbs.
 
 - note that sharding is much simpler in noSql because you don't have to worry about joins and dependencies within a table
-- dyanamoDb has built in funcationalities out of the box
+- dyanamoDb has built in functionalities out of the box
+
+#### Denormalization
+
+- optimize reads with a penalty to writes
+- keep duplicate data to make reads faster
+- uses more memory and slows and writes
+
+#### SQL tuning
+
+- Indexing popular searches
+  - indexing uses extra memory to keep track of a way to handle sorting in
+    non-primary keys
+- using optimized SQL commands
 
 ### Leader Election
 
