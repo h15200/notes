@@ -416,6 +416,8 @@ Reasons for:
 
 #### Relational db (sql)
 
+- generally, most companies will want an RDBSM as the primary source of truth until they scale
+  to the point where it just can't scale.
 - ACID compliant. data is structured and unchanging, strong consistency
 - A relational database that supports SQL (most of them) has the power of running SQL directly without having to load the data in memory.
 
@@ -428,6 +430,11 @@ Reasons for:
 - key-value store dbs (the majority of non-relational dbs) are used often to cache
 - examples DynamoDb, Redis (in-memory storage only, often used for rate-limiting), Etcd (used for leader election), ZooKeeper (used for leader election)
 - some may offer strong consistency, but since no sql dbs are not ACID compliant, some may only offer eventual consistency (usually with a trade-off of having faster performance)
+
+#### metrics and analytics
+
+- it is common for the primary RDBSM to send data to a secondary db for metrics/analytics
+- common products include AWS Elastic Search (based on Apache Lucene) as well as Apache Splunk
 
 ### Other specialized Storage Paradigms
 
