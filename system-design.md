@@ -56,6 +56,17 @@ questions might be
 - how much storage would we need? (photos, videos)
 - what network bandwidth usage are we expecting? Crucial in deciding how would we manage traffic and balance load between servers
 
+## Capacity Planning
+
+1. Throughput estimation (for example, servers handling write operations in social media)
+   - rps / qps (request or query per second) is the main metric
+   - Ask for average daily users, and possibly guess the rest
+   - for ex. for social media, try 100 million users who
+     - suppose 5 writes on average = 500 million a day
+     - get average qps by dividing 500 million by (24 \* 3600 ~ 100,000) = 5000
+     - 5,000 qps for AVERAGE, but for peak, you might multiple by 3 = 15,000 qps
+     - one service might handle 1,000 second, so you'll need some redundancy, load balancer etc..
+
 ## Sketching up an abstract design
 
 Illustrate the building blocks of the system and the relationships between them
