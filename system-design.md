@@ -58,7 +58,8 @@ questions might be
 
 ## Capacity Planning
 
-1. Throughput estimation (for example, servers handling write operations in social media)
+1. Throughput/load estimation (for example, servers handling write operations in social media)
+
    - rps / qps (request or query per second) is the main metric
    - Ask for average daily users, and possibly guess the rest
    - for ex. for social media, try 100 million users who
@@ -66,6 +67,21 @@ questions might be
      - get average qps by dividing 500 million by (24 \* 3600 ~ 100,000) = 5000
      - 5,000 qps for AVERAGE, but for peak, you might multiple by 3 = 15,000 qps
      - one service might handle 1,000 second, so you'll need some redundancy, load balancer etc..
+
+2. Storage estimation
+
+   - how much data to keep eg 5 years
+   - multiply daily _ 30 _ 12 \* 5
+     - byte 1
+     - kb 1 x 10 ^ 3
+     - megabyte 1 x 10 ^ 6 (million)
+     - gigabyte 1 x 10 ^ 9 (billion)
+     - tera 1 x 10 ^ 12 (trillion)
+     - peta 1 x 10 ^ 15 (quadrillion)
+
+3. Bandwith estimation (how much data is being processed per second)
+   - take the value form #1 (rps) and multiple by how much data is processed
+     per query
 
 ## Sketching up an abstract design
 
