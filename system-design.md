@@ -479,6 +479,13 @@ Reasons for:
 - it is common for the primary RDBSM to send data to a secondary db for metrics/analytics
 - common products include AWS Elastic Search (based on Apache Lucene) as well as Apache Splunk
 
+#### data warehouse
+
+- a special type of database that specializes in analysis
+- often uses a relational model, but a different optimization from what's used
+  for traditional transactions - uses `star` schema or `snowflake`
+- example of data warehouses `Snowflake`, `bigQuery`
+
 ### Other specialized Storage Paradigms
 
 - BLOB (Binary Large Object) Store is used to store an arbitrary unstructured source of data (video, image, audio, binary). A relational db can't store blobs. Usually functions like a key-value store, but a blob store is optimized for big unstructured data. A key-value store is optimized for simple value. Examples - `GCS (google cloud storage)` `S3 (amazon)`
