@@ -204,7 +204,7 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
   - used in `DNS` and voice/video apps
 - `http` built on top of ip/tcp with encryption and identify verification
   - is a client-server model. The client must first request, and the server replies
-  - `webhooks` use http for push notifications
+  - `webhooks` use http
 - `smpp` (short message texting) twilio
   - based on TCP
 - `websocket` peer network
@@ -449,13 +449,23 @@ Reasons for:
 #### Types of nosql dbs
 
 1. k-v store (redis, memcached)
+
    - simple data used for caching
+
 2. document store (mongo, dynamo, elastic search, s3)
-   - for storing XML, JSON, BSON.
+
+   - for storing semi-structured data like XML, JSON, BSON.
    - high flexibility with changing data structure
-3. wide column store (Facebook cassandra, Apache HBase, Google BigTable)
+   - generally used for fast insertion and quick retrieval of user metadata
+   - compared to columnar, optimized for Writes
+
+3. Columnar, or wide column store (apache cassandra, Apache HBase, Google BigTable, AWS Redshift)
+
    - a "super" key-value store where the key is an entire column, allowing
      for nested complex data
+   - compared to document stores, optimized for reads
+   - great use case for analytics
+
 4. graph (neo4j)
    - used best to store data like social media relationships
 
