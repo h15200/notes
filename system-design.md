@@ -204,6 +204,7 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
   - used in `DNS` and voice/video apps
 - `http` built on top of ip/tcp with encryption and identify verification
   - is a client-server model. The client must first request, and the server replies
+  - `webhooks` use http for push notifications
 - `smpp` (short message texting) twilio
   - based on TCP
 - `websocket` peer network
