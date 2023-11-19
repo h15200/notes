@@ -517,6 +517,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 ### database partition tolerance strategies
 
 - leader follower replication
+  - a lot of sql solutions provide this out of the box (postgres, mySql)
 - leader leader replication
 - federation
 - sharding
@@ -609,9 +610,12 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - example of apps that use a consensus algo under the hood - `zookeeper`, `Etcd` (EtsyDee) are both strongly consistent and highly available key-value storage that's often used to implement leader election
 
-#### Zookeeper (leader follower model) in detail
+#### Apache Zookeeper (leader follower model) in detail
 
+- basically a namespace with a bunch of nodes that it keeps track of
+- used in db read-replication as well as message queues (rabbitMQ) and Kafka
 - when you have replication, you need consensus.
+- also used for service discovery
 - In a zookeeper service, the same set of data is held in multiple machines
 - one machine is the leader.
 - clients connect to any instance of those nodes to get data
