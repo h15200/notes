@@ -148,10 +148,11 @@ apply fundamental principles of scalable system design
 
 ### Microservice architecture
 
-Monolithic - one or a group of machines (servers) handle ALL services.
-Microservice is a single business unit. It doesn't not mean it's small. It's just a way of identifying a unit of business logic like sign in, check out, etc.. and each of them usually have a dedicated db.
-
-A client may talk to a `gateway` which then communicates to a microservice.
+- Monolithic one or a group of machines (servers) handle ALL services.
+- Server Orientated Architecture. precursor to microservices where different
+  servers shared some data
+- Microservice is a single business unit where each service is a self contained
+  set of logic
 
 #### Pros and Cons
 
@@ -226,6 +227,8 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
   Signup POST /signup POST /persons
   Resign POST /resign DELETE /persons/1234
 - https://github.com/donnemartin/system-design-primer#hypertext-transfer-protocol-http
+- RPCs are invoked with names that describe the behavior like functions and
+  abstracts details about resources
 
 ### DNS
 
@@ -253,17 +256,15 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 - or a Pull policy where the CDN gets data from the server when a customer makes a request. This is
   cached, so the 2nd customer will get a cached result. This is better for high traffic content
 - like DNS, there is a TTL policy set on CDN
-- Akamai, Aws CloudFront
+- `Akamai`, `Aws CloudFront`
 
 ### Proxies
 
 - Forward (default) proxies sit between the client and server on behalf of the CLIENT. It can be used as a cache, add/remove headers. It masks the client IP to the server. Most notable example is a VPN (Virtual Private Network).
-
 - Reverse proxy also sits in the SAME place as a forward proxy, in between the client and server but on behalf of the SERVER. It can log, cache, load balance or do anything as an additional step before the original client request reaches the server.
-
 - all load balancers are also reverse-proxies. you can have a reverse-proxy even if you only have 1 service to do things like config, routing, optimization for faster first paint etc...
-
 - `Nginx` is a popular reverse proxy used for load balancing
+- can also be used interchangeably with `gateway proxy` or `web server proxy`
 
 ### Load balancers
 
@@ -292,6 +293,12 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 
 - some load balancers don't support certain protocols like UDP (AWS)
 
+#### Load balancers vs Gateway service (or API gateway)
+
+- these are 2 different things. Load balancers are more hands off, and usually only provides the actual routing to servers, and caching
+- an API gateway has all of that plus more bells and whistles like rate limiting, monitoring, and auth and replaces the job of a load balancers
+- both of these options can be used as the front door for your app, but load balancers are usually cheaper
+
 ### reverse proxy
 
 - Client -> proxy -> a server -> BACK to proxy -> client
@@ -312,21 +319,16 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 4. Ip based assignment - Client request ip address will be hashed and used to assign to an index number of server. Each individual client is always sent to the same server to maximize cache functionality.
 5. Path based - requests are distributed based on the path of the request. Each server specializes in specific functionality. Speeds up deployment as you only need to re-write code for 1 server type.
 
-Random, round robin, and weighted round robin will not work with server side in-memory caching because it won't maximize cache hits as the requests will come from random clients.
-
-Multiple load balancers can have different strategies in a singular system.
-
-clients => path based LB => weighted RR LB x 2 => servers
+- Random, round robin, and weighted round robin will not work with server side in-memory caching because it won't maximize cache hits as the requests will come from random clients.
+- Multiple load balancers can have different strategies in a singular system.
+- clients => path based LB => weighted RR LB x 2 => servers
 
 ### Hashing
 
-Concept of an algorithm that takes input and returns an item in an alloted number of buckets.
-
-Hashing becomes VERY important if your system uses any kind of in-memory server side caching because your client needs to request to the SAME server every time to avoid cache misses.
-
-Anything that makes in data, and returns an integer that points to an index of a sample size. IP address, username, any data can be hashed.
-
-2 main hashing algos in systems design
+- Concept of an algorithm that takes input and returns an item in an alloted number of buckets.
+- Hashing becomes VERY important if your system uses any kind of in-memory server side caching because your client needs to request to the SAME server every time to avoid cache misses.
+- Anything that makes in data, and returns an integer that points to an index of a sample size. IP address, username, any data can be hashed.
+  2 main hashing algos in systems design
 
 Consistent Hashing (often used by Load balancers) and Rendezvous Hashing (highest random weight hashing)
 
@@ -387,35 +389,21 @@ Hybrid solution: use write-through for sensitive information. Use write-back for
 ex challenge "we've got a distributed system and we want to manage request calls"
 solution:
 
-#### Load balancers vs Gateway service (or API gateway)
-
-- these are 2 different things. Load balancers are more hands off, and usually only provides the actual routing to servers, and caching
-
-- an API gateway has all of that plus more bells and whistles like rate limiting, monitoring, and auth and replaces the job of a load balancers
-
-- both of these options can be used as the front door for your app, but load balancers are usually cheaper
-
 ### Message Queue / Brokers
 
+- an offline system which allows for asyncronous work
+- partition tolerant as it usually has replicas and some consensus algorithm
+  system. for example, `RabbitMQ` uses `Zookeeper` nodes to ensure data is intact
 - a message queue is used by a service to just say "ok we got the request, but we won't try to do it now and will instead put it on a todo list". This ensures that the server doesn't get overloaded and the requests are never lost, for the price of delayed processing
-
 - The notifier is the `producer` and the services doing the actual work is `consumer`. The consumer takes a task from the queue and works on it when it's ready.
-
 - a COMBINATION of services that include having a NOTIFIER (producer) that keeps track of which servers (consumers) are healthy (heartbeat sent to notifier). You can have a message queue with one consumer, or multiple consumers but there is only one producer.
-
 - The notifier (or producer) also has access to a db that keeps a queue of asynchronous tasks to persist tasks. Once it's in a queue, that message or task won't be lost
-
 - very similar to load balancing (with health server heartbeat checks on all services (consumers) that are doing the "work") but the main difference being message queues are ASYNCHRONOUS for time consuming tasks and load balancing is SYNCHRONOUS
-
 - the consumer and producer can be in the same service where the work is being handled, or separate where multiple other services have access
-
 - a variety of ways that this can be handled. For example, you can just tell the client "ok we did it!" while in reality it's happening a little after
-
 - queues are used to effectively manage requests in a large-scale distributed system to allow us to decouple our processes and distribute/throttle processing load.
-
 - The notifier also acts as a load balancer to distribute requests.
-
-- ex. `RabbitMQ`, `kafka`
+- ex. `RabbitMQ`, `kafka` (although Kafka is more `streaming`, which is a hybrid online/offline system with more features)
 
 #### Methods of storing message queue
 
@@ -435,6 +423,9 @@ Reasons for:
 - ACID compliant. data is structured and unchanging, strong consistency
 - A relational database that supports SQL (most of them) has the power of running SQL directly without having to load the data in memory.
 
+- sql systems use `write-ahead logs` to keep track of all modofications in disk
+  before changing the table. This allows for full recovery after power outages
+
 #### Non relational db (no sal)
 
 - BASE (basically available, soft state, eventual consistency)
@@ -448,18 +439,18 @@ Reasons for:
 
 #### Types of nosql dbs
 
-1. k-v store (redis, memcached)
+1. k-v store (`redis`, `memcached`)
 
    - simple data used for caching
 
-2. document store (mongo, dynamo, elastic search, s3)
+2. document store (`mongo`, `dynamo`, `elasticsearch`, `aws s3`)
 
    - for storing semi-structured data like XML, JSON, BSON.
    - high flexibility with changing data structure
    - generally used for fast insertion and quick retrieval of user metadata
    - compared to columnar, optimized for Writes
 
-3. Columnar, or wide column store (apache cassandra, Apache HBase, Google BigTable, AWS Redshift)
+3. Columnar, or wide column store (`Apache Cassandra`, `Apache HBase`, `Google BigTable`, `AWS Redshift`)
 
    - a "super" key-value store where the key is an entire column, allowing
      for nested complex data
@@ -470,9 +461,9 @@ Reasons for:
    - used best to store data like social media relationships
 
 - Other slight variations for data storage
-  - Blob/object store (can be relational or not relational) - s3
-  - Block Storage (AWS EBS) which has the same set blocks of memory
-  - Distributed File Storage (gfs, aws efs)
+  - Blob/object store (can be relational or not relational) - `s3`
+  - Block Storage (`AWS EBS`) which has the same set blocks of memory
+  - Distributed File Storage (`google file system`, `aws efs`)
 
 #### differences SQL, NoSql
 
@@ -496,6 +487,8 @@ Reasons for:
 - often uses a relational model, but a different optimization from what's used
   for traditional transactions - uses `star` schema or `snowflake`
 - example of data warehouses `Snowflake`, `bigQuery`
+- some datawarehouses use a star schema but within a nosql db like `Apache Druid`
+  which allows for sql queries
 
 ### Other specialized Storage Paradigms
 
@@ -530,12 +523,19 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 - if set up correctly, a main db failure will seamlessly be taken over by the replica until the main is back online again. once it's back, the main will resume as the primary db
 - two ways
   1. leader-follower replication
-     - if requirement is strongly consistent, the write happens only if all
-       writes to follwers are complete. Realistically, this is not worth it
-       for data centers that are far away because the round trips are too laggy.
-       For that, the compromise is eventually consistency and higher throughput
-     - CON the more followers there are, the more latent it becomes
-     - CON you need logic (consensus algo) to promote a follower as a leader (Raft , Pax)
+  - leader usually keeps a `row based log` that describes each row, and
+    the follower reads from it. `CDC` is generally done this way as well
+    The old way was to use the write-ahead log which contained low level byte
+    block data, but that does not work in different db engines
+  - usually there is 1 `synchronous` follower as a backup for fallback, but
+    the other followers are updated `asynchronously`
+  - provides partition toerance, load management, as well as latency (can serve at edge)
+  - if requirement is strongly consistent, the write happens only if all
+    writes to follwers are complete. Realistically, this is not worth it
+    for data centers that are far away because the round trips are too laggy.
+    For that, the compromise is eventually consistency and higher throughput
+  - CON the more followers there are, the more latent it becomes
+  - CON you need logic (consensus algo) to promote a follower as a leader (Raft , Pax)
   2. leader-leader replication
      - will need additional load balancing logic for writes
      - all replicas can write and read and sync with each other
