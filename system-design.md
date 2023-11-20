@@ -523,6 +523,9 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 - if set up correctly, a main db failure will seamlessly be taken over by the replica until the main is back online again. once it's back, the main will resume as the primary db
 - two ways
   1. leader-follower replication
+  - the majority of db replication is leader-follower, especially if you only
+    have 1 data center. multi-leader should only be used in special circumstances
+    in multi-data center systems
   - leader usually keeps a `row based log` that describes each row, and
     the follower reads from it. `CDC` is generally done this way as well
     The old way was to use the write-ahead log which contained low level byte
@@ -536,10 +539,17 @@ quad trees are trees that have 0 or 4 children used to do location searches used
     For that, the compromise is eventually consistency and higher throughput
   - CON the more followers there are, the more latent it becomes
   - CON you need logic (consensus algo) to promote a follower as a leader (Raft , Pax)
-  2. leader-leader replication
+  2. multi-leader replication
+     - the exception to the rule, often when you have multiple data centers
+     - each data center can have 1 leader and followers
+     - when one data center goes down, the others can continue operating
+     - data needs to be synced and merged when multiple writes need to be resolved
+     - ex. google calendar is essentially multi-leader as all of your devices
+       are leaders with write access. When you don't have internet access,
+       it is partitioned but the write will happen when you're back online (consistency
+       over availability)
      - will need additional load balancing logic for writes
      - all replicas can write and read and sync with each other
-     - can't be stongly consistent as syncing is not guaranteed
 
 #### Federation
 
