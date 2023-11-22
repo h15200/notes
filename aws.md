@@ -19,6 +19,11 @@ The workhorse of aws. basic servers
 - Kay pairs: provide secure login information with SSH
 - Security groups: Firewall that enables you to specify the protocols, ports, and IP ranges that can reach your instances
 
+### Elastic IP
+
+- public ip addresses get rotated over time, so always best to link an elastic
+  ip to EC2 instances so it's static
+
 ## AMI (amazon machine images & instances)
 
 From an AMI, you launch an EC2 instance, which is a copy of the AMI running as a virtual server in the cloud. You can launch multiple instances of an AMI.
