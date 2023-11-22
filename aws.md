@@ -47,7 +47,13 @@ WARNING! A database instance that is part of your environment is tied to the lif
 
 ## RDS (relational database service), DynamoDB is for non-relational db
 
-provides RD instances that are easily integrated with AWS.
+- at the lowest level, you can manage your own db (postgres, for ex) in an
+  ec2 instance
+- fully managed options include `RDS` (sql), `Dynamo` (nosql), `Neptune` (graph)
+- `RDS` is compatible with more dbs and has native functions
+- `Aurora` is MySQL or PostgreSQL compatible and does auto scaling up to 64TB,
+  15 read replicas and backups to s3 (within multi zones in 1 region) as
+  well as serverless options. Some native functions are not available
 
 ## ECR (Elastic container registry)
 
@@ -75,7 +81,7 @@ Amazon's tool to control account level security. This allows you to control who 
 - ELB (elastic Load Balancer) was used at L4 (network) and L7(application) previously,
   but now is named "Classic Load Balancer"
 
-- NLB (Network Load balancer) is the new and improved product at layer 4
+- NLB (Network Load balancer) is the new and improved product at layer 3
 
 - ALB (Application Load balancer) is the new and improved product at layer 7
 

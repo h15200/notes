@@ -420,6 +420,11 @@ Reasons for:
 
 - generally, most companies will want an RDBSM as the primary source of truth until they scale
   to the point where it just can't scale.
+  - The first millions of users still won't break your SQL db
+  - Breaking point is around the need of > 5TB a year
+  - other exceptions include metadata-driven data sets (document store),
+    massive amounts of ingestion of data in the thousands per second,
+    super low-latency applications
 - ACID compliant. data is structured and unchanging, strong consistency
 - A relational database that supports SQL (most of them) has the power of running SQL directly without having to load the data in memory.
 
