@@ -330,7 +330,7 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 - Anything that makes in data, and returns an integer that points to an index of a sample size. IP address, username, any data can be hashed.
   2 main hashing algos in systems design
 
-Consistent Hashing (often used by Load balancers) and Rendezvous Hashing (highest random weight hashing)
+- Consistent Hashing (often used by Load balancers) and Rendezvous Hashing (highest random weight hashing)
 
 ### types of faults
 
@@ -556,7 +556,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
      - will need additional load balancing logic for writes
      - all replicas can write and read and sync with each other
 
-#### Federation
+#### Federation / Partitioning
 
 - also called `functional partitioning`
 - instead of using one huge db, smaller dbs are in charge of a piece of the whole data
@@ -564,6 +564,17 @@ quad trees are trees that have 0 or 4 children used to do location searches used
   a subset of the entire data
 - example might be separating audio into the actual audio (to some blob storage like s3)
   and metadata (a document storage db)
+- Multiple nodes are used for partitions. Each partition has its own follower and
+  usually some read replicas.
+  - one node can be Leader of partition 1 and Follower of partitions 2 and 3
+  - `hash partitioning` or consistent hashing where the key is hashes of data is used to evenly
+    distribute load so there are no skews / hot spots
+    - this still doesn't have for ex. if the same hashed key is used to read/write
+      like in celebrity instagrams. For that, have some logic like if followers
+      exceed a certain point, add 2 random strings to the hash so that reads
+      and writes on the celebrity are partitioned and not concentrated in 1 partition
+  - mongo and cassandra uses `md5`, not an especially strong cryptographic hash
+    algo since it's just used to search for keys
 - CONS adds additional logic, data is not as organized, hard to figure out where
   to get the appropritate data, may not work with certain business logic
 
