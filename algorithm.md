@@ -183,6 +183,27 @@ Insertion/Deletion is specific to the circumstance and there is no general blank
   - with variations, keep updating the best val when condition met and move
     direction. else, the other way without updating
 
+#### Iterative DFS
+
+```
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        res = []
+        curr = root
+        stack = []
+        while curr or stack:
+            while curr:
+                # print('curr', curr)
+                res.append(curr.val)
+                stack.append(curr)
+                curr = curr.left
+            # no more left to go to, so check stack and process 1 node only
+            if stack:
+                node = stack.pop()
+                curr = node.right
+        return res
+```
+
 ### HEAP NAVIGATION
 
 - when you need to travel through a key in a dict in order,
