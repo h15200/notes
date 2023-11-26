@@ -185,22 +185,85 @@ Insertion/Deletion is specific to the circumstance and there is no general blank
 
 #### Iterative DFS
 
+- use a stack and visit twice with a set
+- first time, add the nodes in reverse order
+- second time, execute the business logic
+- as an exception to the rule, preorder doesn't require a 2nd visit
+
 ```
+in-order
+
 class Solution:
-    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        stack = [root]
+        res = []
+        visited = set()
+        curr = root
+
+        while stack:
+            top = stack.pop()
+            if top not in visited:
+                if top.right:
+                    stack.append(top.right)
+                stack.append(top)
+                if top.left:
+                    stack.append(top.left)
+                visited.add(top)
+            else:
+                res.append(top.val)
+
+        return res
+```
+
+```
+post-order
+
+class Solution:
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        visited = set()
         res = []
         curr = root
-        stack = []
-        while curr or stack:
-            while curr:
-                # print('curr', curr)
-                res.append(curr.val)
-                stack.append(curr)
-                curr = curr.left
-            # no more left to go to, so check stack and process 1 node only
-            if stack:
-                node = stack.pop()
-                curr = node.right
+        stack = [root]
+
+        while stack:
+            top = stack.pop()
+            if top not in visited:
+                stack.append(top)
+                if top.right:
+                    stack.append(top.right)
+                if top.left:
+                    stack.append(top.left)
+                visited.add(top)
+            else:
+                res.append(top.val)
+
+        return res
+
+```
+
+```
+pre-order is exceptional in that it doesn't need to be visited twice!
+
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        stack = [root]
+        res = []
+        curr = root
+
+        while stack:
+            top = stack.pop()
+            res.append(top.val)
+            if top.right:
+                stack.append(top.right)
+            if top.left:
+                stack.append(top.left)
+
         return res
 ```
 
