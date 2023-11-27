@@ -619,6 +619,10 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 - Indexing popular searches
   - indexing uses extra memory to keep track of a way to handle sorting in
     non-primary keys
+  - 2 main types of indexing data structures `b-tree` and `Log Structured Merge`
+  - standard is `b-tree` (mySql, postgres) where reads are optimized over writes
+    and good for sorting data (useful in structured data)
+  - `LSM` has faster writes and scales better but bad at sorting (most Nosql dbs)
 - using optimized SQL commands
 
 ### Leader Election
