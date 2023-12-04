@@ -237,3 +237,33 @@ Look at StreamDesignerAnnouncement-test.js, ClusterUpgradeCta-test.js
 
 ### blabla refers to a value, but is being used as a type here error
 - extension must be jsx or tsx (not js/ts) to render a react component with <ThisFormat /> in a render call
+
+## Mocking window.location
+
+- use Object.defineProperty() or jest.SpyInstance
+- probably easier to use Object
+```
+describe('getIsDemoDomain', () => {
+  it('should return true ', () => {
+    Object.defineProperty(window, 'location', {
+      value: {
+        hostname: 'demo.example.com',
+      },
+      writable: true, // allows next Object.defineProperty to mutate value
+    });
+    expect(getIsDemoDomain()).toBe(true);
+  });
+
+  it('should not return true if main app even if path has the string "demo"', () => {
+    Object.defineProperty(window, 'location', {
+      value: {
+        hostname: 'example.com',
+      },
+      writable: true,
+    });
+    expect(getIsDemoDomain()).toBe(false);
+  });
+});
+
+```
+
