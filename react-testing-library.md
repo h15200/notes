@@ -267,3 +267,9 @@ describe('getIsDemoDomain', () => {
 
 ```
 
+## Testing lazy loaded components
+
+- use `waitFor()` and `async` to wait for promise
+
+- when mocking default exports, no need to mock with `default: () => whatever`. Just
+import in the mock and return a function
