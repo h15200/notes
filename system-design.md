@@ -205,6 +205,8 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
   - used in `DNS` and voice/video apps
 - `http` built on top of ip/tcp with encryption and identify verification
   - is a client-server model. The client must first request, and the server replies
+  - `http2` is a binary version of http1 which is faster
+  - `http3` or `quick` is based on `UDP` instead of `TLS` but still has security somehow
   - `webhooks` use http
 - `smpp` (short message texting) twilio
   - based on TCP
