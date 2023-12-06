@@ -116,10 +116,11 @@ There are regions available globally. You can even use multiple instances and de
   ec2 instance
 - fully managed options include `RDS` (sql), `Dynamo` (nosql), `Neptune` (graph)
 - `RDS` is compatible with more dbs and has native functions
+    - can replicate multi-AZ within one region
 - `Aurora` is MySQL or PostgreSQL compatible and does auto scaling up to 64TB,
   15 read replicas and backups to s3 (within multi zones in 1 region) as
   well as serverless options. Some native functions are not available
-
+    - Aurora can also replicate instances globally (multi-region)
 - Dynamo can be replicated across multiple AZs in the same region
 
 ## ECR (Elastic container registry)
