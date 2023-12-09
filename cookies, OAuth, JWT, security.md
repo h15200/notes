@@ -1,50 +1,48 @@
-# Cookies
+## Session
 
-Cookies are stored on the browser.
-A small string (4 kb) stored in the browser.
-A cookie is defined on a DOMIAN.
+- refers to a way of maintaining user's interactions with a website, often
+  in the context of authorization
+
+## Cookies
+
+- Cookies are stored on the browser.
+- A small string (4 kb) stored in the browser.
+- A cookie is defined on a DOMIAN. Each subdomain gets a separate directory
+- session info and tokens are often stored in cookies
 
 ## Domain
 
-Each domain has its own `cookie storage`
-Browser can store 50 cookies per domain
-Browsers can store at least 3000 cookies total.
+- Each domain has its own `cookie storage`
+- Browser can store 50 cookies per domain
+- Browsers can store at least 3000 cookies total.
+- technically, it is possible to split up a domain cookie into parts like
+  domainCookieOne and domainCookieTwo, but is not good security practice
 
-## How to start
+## cookie workflow
 
-The server sends a 'Set-Cookie' header in an HTTP response. The cookie has a name and a value.
-
-The response might look like
+- First, the user sends a POST request to log in with some info on the request body
+- Server checks the credentials, either:
+  - The server sends a 'Set-Cookie' header in an HTTP response. The cookie has a name and a value.
+  - If no good, send error back
 
 ```
 HTTP/1. 0 200 OK
 Set-Cookie: lu=234lkjsdflijadlkfj; Expires=Wed, 25 May 2020 12:15:30 GMT;
 ```
 
-multiple cookies are serialized as semicolon separated key-value pairs
+- multiple cookies are serialized as semicolon separated key-value pairs
 
-Cookies have built-in info like
-Path
-Max-Age
-Expires
-Secure
-HttpOnly
+- Cookies have built-in info like
 
-## Once set, cookies are sent automatically inside the request header
+  - Path
+  - Max-Age
+  - Expires
+  - Secure
+  - HttpOnly
 
-Once the Set-Cookie is sent to the user, it is now automatically sent with every HTTP request from the client to the (same) server.
-
-AJAX calls include the cookie
-
-## application to auth
-
-Log in / Profile
-
-First, the user sends a POST request to log in with some info on the request body
-
-- Server checks the credentials, either sends an 200 with a SET-COOKIE or a 401 with denial
-
-If authenticated, the user sends GET request to /profile
+- Once set, cookies are sent automatically inside the request header
+- Once the Set-Cookie is sent to the user, it is now automatically sent with every HTTP request from the client to the (same) server.
+  If authenticated, the user sends GET request to /profile
 
 - Server checks the cookie, and either shows the user the restricted material OR redirect to log in.
 
@@ -87,44 +85,37 @@ Cookies can persist data through closing browsers if set that way
 
 ## Security
 
-Cross-Site Scripting (XSS)
-A hacker can inject a harmful <script/> tag and manipulate javascript.
-
-You can easily access cookies by `document.cookie` if you DO NOT have httpOnly: true in the cookie setter.
-
-ALWAYS add httpOnly: true in the initial Set Cookie in the server for data that JS does not need.
+- Cross-Site Scripting (XSS)
+- A hacker can inject a harmful `script` tag and manipulate javascript.
+- You can easily access cookies by `document.cookie` if you DO NOT have httpOnly: true in the cookie setter.
+- ALWAYS add httpOnly: true in the initial Set Cookie in the server for data that JS does not need.
 
 ## localStorage
 
-An alternative to cookies.
-Arbitrary key-value store for the browser (a mini-database)
-Can only use strings for both the key and value.
-Each domain has its own storage
-5 MB available as opposed to 4KB for cookies
+- An alternative to cookies.
+- Arbitrary key-value store for the browser (a mini-database)
+- Can only use strings for both the key and value.
+- Each domain has its own storage
+- 5 MB available as opposed to 4KB for cookies
 
-methods:
+- Must be created, expired, and sent manually.
+- Local storage will last forever unless you remove it.
 
-localStorage.set(key, value);
-
-Must be created, expired, and sent manually.
-Local storage will last forever unless you remove it.
-
-Can be used to hold state in a non-SPA that doesn't need to be sent to the server.
+- Can be used to hold state in a non-SPA that doesn't need to be sent to the server.
 
 ## Coookies vs localStorage
 
-If you don't need the info inside the server or the database and it's only used in the front end, better to use localStorage.
-
-If the server or the database needs the info, better to use cookies as the req.body will automatically send cookies back.
+- If you don't need the info inside the server or the database and it's only used in the front end, better to use localStorage.
+- If the server or the database needs the info, better to use cookies as the req.body will automatically send cookies back.
 
 ## Never store passwords as cleartext
 
-Cleartext or plaintext means not encrypted (humanly readable)
-Ciphertext is encrypted
+- Cleartext or plaintext means not encrypted (humanly readable)
+- Ciphertext is encrypted
 
-ALWAYS store passwords as ciphertext.
+- ALWAYS store passwords as ciphertext.
 
-Standard practice is to encrypt passwords stored in your database.
+- Standard practice is to encrypt passwords stored in your database.
 
 ## Known hashing algorithms
 
@@ -167,18 +158,21 @@ bcrypt.hash('password', 10, (err, hash) => {
 
 ## JWT
 
-JSON Web Tokens - open standard that defines a compact and self-contained way for transmitting information between parties as a JSON object
+- tldr; Useful since it doesn't take server memory, but hard to revoke access
+  since it's completely stateless. Not ideal to handle main sessions, but can
+  be used for subcomponent access
+- JSON Web Tokens
+  - open standard that defines a compact and self-contained way for transmitting information between parties as a JSON object
+- Sending a JWT within a request allows us to verify that a user is looged in WITHOUT having to look at a cookie sessions table.
 
-Sending a JWT within a request allows us to verify that a user is looged in WITHOUT having to look at a cookie sessions table.
+- JWT's have 2 important parts. the PAYLOAD and the SIGNATURE
 
-JWT's have 2 important parts. the PAYLOAD and the SIGNATURE
+- The payload is usually user information stored as JSON object
 
-The payload is usually user information stored as JSON object
+- We can send a JWT as a cookie or as a token within the Authorization header.
+- BEST practice is to send within the Authorization header.
 
-We can send a JWT as a cookie or as a token within the Authorization header.
-BEST practice is to send within the Authorization header.
-
-JWTs are used to send more sensitive information than cookies, but it still doesn't offer high security like bcrypt. Mostly used for quickly obtaining information about a looged-in user without going to the database
+- JWTs are used to send more sensitive information than cookies, but it still doesn't offer high security like bcrypt. Mostly used for quickly obtaining information about a looged-in user without going to the database
 
 ## OAuth
 
