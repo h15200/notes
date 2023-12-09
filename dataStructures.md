@@ -1216,7 +1216,6 @@ console.log(quickSort([5,17,1,7,0, 3, -1]))
 - when merging, make sure you make the parent of the root_parent the new parent, and increment the rank of the smaller TOTAL rank
 - after going through all edges, the remaining number is the output
 
-```
        parent = {i: i for i in range(n)}
         rank = {i: 1 for i in range(n)}
 
@@ -1242,4 +1241,24 @@ console.log(quickSort([5,17,1,7,0, 3, -1]))
             total -= 1
 
         return total
+
+## Moore's algo
+
+- if there is a majority, you can use 2 variables in linear time
+
 ```
+majority = None
+count = 0
+
+for num in nums:
+    if count == 0:
+        # set new majority
+        majority = num
+        count = 1
+    elif majority == num:
+        count += 1
+    else:
+        count -= 1
+```
+
+- as long as one number is the majority, it will always work!
