@@ -205,8 +205,6 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
   - used in `DNS` and voice/video apps
 - `http` built on top of ip/tcp with encryption and identify verification
   - is a client-server model. The client must first request, and the server replies
-  - `http2` is a binary version of http1 which is faster
-  - `http3` or `quick` is based on `UDP` instead of `TLS` but still has security somehow
   - `webhooks` use http
 - `smpp` (short message texting) twilio
   - based on TCP
@@ -416,11 +414,20 @@ solution:
 
 ### Databases (relational, non-relational)
 
+- On Line Transactional Process or `OLTP system` requires fast updates. `RDBMS` is the choice
+  - streaming
+  - data needs to be in the Gigabytes but not larger
+- On Line Analytics Process or `OLAP system` needs optimized reads and inserts,
+  but can have slow updates since it doesn't usually need to be a live system
+  - batch processing
+  - data can be in the Terrabytes or Petabytes
+  - Nosql Columnar like `Cassandra`, `Hbase`, `BigQuery`, `Snowflake`, `Redshift`
+
 Reasons for:
 
 #### Relational db (sql)
 
-- generally, most companies will want an RDBSM as the primary source of truth until they scale
+- generally, most companies will want an RDBMS as the primary source of truth until they scale
   to the point where it just can't scale.
   - The first millions of users still won't break your SQL db
   - Breaking point is around the need of > 5TB a year
@@ -482,10 +489,11 @@ Reasons for:
   - parts of the Sql db can splinter off for ex. metrics to a nosql db or
     an async offline system that does batch processing (ETL) with something
     like Spark and Druid. Searchable data can go to Elastic Search
+  - `ETL` is primarily used when you go from a `OLTP system` to a `OLAP` system
 
 #### metrics and analytics
 
-- it is common for the primary RDBSM to send data to a secondary db for metrics/analytics
+- it is common for the primary RDBMS to send data to a secondary db for metrics/analytics
 - common products include AWS Elastic Search (based on Apache Lucene) as well as Apache Splunk
 
 #### data warehouse
@@ -588,7 +596,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 `Partitioning` or `sharding` will decrease latency, increase throughput and can be done in 2 ways:
 
 - Horizontal partitioning separates (users a-j, j-z) into smaller shards (or partitions) of the same columns
-  - can be done in RDBSM and no-SQL, but much easier with noSQL
+  - can be done in RDBMS and no-SQL, but much easier with noSQL
 - Vertical partitioning separates columns (categories) into shards (or partitions) for ex when a column is rarely used, it is stored elsewhere.
 
   - don't confuse vertical partitioning with vertical scaling. Both horizontal and vertical partitioning is a form of horizontal
