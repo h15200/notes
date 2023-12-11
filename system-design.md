@@ -620,9 +620,10 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 #### Denormalization
 
-- optimize reads with a penalty to writes
-- keep duplicate data to make reads faster
-- uses more memory and slows and writes
+- generally used in OLAP systems (noSql columnars) and not in OLTP
+  - optimize reads with a penalty to writes
+  - keep duplicate data to make reads faster
+  - uses more memory and slows and writes
 
 #### SQL tuning
 
