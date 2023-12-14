@@ -148,6 +148,8 @@ apply fundamental principles of scalable system design
 
 ### Microservice architecture
 
+- the previous was called "service oriented architecture" where multiple
+  services existed, but were coupled with shared resources
 - Monolithic one or a group of machines (servers) handle ALL services.
 - Server Orientated Architecture. precursor to microservices where different
   servers shared some data
@@ -185,6 +187,13 @@ CONS
    Ways to reason about which service to use..
 
 If there are only 2 microservices, it's a sign you should just use a monolithic structure.
+
+- Microservice Registry
+  - a database that keeps track of all instances of each service. This can
+    be in the hundreds for large companies
+  - when making api (either client side or server to server rpc), it's necessary
+    to have a service-discovery step using the service registry to see
+    which instances are available for load balancing properly in LB or Api Gateway
 
 ## protocols
 
