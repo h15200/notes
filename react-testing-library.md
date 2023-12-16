@@ -238,6 +238,15 @@ Look at StreamDesignerAnnouncement-test.js, ClusterUpgradeCta-test.js
 ### blabla refers to a value, but is being used as a type here error
 - extension must be jsx or tsx (not js/ts) to render a react component with <ThisFormat /> in a render call
 
+### testing form dropdowns
+
+- huge pain. usually not worth the effort of trying out `userEvent`, or `getRoleBy('combobox', ...)`
+- as an alternative, just check if the submit button is disabled or enabled based
+on input
+    - note that `ele.isEnabled()` only checks the generic `disabled` attr, and
+    some libraries use `aria-disabled` instead. Inspect the button first, then
+    use ele.toHaveAttribute("aria-disabled", "false") or something like that
+
 ## Mocking window.location
 
 - use Object.defineProperty() or jest.SpyInstance
