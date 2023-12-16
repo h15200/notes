@@ -803,11 +803,15 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 ### Rate limiting
 
 - DoS (Denial of Service) attacks involve spamming a server with requests to damage or take down the service.
+- this can be thwarted by Rate Limiting which returns an error code `429` "Too many requests" on a request based on parameters like ip address / user, number of requests per minute, region. There are 2 main implementations
 
-- this can be thwarted by Rate Limiting which returns an error code `429` "Too many requests" on a request based on parameters like ip address / user, number of requests per minute, region
+  - token bucket system where each unique IP address may have x tokens that
+    gets used per request. At a certain time interval, tokens fill back up.
+    When tokens run out, error 429
+  - sliding window system where each unique IP address has n requests available
+    per time window. It refreshes after 1-n seconds
 
 - DDoS (DISTRIBUTED DoS) attacks are done from multiple client sources, and is harder to prevent with a simple rate limiting on ip address / user. In a distributed system, the rate limiting will need to be checked against another entity that connects to ALL replicas of the server like a redis server
-
 - Implementation can be done with a key-value in memory store like `redis`. The server gets a request, then asks redis "hey are we doing ok with rate limiting?" before responding
 
 ## Online vs Offline systems
