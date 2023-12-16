@@ -430,7 +430,11 @@ solution:
   but can have slow updates since it doesn't usually need to be a live system
   - batch processing
   - data can be in the Terrabytes or Petabytes
-  - Nosql Columnar like `Cassandra`, `Hbase`, `BigQuery`, `Snowflake`, `Redshift`
+  - Columnar like `Cassandra`, `Hbase`, `BigQuery`, `Snowflake`, `Redshift`
+    - note that Columnar dbs can be SQL OR Nosql. BigQuery, Redshift, and Snowflake are SQL
+      colmnar dbs. Cassandra, Hbase, and Druid are noSql.
+  - you can also use SQL to extract data from noSql dbs. The querying method
+    is decoupled from the db type.
 
 Reasons for:
 
@@ -939,3 +943,9 @@ Update
 - some companies like uber will use a tool like `hailstorm` that randomly shuts down a microservice and logs what happens to find weaknesses
 
 - distributed systems can be so large and complex that it's possible to lose track of all service dependencies. Ex.. an owner of a microservice may not be completely clear on what othe
+
+## classic examples
+
+- chat app
+  - remember that group chat is just the service messaging each individual.
+  - usually a TLS bidirectional protocol like websockets
