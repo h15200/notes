@@ -1,4 +1,12 @@
-# Structured Query Language
+# Structured Query Language (but not really)
+
+- was originally named SEQUEL (Structured English Querying Language)
+- in reality, SQL is not structured, not just for querying (including mutating data),
+  and is not a language. It is a data sublanguage
+
+- Top level components. 3 main parts
+
+- `Data Application` uses a `Data Engline` (same as RDBMS) and talks to the `Database`
 
 ## History
 
@@ -12,6 +20,7 @@
 - the `relational` db model eventually because the go to solution for the
   flexibility
 - the relational model defines data in a 2-D table
+- the ROW of a table is just a tuple of attributes. The COL is one attibute
 
 ## Modeling
 
@@ -35,7 +44,8 @@
 ### Identifier
 
 - all entities must have some unique identifier to be used as `primary key`
-  that identifies the row of the table.
+  that identifies the row of the table. The PK can be a combination of attributes
+  if no singular attribute is unique
 
 ### Relationships
 
@@ -50,21 +60,73 @@
   Most of these are almost always converted to simplier one-to-many relationships
   by entities before they are used to build a database
 
-## Select
+### Common RDBMS implementations
 
-ex.
+- MySQL
+- PostgreSQL
 
-SELECT Somethingrow
+### Schema
+
+- holds namespace for all tables within one database to avoid collision
+- in a huge db, you may need multiple schemas to hold multiple namespaces. In
+  these cases, schemas are documented in a `catalog`
+
+## SQL 3 types
+
+1. `Data Definition Language` deals with creating main components like
+   TABLES, VIEWS, SCHEMAS to control top level structure
+
+2. `Data Manipulation Language` deals with the bulk of the usual work of
+   with CRUD of individual records
+
+3. `Data Control Language` deals with permissions and access control
+
+## DDL - data definition language
+
+- CREATE TABLE, CREATE VIEW, CREATE SCHEMA, CREATE DOMAIN
+- ALTER to change top level objects like TABLE, VIEW, SCHEMA
+- DROP
+- `DOMAINS` are custom attributes with specific restrictions. kind of like
+  a typed attribute
+
+## DML - data manipulation language
+
+### Select
+
+```
+SELECT Somerow
 AS Newrowname
 FROM Sometable
 WHERE some condition
 ORDER BY
 LIMIT
 
+```
+
+- INSERT (add a new record to a table)
+- UPDATE (mutate record to a table)
+- DELETE (deletes a row from a table)
+  - note that DELETE is ROW/record scoped, and DROP is TABLE/VIEW/ATTRIBUTE scoped
+
 You can acess data with Alias.data Newrowname.price
 
 Used first. must specify the name of row you are querying
 You can also print onto a column any string `SELECT 'HELLO SQL'`
+
+## DCL - data control language
+
+- `GRANT SELECT ON SOMETABLE TO PUBLIC`
+  - makes select statements on "SOMETABLE"
+    to be public for everyone
+- `REVOKE ...[same as above]` will make it not public
+
+## SQL types and implementation
+
+- Embedded SQL used to be a popular way of writing SQL within a C program
+- Nowadays, most implmentations just recommend writing SQL directly
+- `unique` and `non null` are important contraints. Otherwise, the types
+  are pretty intuitive and easy to look up and vary slightly depending on
+  implementation
 
 ## SQL Operators and syntax
 
