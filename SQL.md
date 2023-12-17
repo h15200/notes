@@ -1,4 +1,56 @@
-# Select
+# Structured Query Language
+
+## History
+
+- made by IBM
+- initially, dbs had two other model types
+  - `hierarchial database model` that was tree strcutured, but didn't handle
+    many-to-many relationships without redundancy in data
+  - `network database model` the predecessor of graph dbs, but is harder
+    to handle traversal. eoiminates redundancy but at the expense of complicated
+    relationships
+- the `relational` db model eventually because the go to solution for the
+  flexibility
+- the relational model defines data in a 2-D table
+
+## Modeling
+
+- before building a db, it is necessary to go through the modeling of data
+  to have a rough idea of the use case for the data
+- the most common way to model data is the `entity-relationship` modelling
+  technique
+  - consists for 4 parts, `Entities`, `Atrributes`, `Identifiers` and `Relationships`
+
+### Entities
+
+- usually the top layer class that is a "thing", separated by tables
+- for example, `EMPLOYEE`
+- convention is to capitalize
+
+### Attributes
+
+- entities have `attributes` which are the fields
+- ex FirstName, LastName, JobTitle, HireDate
+
+### Identifier
+
+- all entities must have some unique identifier to be used as `primary key`
+  that identifies the row of the table.
+
+### Relationships
+
+- `Degree-two relationship` are ones that relate one entity directly to another.
+- most system that you are likely to model consists of entities connected
+  by degree-two relationships
+- types of degree-two relationships include:
+  - one to one
+  - one to many
+  - many to many
+- many-to-many relationships are not represented by 2-D table architecture well.
+  Most of these are almost always converted to simplier one-to-many relationships
+  by entities before they are used to build a database
+
+## Select
 
 ex.
 
