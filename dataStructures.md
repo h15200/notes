@@ -1183,7 +1183,9 @@ console.log(quickSort([5,17,1,7,0, 3, -1]))
 
 ### Bucket sort
 
-- used for numbers and frequences. O(n) time!
+- used for numbers and frequences. usually m log n where m is
+  the number of items in one bucket, which is usually faster
+  than the traditional n log n
 
 1. get the top bound
    - for numbers, it's the max num. you'll need to run through the array once to find it
