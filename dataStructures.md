@@ -782,20 +782,17 @@ In js, it is again an array of arrays
 The "labels" of row and column are assumed
 
 ```
-
 const incidenceMatrix = [
 [ 1, 0, 1 ],
 [ 0, 1, 0 ],
 [ 1, 1, 0 ],
 [ 0, 0, 1],
 ]
-
 ```
 
 A directed matrix will show the in and outs with 1 and -1. [-1] means LEAVING that node and [1] means entering. Each edge should have a [1], [-1] pair
 
 ```
-
 const incidenceMatrixDirected = [
 [ -1, 0, 1],
 [ 0, 1, 0],
@@ -805,7 +802,7 @@ const incidenceMatrixDirected = [
 
 ```
 
-A number greater than 1 represents weight
+- A number greater than 1 represents weight
 
 ## Graph searches (breadth-first, depth-first)
 
@@ -816,8 +813,10 @@ A depth first search will explore one neighbor all the way until it reaches a le
 
 - depth first can be done recursively or iteratively with a stack. these two methods will have different ordering of visited vertices, but will both be valid depth first searches.
 
+```
 // breadthFirst(graph, 1) - what is the distance form this root to all nodes in this graph
 // returns something like { 0:1, 1:0, 2:infinity, 3:3 }
+```
 
 ## Breath first graph search
 
@@ -958,7 +957,6 @@ graph.addEdge("e", "f");
 console.log(graph.dfsRecursive("a"))
 console.log(graph.dfsIterative("a"))
 console.log(graph.bfs("a"))
-
 
 ```
 
@@ -1180,7 +1178,18 @@ function quickSort(arr: number[], left: number = 0, right: number = arr.length -
 }
 
 console.log(quickSort([5,17,1,7,0, 3, -1]))
+
 ```
+
+### Bucket sort
+
+- used for numbers and frequences. O(n) time!
+
+1. get the top bound
+   - for numbers, it's the max num. you'll need to run through the array once to find it
+   - for frequencies, it's just the length of the original list since the
+     max frequency can't be greater than the number of items
+2. make an array with len == max bound
 
 ## Radix Sort T: O(n + k (length of numbers)), S: O(n + k)
 
@@ -1216,49 +1225,53 @@ console.log(quickSort([5,17,1,7,0, 3, -1]))
 - when merging, make sure you make the parent of the root_parent the new parent, and increment the rank of the smaller TOTAL rank
 - after going through all edges, the remaining number is the output
 
-       parent = {i: i for i in range(n)}
-        rank = {i: 1 for i in range(n)}
+```
 
-        def getRootParent(node: int) -> int:
-            while parent[node] != node:
-                node = parent[node]
-            return node
+parent = {i: i for i in range(n)}
+rank = {i: 1 for i in range(n)}
 
-        total = n
+def getRootParent(node: int) -> int:
+while parent[node] != node:
+node = parent[node]
+return node
 
-        for a, b in edges:
-            par_a, par_b = getRootParent(a), getRootParent(b)
-            if par_a == par_b:
-                # already combined, do nothing
-                continue
-                # at this point, it also tells us this is not a tree since there's a cycle
-            if rank[par_a] >= rank[par_b]:
-                parent[par_b] = par_a
-                rank[par_a] += rank[par_b]
-            else:
-                parent[par_a] = par_b
-                rank[par_b] += rank[par_a]
-            total -= 1
+total = n
 
-        return total
+for a, b in edges:
+par_a, par_b = getRootParent(a), getRootParent(b)
+    if par_a == par_b:
+# already combined, do nothing
+    continue
+# at this point, it also tells us this is not a tree since there's a cycle
+    if rank[par_a] >= rank[par_b]:
+    parent[par_b] = par_a
+    rank[par_a] += rank[par_b]
+    else:
+    parent[par_a] = par_b
+    rank[par_b] += rank[par_a]
+    total -= 1
+
+    return total
+```
 
 ## Moore's algo
 
 - if there is a majority, you can use 2 variables in linear time
 
 ```
+
 majority = None
 count = 0
 
 for num in nums:
-    if count == 0:
-        # set new majority
-        majority = num
-        count = 1
-    elif majority == num:
-        count += 1
-    else:
-        count -= 1
+if count == 0: # set new majority
+majority = num
+count = 1
+elif majority == num:
+count += 1
+else:
+count -= 1
+
 ```
 
 - as long as one number is the majority, it will always work!
