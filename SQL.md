@@ -26,7 +26,7 @@
 
 - before building a db, it is necessary to go through the modeling of data
   to have a rough idea of the use case for the data
-- the most common way to model data is the `entity-relationship` modelling
+- the most common way to model data is the `entity-relationship` or `ER` modelling
   technique
   - consists for 4 parts, `Entities`, `Atrributes`, `Identifiers` and `Relationships`
 
@@ -89,6 +89,41 @@
 - `DOMAINS` are custom attributes with specific restrictions. kind of like
   a typed attribute
 
+```
+CREATE DOMAIN Currency NUMERIC (9,2)
+    CHECK (VALUE >= 0)
+// positive number like 234.34
+
+// now use the domain as a type when creating a new table
+
+CREATE TABLE RECEIPT (
+   Price        Currency
+
+)
+```
+
+- Primary keys must be indicated with a constraint
+- other constrains include UNIQUE, NOT NULL
+- Table relationships use foreign keys
+
+```
+CREATE TABLE USER (
+id          INTEGER  PRIMARY KEY,
+FirstName   CHAR (40) NOT NULL,
+LastName    CHAR (40) NOT NULL,
+CONSTRAINT UserFK FOREIGN KEY (FriendId)
+     REFERENCES FRIEND (id)
+
+     // when assigning a foreign key, it's CONSTRAINT <variableName> FOREIGN KEY (<nameOfCurrCol)
+              REFERENCES <otherTable> (<otherTableColName>)
+)
+```
+
+- when assining a foreign key in a one-to-many relationship, it must be declared
+  on the MANY side table.
+- for one-to-one relationships, it doesn't matter, just pick one
+- for many-to-many, you must create an intermediary table to make them one-to-many
+
 ## DML - data manipulation language
 
 ### Select
@@ -127,6 +162,9 @@ You can also print onto a column any string `SELECT 'HELLO SQL'`
 - `unique` and `non null` are important contraints. Otherwise, the types
   are pretty intuitive and easy to look up and vary slightly depending on
   implementation
+- NUMERIC(arg1, arg2)
+  - arg1 is total digits
+  - arg2 is total digits to the right of decimal
 
 ## SQL Operators and syntax
 
