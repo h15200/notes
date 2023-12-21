@@ -1277,3 +1277,30 @@ count -= 1
 ```
 
 - as long as one number is the majority, it will always work!
+
+## Sweep line Algorithm
+
+- used to calculate frequency of ranges without going through each unit
+- example.. `[[1,3], [2,4]]` get all frequencies of these ranges
+
+  - pre-requisite is to know the max upper range. for lower, use 0
+
+  ```
+  _max = 5
+  freq = [0 for _ in range(_max)] # all initialized to 0
+
+  for start, end in range:
+      # the start increments by 1
+      freq[start] += 1
+      # the index AFTER end decrements by 1
+      freq[end] + 1 -= 1
+
+  # at this point freq looks like [0, 1, 1, 0, -1, -1]
+  # now go through the bucket starting on index 1 (not 0), and simply increment prev
+  for i in range(1, len(freq)):
+      freq[i] += freq[i - 1]
+
+  # new freq is [0, 1, 2, 2, 1, 0] -> 1 appears once, 2 appears twice, 3 appears twice, 4 appears once
+
+
+  ```
