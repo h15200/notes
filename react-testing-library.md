@@ -282,3 +282,22 @@ describe('getIsDemoDomain', () => {
 
 - when mocking default exports, no need to mock with `default: () => whatever`. Just
 import in the mock and return a function
+
+
+## Mocking something only sometimes, and using the original other times
+
+- import mocked version like:
+```
+jest.mock('../hooks', () => ({
+  ...jest.requireActual('../hooks'),
+  useRefreshDemoSession: jest.fn(() => {}),
+}));
+```
+- within each test, reassign to the original
+```
+    // use original, not a mock
+    const useRefreshDemoSession = jest.requireActual('../hooks').useRefreshDemoSession;
+```
+- if you want to use the mock, leave it alone
+
+
