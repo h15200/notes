@@ -550,7 +550,9 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 - prevent a single point of failure by replicating a db to a backup in case the main fails.
 - if set up correctly, a main db failure will seamlessly be taken over by the replica until the main is back online again. once it's back, the main will resume as the primary db
 - two ways
-  1. leader-follower replication
+
+  1. leader-follower replication (single leader)
+
   - the majority of db replication is leader-follower, especially if you only
     have 1 data center. multi-leader should only be used in special circumstances
     in multi-data center systems
@@ -565,19 +567,62 @@ quad trees are trees that have 0 or 4 children used to do location searches used
     writes to follwers are complete. Realistically, this is not worth it
     for data centers that are far away because the round trips are too laggy.
     For that, the compromise is eventually consistency and higher throughput
+  - PRO easy to implement compared to multi-leader
   - CON the more followers there are, the more latent it becomes
   - CON you need logic (consensus algo) to promote a follower as a leader (Raft , Pax)
+
   2. multi-leader replication
-     - the exception to the rule, often when you have multiple data centers
-     - each data center can have 1 leader and followers
-     - when one data center goes down, the others can continue operating
-     - data needs to be synced and merged when multiple writes need to be resolved
-     - ex. google calendar is essentially multi-leader as all of your devices
-       are leaders with write access. When you don't have internet access,
-       it is partitioned but the write will happen when you're back online (consistency
-       over availability)
-     - will need additional load balancing logic for writes
-     - all replicas can write and read and sync with each other
+
+- the exception to the rule, often when you have multiple data centers
+- also, if you absolutely need to optimize for writes
+- each data center can have 1 leader and followers
+- when one data center goes down, the others can continue operating
+- data needs to be synced and merged when multiple writes need to be resolved
+- ex. google calendar is essentially multi-leader as all of your devices
+  are leaders with write access. When you don't have internet access,
+  it is partitioned but the write will happen when you're back online (consistency
+  over availability)
+- will need additional load balancing logic for writes
+- all replicas can write and read and sync with each other
+- conflict resolution strategies:
+  - avoid write conflicts by assigning dbs to regions
+  - last write wins. Cassandra (easy to implement, but issues. offline writes? lost writes)
+  - on-read. store conflicting values and make the client resolve on-read
+  - on-write. merge writes when there is a conflict on the 2nd write
+- how to detect concurrency
+  - need to use version vectors to detect missing versions
+- PROS:
+  - fast writes as throughput is more than 1 node like in single node
+  - allows for multi-region, global service
+- CONS:
+  - write conflicts from multiple leaders
+
+3. Leader-less replication
+
+- send write/reads to all nodes in parallel
+- when a certain number of nodes respond with success, the client is told it's a success
+- strategies to repair failed writes
+  1. anti-entropy
+  - a background process to look at all nodes, and get most updated data (version info) and
+    propagate to other nodes
+  2. read repair (more common)
+  - repair on read. read in parallel from all nodes and find the most updated
+    node with a quorum
+  - quorum can be found by setting the number of total replica nodes as an odd number like 7. Then,
+    set the number of threshold writes W to (n + 1) / 2 = 4.
+  - first, send write operations to all 7 nodes. If you get a success from at least 4,
+    consider it a success
+  - now if you READ from any 4 nodes (Read R should be same as W), you are
+    guaranteed that at least 1 node will have the most updated writes. Use
+    that to read-repair the other nodes that missed writes. repair as you read
+  - this quorum is not consistent because if the client does NOT receive success
+    in situations where W - 1 nodes successfully wrote, those writes are still
+    existing and need to be rolled back eventually
+  - write conflicts still exist if two write calls reach a node in different ordering.
+    must have some kind of conflict resolution
+- pros and cons
+  - PROS like multi-leader, this is only viable in a multi data center, multi region setup
+  - CONS still need conflict resolution, not consistent, slow reads when using read-repair
 
 #### Federation / Partitioning
 
@@ -640,13 +685,18 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 #### SQL tuning
 
-- Indexing popular searches
+- Indexing popular columns
+  - faster reads with penalty to writes as we are adding a new data structure
   - indexing uses extra memory to keep track of a way to handle sorting in
     non-primary keys
-  - 2 main types of indexing data structures `b-tree` and `Log Structured Merge`
+  - 2 main types of indexing data structures `b-tree` and `Log Structured Merge` (LSM)
+    - as an exception, `hash maps` can be used to index very small amount of data
+      a hash index gets extremely slow if it spills outside RAM and requires disk. often,
+      not realistic. Ranged queries also are very slow in a hash index.
   - standard is `b-tree` (mySql, postgres) where reads are optimized over writes
     and good for sorting data (useful in structured data)
-  - `LSM` has faster writes and scales better but bad at sorting (most Nosql dbs)
+  - `LSM` has faster writes since it only writes to a buffer and scales better but bad at sorting
+    (most Nosql dbs use LSM)
 - using optimized SQL commands
 
 ### Leader Election
