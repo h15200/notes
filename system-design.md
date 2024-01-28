@@ -654,7 +654,39 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 `Partitioning` or `sharding` will decrease latency, increase throughput and can be done in 2 ways:
 
 - Horizontal partitioning separates (users a-j, j-z) into smaller shards (or partitions) of the same columns
+
   - can be done in RDBMS and no-SQL, but much easier with noSQL
+    - 2 methods of horizontal partitioning:
+    1. Range of keys
+    - ex. "A-D" in last names goes to one shard, then "E-K"
+    - PROS easy to implement
+    - CONS could have uneven data, can have hot spots
+    2. By Range of Hash of keys
+    - hash a last name, then take a range of those hashes
+    - PROS even data
+    - CONS can't do range queries since lastnames are now random, still can
+      have hot spots
+
+- secondary indexing
+
+  - when you shard a db, you need to have a secondary index (a subset of
+    the primary index) to do queries
+  - secondary indexing will speed up reads, but the method will determine
+    what kind of write penalty you'll incur
+    within individual shards, since your primary index is now split up
+  - 2 options to secondary index
+    1. local
+    - only indexes what's available for that shard
+    - PROS fast on write as the secondary index is kept on the shard only
+    - CONS slow on read because we don't know which partition a query lands on,
+      so we need to read from every single partition secondary index to find a match
+    2. global
+    - all index ranges are held in one partition, regardless of if that data
+      is in that shard. For example, "lastNames a - d" is on parition a.
+    - PROS fast on read because you already know what partition has that index
+      so no need to go through every partition
+    - CONS slow on write
+
 - Vertical partitioning separates columns (categories) into shards (or partitions) for ex when a column is rarely used, it is stored elsewhere.
 
   - don't confuse vertical partitioning with vertical scaling. Both horizontal and vertical partitioning is a form of horizontal
