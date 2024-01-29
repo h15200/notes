@@ -180,3 +180,8 @@ switch to featureBranch, git merge master
 - some final check of main branch before pushing `git pull origin master`
 - push to github branch
 - pr
+
+### reset
+
+- when you need to delete some commit history, use `git reset HEAD~3` to remove 
+last three commits
