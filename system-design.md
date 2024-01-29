@@ -453,6 +453,25 @@ Reasons for:
 - sql systems use `write-ahead logs` to keep track of all modofications in disk
   before changing the table. This allows for full recovery after power outages
 
+#### Trasactions and ACID
+
+- abstraction used that provide ACID properties. a single command will either
+  all succeed, or all fail without any side effects
+
+- "I" isolation is hard to implement. How do you have concurrent writes
+  without race conditions
+  - Actual serial execution
+    - idea is to implement all queries on a single thread. simple to implement
+    - only possible if it's an in-memory database
+    - usually not practical to run large queries on a single thread
+  - Two Phase Locking
+    - each object has a lock and only available one query at a time
+    - most frequent implementation in most dbs
+    - poor performance when unnecessary locking happens, along with frequent deadlocks
+  - Serializable Snapshot Isolation
+    - Optimistic control where you assume there are no concurrency issues
+    - rolled back only when a bug is detected
+
 #### Non relational db (no sal)
 
 - BASE (basically available, soft state, eventual consistency)
