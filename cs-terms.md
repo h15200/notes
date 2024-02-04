@@ -221,7 +221,7 @@
   - each machine is different
   - great for duration for that 1 machine
   - only counts forward
-- logical clocks
+- logical clocks (aka logical timestamps)
   - the best way to deal with accuracy in a distributed system
   - only cares about ordering of events
   - if A comes before B, A could have caused B but not the other way around
