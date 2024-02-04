@@ -212,13 +212,17 @@
 
 ## clocks
 
-- time-of-day clocks
+- time-of-day clocks (timestamp)
   - each machine is slightly different
   - not good for intervals or durations
+  - needs to sync with NTP server to get "true" time, but that network call also has delay
+  - while not idea, some big dbs still rely on timestamps to resolve write conflicts like Cassandra
 - monotonic
   - each machine is different
   - great for duration for that 1 machine
   - only counts forward
 - logical clocks
+  - the best way to deal with accuracy in a distributed system
   - only cares about ordering of events
   - if A comes before B, A could have caused B but not the other way around
+  - called version vectors
