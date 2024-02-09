@@ -782,7 +782,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - availability is measured by `9s`. Five 9s means there are outages of seconds over a year
 - in reality, most major cloud vendors promise `99.95%`, which is about 20 minutes of down time a month
-- Strong Consistency means data is rarely stale. Eventual consistency means the data will sync over a period of time (seconds or minutes) when the network traffic is low.
+- Strong Consistency (aka Linearizability) means data is rarely stale. Eventual consistency means the data will sync over a period of time (seconds or minutes) when the network traffic is low.
 - CAP theorem (Consistency, Availability, Partition)
 
   - in the event of a `Network Partition (server failure, network failure)` a system must prioritize either `consistency` (pause user operations until network is back up) or `availability` (continue allowing users to make API calls, but data is not consistent)
@@ -796,7 +796,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
   - eventual consistency
     - tech: Amazon S3, Amazon SimpleDB, SMTP (email protocol)
     - examples: social media likes, DNS
-  - strong consistency
+  - strong consistency (linearizability)
     - tech: RDBMS, file systems
     - examples: bank transactions
 
