@@ -288,16 +288,21 @@ import in the mock and return a function
 
 - import mocked version like:
 ```
+import {useRefreshDemoSession} from '../hooks'
 jest.mock('../hooks', () => ({
   ...jest.requireActual('../hooks'),
   useRefreshDemoSession: jest.fn(() => {}),
 }));
+
+const originalRefreshDemoSession = requireActual('../hooks').useRefreshDemoSession
 ```
 - within each test, reassign to the original
 ```
     // use original, not a mock
-    const useRefreshDemoSession = jest.requireActual('../hooks').useRefreshDemoSession;
+    mocked(useRefreshDemoSession).mockImplementOnce(originalRefreshDemoSession)
+
+    // in another test, mock in a different way
+    mocked(useRefreshDemoSession).mockImplementationOnce(()=> "some other functionality")
 ```
-- if you want to use the mock, leave it alone
 
 
