@@ -926,7 +926,9 @@ quad trees are trees that have 0 or 4 children used to do location searches used
   - ex. web servers, dbs, caches
 - Offline systems or `batch processing` systems process lots of data
   - high throughput is prioritized
-  - `mapReduce` is a classic example of an offline system
+  - `mapReduce` is a classic example of an offline system. Was the original method
+  - `spark` uses DataFlow Engines which is an upgrade to mapReduce. This is
+    currently the popular implementations of batch processing
   - message queues are also offline
 - streaming systems are between the two
 
