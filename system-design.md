@@ -485,9 +485,11 @@ Reasons for:
 
 #### Types of nosql dbs
 
-1. k-v store (`redis`, `memcached`)
+1. k-v store (in-memory ones like `redis`, `memcached`, or non-in-memory like `Riak`)
 
    - simple data used for caching
+   - not suitable for analytics since it doesn't have secondary indices, but
+     implementation is similar to wide-column dbs like Cassandra.
 
 2. document store (`mongo`, `dynamo`, `elasticsearch`, `aws s3`)
 
@@ -1052,3 +1054,35 @@ Update
 - chat app
   - remember that group chat is just the service messaging each individual.
   - usually a TLS bidirectional protocol like websockets
+
+## deep dive
+
+### cassandra vs Hbase
+
+- similarities
+
+  - Both are wide column, meaning it's good for analytics and column based reads
+  - both are noSql using LSM as indexing method, so relatively fast writes
+    compared to sql b-trees
+  - both scale relatively well because sharding is easier without joins
+  - both have eventual consistency
+
+- Differences
+
+  - HBase uses a distributed file system to implement (hadoop). It also
+    has a single leader replication strategy while Cassandra has multi leader
+  - Cassandra writes are faster since multi leader, but for conflict resolution
+    they use a simple last-write-wins, which is not reliable because of timestamps
+  - HBase single leader means more throughput on writes, but consistent
+  - Cassandra is better for customer facing apps that require fast writes, but
+    Hbase is better for Data Lakes since it has faster reads and batch job processing
+    (mapReduce, or Data Flow engline like Spark)
+
+### cassandra vs riak
+
+- cassandra is a wide-column and riak is key-value, but similar in that
+  they both use multi-leader replication and writes
+- Riak uses CRDT (conflict-free resolution data types) to resolve conflicts,
+  which are similar to version vectors. Cassandra uses a simple last-write-wins.
+  Riak is more reliable since it's not dependent on faulty server timestamps,
+  but it doesn't do well with analytics since it's just a key-value store
