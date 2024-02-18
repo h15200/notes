@@ -1086,3 +1086,9 @@ Update
   which are similar to version vectors. Cassandra uses a simple last-write-wins.
   Riak is more reliable since it's not dependent on faulty server timestamps,
   but it doesn't do well with analytics since it's just a key-value store
+
+## mongoDB
+
+- noSql document store, but capable of transactions. Sort of in-between two
+  worlds. Uses b-tree despite it being a noSql, allowing for slower writes but
+  fast reads. Easy to use for fast mvps
