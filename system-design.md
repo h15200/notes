@@ -1092,3 +1092,18 @@ Update
 - noSql document store, but capable of transactions. Sort of in-between two
   worlds. Uses b-tree despite it being a noSql, allowing for slower writes but
   fast reads. Easy to use for fast mvps
+
+## Riak vs Redis vs Memcached
+
+- Riak is a key-value store on disk. Not in-memory
+  - uses multi/no leader replication with conflict resolution so writes are
+    a bit slow but consistent
+- Memcached is a very simple in memory key-value store which does not have any
+  replication measures or failure handling. It does have paritions with consistent
+  hash ring, but there are no handling of faults.
+- Redis builds on top of basic features in Memcached.
+  - has two modes. (Single Node) and (Cluster)
+  - In single mode, has transactions and range queries
+  - In cluster mode uses single leader replication with automatic failover.
+    if the write node fails, another will be chosen via gossip protocol. Note
+    that if a leader fails before writing, some writes could fail
