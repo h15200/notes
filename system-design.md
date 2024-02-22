@@ -525,10 +525,19 @@ Reasons for:
     like Spark and Druid. Searchable data can go to Elastic Search
   - `ETL` is primarily used when you go from a `OLTP system` to a `OLAP` system
 
-#### metrics and analytics
+#### Search index
 
 - it is common for the primary RDBMS to send data to a secondary db for metrics/analytics
-- common products include AWS Elastic Search (based on Apache Lucene) as well as Apache Splunk
+- data lakes / data warehouses often use OLAP systems with a star schema like snowflake
+  or lsm + ss table like HBase to store data for fast reads.
+- To search OVER those dbs, we need a search engine
+- Most popular search engines include Elastic Search and Solr (based on Apache Lucene
+  ) as well as Apache Splunk
+- Lucene uses LSM + SS table and strings are tokenized. Also possible to
+  search for numbers and geolocations. Lucene engine is open source and
+  is for single nodes.
+- ElasticSearch is a service that takes the lucene engine over a distributed
+  cluster
 
 #### data warehouse
 
