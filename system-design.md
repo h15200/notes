@@ -431,8 +431,8 @@ solution:
   - batch processing
   - data can be in the Terrabytes or Petabytes
   - Columnar like `Cassandra`, `Hbase`, `BigQuery`, `Snowflake`, `Redshift`
-    - note that Columnar dbs can be SQL OR Nosql. BigQuery, Redshift, and Snowflake are SQL
-      colmnar dbs. Cassandra, Hbase, and Druid are noSql.
+    - note that Columnar dbs can be SQL OR Nosql. `BigQuery`, `Redshift`, and `Snowflake`
+      are SQL colmnar dbs. `Cassandra`, `Hbase`, and `Druid` are noSql.
   - you can also use SQL to extract data from noSql dbs. The querying method
     is decoupled from the db type.
 
@@ -550,9 +550,24 @@ Reasons for:
 
 ### Other specialized Storage Paradigms
 
-- BLOB (Binary Large Object) Store is used to store an arbitrary unstructured source of data (video, image, audio, binary). A relational db can't store blobs. Usually functions like a key-value store, but a blob store is optimized for big unstructured data. A key-value store is optimized for simple value. Examples - `GCS (google cloud storage)` `S3 (amazon)`
-- Time Series - used for monitoring by storing timestamps. Can be set so certain events can trigger read/write. example `InfluxDb`, `Prometheus`
-- Graph db - SQL and no SQL dbs rely on a table format. But if the data has a ton of relationships with individual data points, a graph may be a better representation. Social Networks are a good use case. Ex - `Neo4j`. The language used to parse graph databases is `cypher`. Cipher queries make finding graph connections much easier
+- BLOB (Binary Large Object) Store is used to store an arbitrary unstructured source of data (video, image, audio, binary).
+  - a subclass of noSql
+  - A relational db can't store blobs.
+  - Usually functions like a key-value store, but a blob store is optimized for big unstructured data
+    while a key-value store is optimized for simple value.
+  - `GCS (google cloud storage)` `S3 (amazon)`
+- Time Series
+  - used for monitoring by storing timestamps. Write once, read many times
+    over time ranges queries.
+    Can be set so certain events can trigger read/write. example `InfluxDb`, `Prometheus`, `Druid`
+  - ingests millions of writes per second, which is higher throughput than normal OLAP system
+  - different function as a data warehouse
+- Graph db
+  - SQL and no SQL dbs rely on a table format. But if the data has a ton of
+    relationships with individual data points, a graph may be a better representation.
+  - Social Networks are a good use case.
+  - `Neo4j`. The language used to parse graph databases is `cypher`.
+    Cipher queries make finding graph connections much easier
 - Spatial db optimized for spatial data like locations on a map. Queries based on locations can not be optimized based on column indexing like with regular data. Doing queries like "locations in the vicinity of x" is done much better using tree data structures. Usually uses a `quad tree` algorithm
 
 quad trees are trees that have 0 or 4 children used to do location searches used to index two-dimensional spatial data (like longitude, latitude)
@@ -1084,35 +1099,4 @@ Update
     they use a simple last-write-wins, which is not reliable because of timestamps
   - HBase single leader means more throughput on writes, but consistent
   - Cassandra is better for customer facing apps that require fast writes, but
-    Hbase is better for Data Lakes since it has faster reads and batch job processing
-    (mapReduce, or Data Flow engline like Spark)
-
-### cassandra vs riak
-
-- cassandra is a wide-column and riak is key-value, but similar in that
-  they both use multi-leader replication and writes
-- Riak uses CRDT (conflict-free resolution data types) to resolve conflicts,
-  which are similar to version vectors. Cassandra uses a simple last-write-wins.
-  Riak is more reliable since it's not dependent on faulty server timestamps,
-  but it doesn't do well with analytics since it's just a key-value store
-
-## mongoDB
-
-- noSql document store, but capable of transactions. Sort of in-between two
-  worlds. Uses b-tree despite it being a noSql, allowing for slower writes but
-  fast reads. Easy to use for fast mvps
-
-## Riak vs Redis vs Memcached
-
-- Riak is a key-value store on disk. Not in-memory
-  - uses multi/no leader replication with conflict resolution so writes are
-    a bit slow but consistent
-- Memcached is a very simple in memory key-value store which does not have any
-  replication measures or failure handling. It does have paritions with consistent
-  hash ring, but there are no handling of faults.
-- Redis builds on top of basic features in Memcached.
-  - has two modes. (Single Node) and (Cluster)
-  - In single mode, has transactions and range queries
-  - In cluster mode uses single leader replication with automatic failover.
-    if the write node fails, another will be chosen via gossip protocol. Note
-    that if a leader fails before writing, some writes could fail
+    Hbase is better for Data Lakes since it has faster reads and batch job p
