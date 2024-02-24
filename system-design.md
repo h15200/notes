@@ -568,7 +568,18 @@ Reasons for:
   - Social Networks are a good use case.
   - `Neo4j`. The language used to parse graph databases is `cypher`.
     Cipher queries make finding graph connections much easier
-- Spatial db optimized for spatial data like locations on a map. Queries based on locations can not be optimized based on column indexing like with regular data. Doing queries like "locations in the vicinity of x" is done much better using tree data structures. Usually uses a `quad tree` algorithm
+- Spatial db optimized for spatial data like locations on a map. Queries based on locations can not be optimized based on column indexing like with regular data. Doing queries like "locations in the vicinity of x" is done much better using tree data structures.
+  Usually uses a `quad tree` or general `geo spacial hashing` algorithm
+  - first, split the world into sections. Each section is reprented by a char
+  - within each parent region, split into more sections. concatenate another char. repeat
+  - for each longitude/latitude point in the world, you can then get the geo hash
+    and a depth which corresponds to the length of the string to get a match of
+    all nearby records.
+  - ex. full geo hash might be "3kajs31". depth 3 = "3ka" so all other
+    records with the hash "3ka" will be found
+    - pitfall. If a point is right next to another section of the world, they
+      wil not show up in the search. you may have to get multiple neighboring
+      sections to get all close points
 
 quad trees are trees that have 0 or 4 children used to do location searches used to index two-dimensional spatial data (like longitude, latitude)
 
