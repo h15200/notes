@@ -1111,3 +1111,11 @@ Update
   - HBase single leader means more throughput on writes, but consistent
   - Cassandra is better for customer facing apps that require fast writes, but
     Hbase is better for Data Lakes since it has faster reads and batch job p
+
+### Object (blob) store vs HDFS
+
+- blob stores like S3 scale. you pay for what you need
+- object store is faster because there is no concurrency guarantees
+- you need a distributed file system if you need to run batch/stream jobs
+- if there is no need to run jobs, use object stores over DFSs
+- CDN can be put up behind blob stores to distribute file closer to the end user
