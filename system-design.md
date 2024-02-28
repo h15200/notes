@@ -449,6 +449,8 @@ Reasons for:
     super low-latency applications
 - ACID compliant. data is structured and unchanging, strong consistency
 - A relational database that supports SQL (most of them) has the power of running SQL directly without having to load the data in memory.
+- `serializability` is another term to describe the ACID properties. each read/write
+  is ordered and transactional. usually done via `2 phase locking`
 
 - sql systems use `write-ahead logs` to keep track of all modofications in disk
   before changing the table. This allows for full recovery after power outages
@@ -819,7 +821,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - availability is measured by `9s`. Five 9s means there are outages of seconds over a year
 - in reality, most major cloud vendors promise `99.95%`, which is about 20 minutes of down time a month
-- Strong Consistency (aka Linearizability) means data is rarely stale. Eventual consistency means the data will sync over a period of time (seconds or minutes) when the network traffic is low.
+- Strong Consistency (aka `Linearizability`) means data is rarely stale. Eventual consistency means the data will sync over a period of time (seconds or minutes) when the network traffic is low.
 - CAP theorem (Consistency, Availability, Partition)
 
   - in the event of a `Network Partition (server failure, network failure)` a system must prioritize either `consistency` (pause user operations until network is back up) or `availability` (continue allowing users to make API calls, but data is not consistent)
@@ -1013,18 +1015,20 @@ Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
 ### Common points
 
 - storing static data
-
-- if the data is small (5 pictures for a dating site), then you have the choice of storing in a Distributed File System (pics are saved to machines directly) where the pros are faster, cheaper, easier to implement. Cons are not secure or consistent
-
-- a blog store like S3 is NOT ACID compliant, but it's more secure and persistent and can store bigger data.
-
+- if the data is small (5 pictures for a dating site), then you have the choice
+  of storing in a Distributed File System (pics are saved to machines directly)
+  where the pros are faster, cheaper, easier to implement. Cons are not secure or consistent
+- a blob store like S3 is NOT ACID compliant, but it's more secure and persistent
+  and can store bigger data.
 - If the static data is large (songs, videos) or is sensitive, then a blob store is probably better
-
-- Both distributed file systems and blob storage will be governed by a service that has its own table with userId, imageId, and a reference to the DFS/blob table with an image URL.
-
+- Both distributed file systems and blob storage will be governed by a service
+  that has its own table with userId, imageId, and a reference to the DFS/blob table with an image URL.
 - auth / gateway service
-
-- in most systems with a user that requires a profile via email/password, always make the point to send that info as a hashed token (instead of the password itself) and that the client will always connect to gateway service that takes care of auth. If authenticated, the gateway will then forward the request to the correct micro service. Then it will also forward the response back to the client.
+- in most systems with a user that requires a profile via email/password, always
+  make the point to send that info as a hashed token (instead of the password itself)
+  and that the client will always connect to gateway service that takes care of auth.
+  If authenticated, the gateway will then forward the request to the correct
+  microservice. Then it will also forward the response back to the client.
 
 ### blob db vs distributed file system
 
@@ -1039,6 +1043,21 @@ Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
   - use a blob store if the info is unstructured and sensitive
 - a distributed file system is usually cheaper and faster. should be first choice
   - you still need a db to map the imageId or dataId to FileUrl
+
+### newSql `Google Spanner`
+
+- Google Spanner uses `TrueTime` to sync their clocks, which solves the issue of
+  having logical clocks (version vectors, etc.. that takes up time)
+- provides ACID transactions (is relational), linearizability (strong consistency)
+  where replicas are consistent. Best of both sql and nosql while maintaining
+  good performance
+- 2 phase locking does not require locks on reading. how?
+- since they have trueTime, they use a reliable timestamp to order operations and
+  only read from a lower timestamp (a completed transaction)
+- TrueTime computes a min and max time for operations and returns a very
+  good prediction
+- to use TrueTime, it must synchronize in google data centers, so it can't
+  be used in other dbs.
 
 ### Api Design
 
