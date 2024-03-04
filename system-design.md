@@ -783,7 +783,9 @@ quad trees are trees that have 0 or 4 children used to do location searches used
     - as an exception, `hash maps` can be used to index very small amount of data
       a hash index gets extremely slow if it spills outside RAM and requires disk. often,
       not realistic. Ranged queries also are very slow in a hash index.
-  - standard is `b-tree` (mySql, postgres) where reads are optimized over writes
+  - standard is `b-tree` (mySql, postgres) where reads are optimized over writes.
+    There is an in-memory Page Cache and a disk B-Tree component. A write-ahead log
+    keeps track of all operations and writes to disk
     and good for sorting data (useful in structured data)
   - `LSM` has faster writes since it only writes to a buffer and scales better but bad at sorting
     (most Nosql dbs use LSM)
@@ -1044,7 +1046,7 @@ Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
 - a distributed file system is usually cheaper and faster. should be first choice
   - you still need a db to map the imageId or dataId to FileUrl
 
-### newSql `Google Spanner`
+### newSql `Google Spanner`, `aws aurora`
 
 - Google Spanner uses `TrueTime` to sync their clocks, which solves the issue of
   having logical clocks (version vectors, etc.. that takes up time)
@@ -1058,6 +1060,12 @@ Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
   good prediction
 - to use TrueTime, it must synchronize in google data centers, so it can't
   be used in other dbs.
+
+- `aurora` is another newSql db which claims a 35x boost to performance compared
+  to traditional sql cloud solutions (memory page cache + b-tree disk).
+- Aurora decouples the cache and disk on two different servers and they are
+  both replicated/scaled independently.
+- allows for multiple region
 
 ### Api Design
 
