@@ -766,12 +766,16 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 - note that sharding is much simpler in noSql because you don't have to worry about joins and dependencies within a table
 - dyanamoDb has built in functionalities out of the box
 
-#### Denormalization
+#### Denormalization vs Normalization
 
-- generally used in OLAP systems (noSql columnars) and not in OLTP
-  - optimize reads with a penalty to writes
-  - keep duplicate data to make reads faster
-  - uses more memory and slows and writes
+- Normalized data
+  - no duplicated data (optimal space)
+  - needs more time to read via joins, but faster writes
+  - used mostly in RDBMS
+- Denormalized data
+  - duplicated (suboptimal space)
+  - faster reads, slower writes
+  - used mostly in OLAP systems (noSql columnars)
 
 #### SQL tuning
 
@@ -1046,7 +1050,7 @@ Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
 - a distributed file system is usually cheaper and faster. should be first choice
   - you still need a db to map the imageId or dataId to FileUrl
 
-### newSql `Google Spanner`, `aws aurora`
+### newSql `Google Spanner`, `aws aurora`, `voltDB`
 
 - Google Spanner uses `TrueTime` to sync their clocks, which solves the issue of
   having logical clocks (version vectors, etc.. that takes up time)
@@ -1066,6 +1070,15 @@ Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
 - Aurora decouples the cache and disk on two different servers and they are
   both replicated/scaled independently.
 - allows for multiple region
+
+- `VoltDB`
+- traditionally, sql db use two phase locking to implement transaction
+  serializability
+- VoltDB uses single threaded execution and data is stored in-memory instead on disk
+- ideally, you want to use one partition, but the fact that it's only in-memory
+  usually means you need sharding for large data. Generally, not a good idea
+  if your data is large
+- removing locks allows for much higher performance
 
 ### Api Design
 
@@ -1137,7 +1150,40 @@ Update
     they use a simple last-write-wins, which is not reliable because of timestamps
   - HBase single leader means more throughput on writes, but consistent
   - Cassandra is better for customer facing apps that require fast writes, but
-    Hbase is better for Data Lakes since it has faster reads and batch job p
+    Hbase is better for Data Lakes since it has faster reads and batch job
+    processing (mapReduce, or Data Flow engline like Spark)
+
+### cassandra vs riak
+
+- cassandra is a wide-column and riak is key-value, but similar in that
+  they both use multi-leader replication and writes
+- Riak uses CRDT (conflict-free resolution data types) to resolve conflicts,
+  which are similar to version vectors. Cassandra uses a simple last-write-wins.
+  Riak is more reliable since it's not dependent on faulty server timestamps,
+  but it doesn't do well with analytics since it's just a key-value store
+
+## mongoDB
+
+- noSql document store, but capable of transactions. Sort of in-between two
+  worlds. Uses b-tree despite it being a noSql, allowing for slower writes but
+  fast reads.
+- Easy to use for fast mvps
+- uses denormalized data, so again, fast reads but slow writes
+
+## Riak vs Redis vs Memcached
+
+- Riak is a key-value store on disk. Not in-memory
+  - uses multi/no leader replication with conflict resolution so writes are
+    a bit slow but consistent
+- Memcached is a very simple in memory key-value store which does not have any
+  replication measures or failure handling. It does have paritions with consistent
+  hash ring, but there are no handling of faults.
+- Redis builds on top of basic features in Memcached.
+  - has two modes. (Single Node) and (Cluster)
+  - In single mode, has transactions and range queries
+  - In cluster mode uses single leader replication with automatic failover.
+    if the write node fails, another will be chosen via gossip protocol. Note
+    that if a leader fails before writing, some writes could fail
 
 ### Object (blob) store vs HDFS
 
