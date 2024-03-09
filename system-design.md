@@ -1192,3 +1192,20 @@ Update
 - you need a distributed file system if you need to run batch/stream jobs
 - if there is no need to run jobs, use object stores over DFSs
 - CDN can be put up behind blob stores to distribute file closer to the end user
+
+## Getting info to client from server
+
+1. Long polling
+   - use a regular http connection at an interval
+   - connect/disconnect every call cost resources
+   - easy to implement, more stress on server
+   - check the status of provisioning a resource that is async
+2. Websockets
+   - TCP connection which stays open. can allow for 50k connections at a time
+   - less resource intensive on server, but more on client
+   - used for chat apps. maybe overkill for infrequent updates
+   - chat apps
+3. Server sent events
+   - Unlike polling, the server uses a persistent HTTP connection and sends
+     a unidirectional message to the client
+   - newsfeed updates, stock tickers
