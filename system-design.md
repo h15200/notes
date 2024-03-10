@@ -995,12 +995,31 @@ reduce - reduce the shuffled key-value pair and transform them into more meaning
   implementations include `Google File System` and `Hadoop Distributed File System`.
   Files are split into chunks of a certain moderate size < Gb and those chunks are sharded across a cluster of machines.
 
-- also used in batch processors like apache `Spark` and `Flink`
 - MapReduce algos have fault tolerance by using Idempotent Operations in both the Map and Reduce steps to shield against outages
 - common tasks including sorting, word count, grep
 - for every mapReduce task, you already know the volume of data you're working with since it's an `offline` system. There
   are no uncertainties like users making requests from a UI. You don't have to add a server for a spike or worry
   about consistent hashing!
+  - the predecessor to `Dataflow Engines` like apache `Spark` and `Flink`
+
+### Dataflow Engine
+
+- another type of batch processing
+- examples of Dataflow Engines include `Spark` and `Flink`
+- improvement to map reduce
+
+- what's the issue with mapReduce?
+
+  - inefficient for jobs that require many mapReduce calls/iterations (page rank)
+  - tons of disk I/O due to materializing intermediate state to HDFS (Hadoop Distributed File System)
+
+- uses `Resilient Distributed Datasets` where in memory data structure is used
+- majority of data is kept in memory and is faster than mapReduce
+- comes at a cost of using more RAM
+- one more possible compromise is that it has slightly worse fault tolerance than
+  MapReduce as it does not keep all intermediary state, but the general
+  increase in performance is often worth these tradeoffs. As a result,
+  mapReduce is no longer used for large scale computation in modern tech stacks
 
 ### Security http and https
 
