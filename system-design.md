@@ -1021,6 +1021,17 @@ reduce - reduce the shuffled key-value pair and transform them into more meaning
   increase in performance is often worth these tradeoffs. As a result,
   mapReduce is no longer used for large scale computation in modern tech stacks
 
+#### Flink
+
+- in addition to being a batch processor like `Spark`, it also has stream
+  processing capabilities
+- stream processing is a hybrid `online` and `offline` system
+- flink itself is not a message broker but runs on them as consumers on a cluster
+  of message queues like Kafka
+- each flink instance has its own kv store to persist stateful changes
+- deals with fault tolerance by periodically replicating in-node local data to durable
+  storage such as S3 or HDFS
+
 ### Security http and https
 
 - an IP (internet protocol) packet is the base level of network communication
