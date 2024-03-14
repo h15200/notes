@@ -22,6 +22,12 @@
 - use when there should be only one element
 
 - getAllBy returns an array of all matching nodes, but throws and error if none are found
+    - ```
+      const { getAllByText } = render(<Something />);
+      // there should be three nodes "A", "B", and "C" so idx 2 should exist
+      const thirdInstance = getAllByText('Test Text Rendered')[2];
+      expect(thirdInstance).toBeInTheDocument();
+      ```
 
 - there are different types of getBy queries. In order of what should be used:
 
