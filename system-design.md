@@ -430,9 +430,12 @@ solution:
   but can have slow updates since it doesn't usually need to be a live system
   - batch processing
   - data can be in the Terrabytes or Petabytes
-  - Columnar like `Cassandra`, `Hbase`, `BigQuery`, `Snowflake`, `Redshift`
+- note that technically, data warehousing is just the storage, and `OLAP` is
+  one way to process that data.
+  - Columnar like `Hbase`, `BigQuery`, `Snowflake`, `Redshift`,
+    `Druid`, `Parquet`
     - note that Columnar dbs can be SQL OR Nosql. `BigQuery`, `Redshift`, and `Snowflake`
-      are SQL colmnar dbs. `Cassandra`, `Hbase`, and `Druid` are noSql.
+      are SQL colmnar dbs. `Hbase`, `Parquet`, and `Druid` are noSql.
   - you can also use SQL to extract data from noSql dbs. The querying method
     is decoupled from the db type.
 
@@ -507,6 +510,9 @@ Reasons for:
    - compared to document stores, optimized for reads
    - great use case for analytics
 
+   - for datawarhousing `parquet`, `redshift`, `snowflake`
+   - for OLAP `druid`, `hbase`
+
 4. graph (neo4j)
    - used best to store data like social media relationships
 
@@ -546,9 +552,9 @@ Reasons for:
 - a special type of database that specializes in analysis
 - often uses a relational model, but a different optimization from what's used
   for traditional transactions - uses `star` schema or `snowflake`
-- example of data warehouses `Snowflake`, `bigQuery`
-- some datawarehouses use a star schema but within a nosql db like `Apache Druid`
-  which allows for sql queries
+- example of data warehouses `snowflake`, `bigQuery`, `redshift`, `parquet`
+- related but not exactly the same topic, some dbs are optimized for real time analytics
+  and not the actual storage aspect. `druid` is a nosql db that uses a star schema
 
 ### Other specialized Storage Paradigms
 
