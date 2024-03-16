@@ -226,6 +226,12 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 - `ftp` (file transfer protocol)
   - based on TCP and is faster than `http` as it is a "pure" tcp protocol with no additional headers
 
+## web server vs application server
+
+- a web server serves static data
+- an application server serves dynamic data, often from dbs. In modern architecture,
+  static data is served from something like an s3 bucket with a CDN in front of it
+
 ### REST vs RPC
 
 - rpc describes the behavior, not the resource
@@ -269,56 +275,67 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 
 ### Proxies
 
-- Forward (default) proxies sit between the client and server on behalf of the CLIENT. It can be used as a cache, add/remove headers. It masks the client IP to the server. Most notable example is a VPN (Virtual Private Network).
-- Reverse proxy also sits in the SAME place as a forward proxy, in between the client and server but on behalf of the SERVER. It can log, cache, load balance or do anything as an additional step before the original client request reaches the server.
-- all load balancers are also reverse-proxies. you can have a reverse-proxy even if you only have 1 service to do things like config, routing, optimization for faster first paint etc...
-- `Nginx` is a popular reverse proxy used for load balancing
-- can also be used interchangeably with `gateway proxy` or `web server proxy`
+- Forward (default) proxies sit between the client and server on behalf of the CLIENT.
+  It can be used as a cache, add/remove headers. It masks the client IP to the server.
+  Most notable example is a VPN (Virtual Private Network).
+- While in the general context of proxies, a reverse proxy points to all proxies
+  that function on behalf of the backend, there is another usage of this term
+  that is a lot more specific (see next section `reverse proxy vs api gateway vs load balancers`)
 
-### Load balancers
+#### Reverse Proxy vs Api Gateway vs Load Balancing
 
-- Client -> load balancer -> a specific server -> Client
-- (note that the load balancer doesn't get the data back from server)
+- A `reverse proxy` works like this.
+  Client -> proxy -> a server -> BACK to proxy -> client
+- used to intercept all requests from the client and
+  all responses from the servers. It is useful even if you just have 1 instance
+  of a server because it handles:
+
+  - security: hide identity of backend servers
+  - caching
+  - auth: ssl termination
+  - compression
+
+- an `Api Gateway` is useful in a `service-oriented architecture` or a `micro
+service` architecture as it acts as a single point of entry for a variety of
+  backend APIs. This is likely overkill for a monolith
+- features include
+
+  - routing requests from single point of entry (crucial in refactoring from
+    monolith to micro services)
+  - authn
+  - authz
+  - monitoring logs for incoming traffic
+  - rate limiting
+
+- a `load balancer` handles traffic load to muitiple nodes of the same service.
+  this is not useful for single instances, as all traffic will just hit the same node.
+  Some `api gateways` also handle the function of a load balancer, so the term
+  `load balancer` refers to this singular functionality. Unlike a `reverse proxy`,
+  a load balancer doesn't receive data back form the server. It routes the req,
+  but the res goes straight to the client -
 
 - Hardware vs Software
 
-  - Hardware load balancers are actual structures. expensive
-  - Software load balancers are USUALLY what systems design interviews are referring to. Software is more flexible in what you can do.
-    - ex. HAProxy, nginx
+- Hardware load balancers are actual structures. expensive
+- Software load balancers are USUALLY what systems design interviews are referring to. Software is more flexible in what you can do.
+- ex. HAProxy, nginx
 
-- is a type of reverse proxy (most of the time) as a reverse proxy sits in between the client and server on behalf of the server.
-- can be set for the database, or even on the dns layer (google.com has many IPs and the DNS round robin will assign a request to the correct dns server to respond with a domain name)
-- helps scale horizontally by distributing requests to multiple servers
-- avoids duplicate requests
-- ONLY makes sense if you have multiple servers to route to
+- can be set for the database, or even on the dns layer (google.com has many IPs and the DNS round robin will assign a request to the correct dns server to respond with a domain name) - helps scale horizontally by distributing requests to multiple servers - avoids duplicate requests - ONLY makes sense if you have multiple servers to route to
 
-- Load Balancers can use different algos to choose a server.
-  - round robin, IP based (L4 ex AWS NetworkLoadBalancer), app info based
-    (L7 AWS ApplicationLoadBalancer)
-- because L4 only has access to basic info like IP address, it is simpler
+      - Load Balancers can use different algos to choose a server.
+      - round robin, IP based (L4 ex AWS NetworkLoadBalancer), app info based
+
+  (L7 AWS ApplicationLoadBalancer) - because L4 only has access to basic info like IP address, it is simpler
   to configure and requires less computation power. On the other hand, l7
   is more config and computation but has access to all application layer
   headers, so is more efficient for load balancing
 
-- some load balancers don't support certain protocols like UDP (AWS)
+      - some load balancers don't support certain protocols like UDP (AWS)
 
-#### Load balancers vs Gateway service (or API gateway)
-
-- these are 2 different things. Load balancers are more hands off, and usually only provides the actual routing to servers, and caching
-- an API gateway has all of that plus more bells and whistles like rate limiting, monitoring, and auth and replaces the job of a load balancers
-- both of these options can be used as the front door for your app, but load balancers are usually cheaper
-
-### reverse proxy
-
-- Client -> proxy -> a server -> BACK to proxy -> client
-- although techcnically load balancers are a type of reverse proxy, it could
-  also be thought of a different thing
-- reverse proxies usually handles auth, security, etc.. things that need to be done on all of your servers
-- nginx has both L7 load balancing AND web server capabilities
-
-- while a load balancer is only useful when you have multiple services,
-  a reverse proxy is useful even with one server as it's just the gateway that
-  handles logic
+- examples `nginx` is both a `reverse proxy` AND a `l7 load balancer`
+- usage: for monoliths, usually a `reverse proxy` and a `load balancer` is enough,
+  so something like `nginx` is a great fit, while SOA or micro services will often require an api gateway to organize
+  the fleet of servers
 
 #### Server-Selection Strategy with load balancers
 
