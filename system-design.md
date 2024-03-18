@@ -1180,8 +1180,47 @@ Update
 ## classic examples
 
 - chat app
+
   - remember that group chat is just the service messaging each individual.
   - usually a TLS bidirectional protocol like websockets
+
+- design a collaborative editing text platform (google docs)
+
+  - high level: all clients with authz has write permission, and will perform
+    both read/writes. Write conflict resolution is crucial
+  - `commutative` is an algebraic property that means ordering doesn't matter
+  - ex. adding something to a set, or incrementing a counter is commutative
+  - low level problem: Array writes (which represent strings) are not `commutative`
+
+  ```
+  'car'
+
+  user 1 adds 's' to index 3 -> 'cars'
+  user 2 adds 'big ' to index 0 -> 'big car'
+
+  if user 1 changes take effect before user 2, 'big cars'
+      but if not, 'bigscar' (because index 3 is on the whitespace)
+
+  depending on ordering, the final string is different!
+
+  we can get either 'hellooo'
+  ```
+
+  - solution 1 `Operational Transform`
+    - a function that converts ordered operations into a proper array
+      such that each local copy converges in the way it's supposed to
+    - Operational Transform requires total ordering, meaning it must use
+      a singler leader write algorithm or a consensus algorithm to determine
+      which writes came first, slowing down the process. This is used by
+      google docs
+  - solution 2 `Conflict Free Replicated Data Types`, (CRDT)
+    - data structure that each write/read replica can hold locally that
+      holds state of historical changes that all converge to the same value.
+    - removes the need for write bottlenecks
+    - typically, CRDTs work well with commutative operations, but it can also
+      be modified to work with arrays (text) by using sets and splitting insertion
+      indices
+  - both solutions are very complicated to implement
 
 ## deep dive
 
@@ -1210,7 +1249,7 @@ Update
 
 - cassandra is a wide-column and riak is key-value, but similar in that
   they both use multi-leader replication and writes
-- Riak uses CRDT (conflict-free resolution data types) to resolve conflicts,
+- Riak uses CRDT (conflict-free replication data types) to resolve conflicts,
   which are similar to version vectors. Cassandra uses a simple last-write-wins.
   Riak is more reliable since it's not dependent on faulty server timestamps,
   but it doesn't do well with analytics since it's just a key-value store
