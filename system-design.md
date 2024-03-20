@@ -449,10 +449,9 @@ solution:
   - data can be in the Terrabytes or Petabytes
 - note that technically, data warehousing is just the storage, and `OLAP` is
   one way to process that data.
-  - Columnar like `Hbase`, `BigQuery`, `Snowflake`, `Redshift`,
-    `Druid`, `Parquet`
+  - Columnar like `Hbase`, `BigQuery`, `Snowflake`, `Redshift`
     - note that Columnar dbs can be SQL OR Nosql. `BigQuery`, `Redshift`, and `Snowflake`
-      are SQL colmnar dbs. `Hbase`, `Parquet`, and `Druid` are noSql.
+      are SQL colmnar dbs. `Hbase` is noSql.
   - you can also use SQL to extract data from noSql dbs. The querying method
     is decoupled from the db type.
 
@@ -505,6 +504,12 @@ Reasons for:
 - examples DynamoDb, Redis (in-memory storage only, often used for rate-limiting), Etcd (used for leader election), ZooKeeper (used for leader election)
 - some may offer strong consistency, but since no sql dbs are not ACID compliant, some may only offer eventual consistency (usually with a trade-off of having faster performance)
 
+#### Parquet file format
+
+- Apache Parquet is a column oriented data file FORMAT.
+- used for OLAP and has highly efficient data compression / decompression
+- supports complex data types
+
 #### Types of nosql dbs
 
 1. k-v store (in-memory ones like `redis`, `memcached`, or non-in-memory like `Riak`)
@@ -527,8 +532,8 @@ Reasons for:
    - compared to document stores, optimized for reads
    - great use case for analytics
 
-   - for datawarhousing `parquet`, `redshift`, `snowflake`
-   - for OLAP `druid`, `hbase`
+   - for datawarhousing `redshift`, `snowflake`, `big query`
+   - for OLAP `hbase`
 
 4. graph (neo4j)
    - used best to store data like social media relationships
@@ -547,7 +552,7 @@ Reasons for:
   structure of a sql solution like postgres as the single point of truth
   - parts of the Sql db can splinter off for ex. metrics to a nosql db or
     an async offline system that does batch processing (ETL) with something
-    like Spark and Druid. Searchable data can go to Elastic Search
+    like Spark that sends data to a warehouse. Searchable data can go to Elastic Search
   - `ETL` is primarily used when you go from a `OLTP system` to a `OLAP` system
 
 #### Search index
@@ -569,9 +574,9 @@ Reasons for:
 - a special type of database that specializes in analysis
 - often uses a relational model, but a different optimization from what's used
   for traditional transactions - uses `star` schema or `snowflake`
-- example of data warehouses `snowflake`, `bigQuery`, `redshift`, `parquet`
+- example of data warehouses `snowflake`, `bigQuery`, `redshift`
 - related but not exactly the same topic, some dbs are optimized for real time analytics
-  and not the actual storage aspect. `druid` is a nosql db that uses a star schema
+  and not the actual storage aspect. `druid`, `influxDb`
 
 ### Other specialized Storage Paradigms
 
@@ -1103,7 +1108,7 @@ Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
 - a distributed file system is usually cheaper and faster. should be first choice
   - you still need a db to map the imageId or dataId to FileUrl
 
-### newSql `Google Spanner`, `aws aurora`, `voltDB`
+### newSql (sql backed, but with a twist) `Google Spanner`, `aws aurora`, `voltDB`
 
 - Google Spanner uses `TrueTime` to sync their clocks, which solves the issue of
   having logical clocks (version vectors, etc.. that takes up time)
