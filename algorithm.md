@@ -218,6 +218,33 @@ class Solution:
 ```
 
 ```
+Controlled iterative InOrder
+
+curr = root
+stack = []
+while curr:
+    stack.append(curr)
+    curr = curr.left
+
+# adds all left side nodes to stack initially
+
+# helper function
+
+node = stack.pop()
+
+# get the right side of this node
+curr = node.right
+while curr:
+    stack.append(curr)
+    curr = curr.left
+
+
+
+return node
+
+```
+
+```
 post-order
 
 class Solution:
