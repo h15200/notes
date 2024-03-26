@@ -1227,6 +1227,20 @@ Update
       indices
   - both solutions are very complicated to implement
 
+- design twitter news feed
+
+  - celebrities vs non-celebrities have opposite solutions
+  - normal people should send all changes to a user cache which propagates
+    the news feed before the user is on the page
+  - with celebrities, it's better if that info is pulled from the db cache
+    each time a user visits the news feed
+
+- design dropbox
+  - when data exceeds a reasonable mount (in the PBs), use somebody else's
+    solution like s3 which scales infinitely
+  - storage in chunks so that each file change doesn't require entire file
+    uploads to s3
+
 ## deep dive
 
 ### cassandra vs Hbase
