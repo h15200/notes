@@ -906,33 +906,51 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 ### Polling (continuous req-res loop at an interval) and Streaming (event driven)
 
-- when a client needs to request data that is continuously being updated like the weather or the status or something, the standard request model is not optimal
+- when a client needs to request data that is continuously being updated like
+  the weather or the status or something, the standard request model is not optimal
 - to see regularly updated pieces of data, `polling` or `streaming` can be used
-- `streaming` is also called `pushing`. The opposite of this, the traditional http req-res model is `pulling` because the client initiates contact with a req to pull data.
+- `streaming` is also called `pushing`. The opposite of this, the traditional
+  http req-res model is `pulling` because the client initiates contact with a
+  req to pull data.
 
-- `Polling` the client simply sends a request based on a set interval. ex. client checks the status every 5 seconds. This could work for something that has regular changes, but not great for specific event change updates like a text message as data will be stale between the interval `n`. This can be mitigated by lowering the poll interval but it comes with extra load on the server.
+- `Polling` the client simply sends a request based on a set interval.
+  ex. client checks the status every 5 seconds. This could work for something
+  that has regular changes, but not great for specific event change updates like
+  a text message as data will be stale between the interval `n`. This can be
+  mitigated by lowering the poll interval but it comes with extra load on the server.
 
-- `Streaming (Http streaming)` - client makes a req to server, then the server sends back data indefinitely. After the initial req, the server proactively continues sending data on event changes
+- `Streaming (Http streaming)` - client makes a req to server, then the server
+  sends back data indefinitely. After the initial req, the server proactively
+  continues sending data on event changes
 
 - Two ways of implementing HTTP streaming. Chunked and Server-Sent-Events.
 
-  - the server sends data as "Chunked" meaning incomplete and indefinitely keeps sending data back to client
+  - the server sends data as "Chunked" meaning incomplete and indefinitely keeps
+    sending data back to client
 
   - Can stream over simple http.
   - not good for bidirectional communication
 
-- One is not necessarily better than the other. If the data needs instantaneous updating, use streaming. If the data only needs to be updated at an interval, use polling. Implementation of polling is a lot easier
+- One is not necessarily better than the other. If the data needs instantaneous
+  updating, use streaming. If the data only needs to be updated at an interval,
+  use polling. Implementation of polling is a lot easier
 
 - web sockets use TCP connections
 
-- both of these concepts work in a simple setup, but a publish/subscribe pattern will be needed with persistent data in a large scale distributed system
+- both of these concepts work in a simple setup, but a publish/subscribe
+  pattern will be needed with persistent data in a large scale distributed system
 
-- XMPP is a peer-to-peer protocol unlike the usual client-server model. It can be used for chat as well as an alternative to web sockets, but is slower and more secure.
+- XMPP is a peer-to-peer protocol unlike the usual client-server model.
+  It can be used for chat as well as an alternative to web sockets, but is
+  slower and more secure.
 - Websocket (faster, TCP, less secure). XMPP (peer-to-peer, slower, more secure)
 
-- pub/sub and streaming are the same "category" of techniques as the client signs up to a topic. Polling is not, as it's just a repeated http request
+- pub/sub and streaming are the same "category" of techniques as the client
+  signs up to a topic. Polling is not, as it's just a repeated http request
 
-- `long polling` keeps the connection alive so that some parsing steps can be skipped over after the initial req. it is a technique used to make polling more efficient
+- `long polling` keeps the connection alive so that some parsing steps can be
+  skipped over after the initial req. it is a technique used to make polling
+  more efficient
 
 ### in the context of network types
 
@@ -1306,17 +1324,22 @@ Update
 
 ## Getting info to client from server
 
-1. Long polling
+1. Short polling (pull)
+   - just make a new request to server every n seconds
+   - not efficient
+2. Long polling (pull)
    - use a regular http connection at an interval
    - connect/disconnect every call cost resources
    - easy to implement, more stress on server
+   - still need to resend headers every time
    - check the status of provisioning a resource that is async
-2. Websockets
+3. Websockets (pull)
    - TCP connection which stays open. can allow for 50k connections at a time
    - less resource intensive on server, but more on client
    - used for chat apps. maybe overkill for infrequent updates
-   - chat apps
-3. Server sent events
+4. Server sent events (push)
    - Unlike polling, the server uses a persistent HTTP connection and sends
      a unidirectional message to the client
    - newsfeed updates, stock tickers
+   - on the browser, a limit of 6 concurrent connections. this limit does not
+     exist with websockets
