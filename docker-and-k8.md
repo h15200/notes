@@ -1,21 +1,38 @@
 # Docker
 
-- Dev Ops : help devs have the same exact environment when coding a project.
+## Context
+
+- first came bare metal servers connected to each other in a single data server
 - Server computers used to host one app, which often did not utilizie the full
   capacticy of the machine.
+- then came VMs to have more flexible resource sharing. Each VM has OS layer data
 - Virtual machines were developed to have multiple apps with multiple OS's,
   controlled by the `hypervisor`.
+  - there was still a necessity to manage the OS and applications
 - Then containers were developed to do the same thing that virtual machines did
   but on only ONE OS (linux) to pacakge multiple apps. Instead of a hypervisor
   who oversees multiple OS's, a `docker daemon` is overseeing multiple apps
   without the need of multiple OS.
-- Containers are MUCH faster and more light-weight than virtual machines,
-  making them highly scalable and portable.
+  - Containers are MUCH faster and more light-weight than virtual machines,
+    as it doesn't have any extra data below the OS layer, making them highly scalable and portable.
+  - containers like `Docker` recommends a best practice to have one process
+    per container
+  - issue is that there is no easy way for containers to talk to each other,
+    so juggling multiple containers within an app is tricky
+  - you need an installation script to start the container apps, but there
+    is no good solution when machines fail
+  - automatically scale apps based on demand
+  - cloud native, meaning it can be run on any public cloud
+- Kubernetes or k8s solves the problem with containers by introducing a new
+  unit of node called `pods`. Each `pod` can host multiple containers. A pod
+  has its own ip address so communciating within one pod between containers
+  can be done in localhost. The orchestration layer also handles starting
+  and self healing when nodes die.
 
-- Virtual machines = multiple houses
-- Containers = multiple apartment units
-
-- Dockerhub like github, for containers
+- Docker is an easy way to work with containers
+- `Dockerhub` is like github, for containers
+- k8s is used for containers to talk to each other
+- `helm` is used to easily create k8s applications
 
 ## Container Images
 
@@ -102,3 +119,32 @@ services:
     image: stuff
     container_name: "test"
 ```
+
+## k8s
+
+- Units
+
+  - `Cluster` is the orchestration layer which has a control plane and nodes.
+    Can be deployed on a physical machine or a VM. Also has services to
+    expose pods.
+  - `Node` is a machine or a vm that serves as a worker. has a `kubelet`
+    to communicate with the cluster control plane, and contains a bunch of pods
+  - `Pod`
+    - runs on Nodes
+    - smallest deployable unit in k8s
+    - hosts multiple containers
+
+- k8s cluster coordinates a group of highly available computers to work as a single unit
+
+  - the control plane coordingates the cluster with self healing, scaling,
+    and monitoring health of nodes
+  - the nodes within a cluster are the actual workers doing the work to run apps
+
+- k8s generally runs on a private network and is not exposed to the outside world
+
+  - within the same cluster, all pods are visible from services
+  - t
+
+- `kubectl` gives users access to Kubernetes API to communicate within a cluster
+- cli can be used to monitor deployments, logs, health status of
+  nodes and pods
