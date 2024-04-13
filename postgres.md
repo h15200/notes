@@ -1,28 +1,64 @@
-## set up
+# Postgres
+
+## DBML syntax
+
+- use `dbdiagram.io` with `DBML` to translate to SQL for now
+- brackets for additional into
+
+  - comma separated values
+  - includes `pk`, `not null`, `notes`, `ref: > someTable.someColumn`
+
+- can add `Indexes`
 
 ```
-const { pool } = require('pg');
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
 
-const pool = new Pool({
-  connectionString: ``,
-});
+// using postgres syntax
+Table account as A {
+  id serial [pk] // auto increment not null is automatically added to pks
+  owner varchar [not null]
+  balance bigint [not null]// probably should be a separate money type
+  currency varchar [not null]
+  created_at timestamp [not null, default: `now()`]
 
-// setup elephant sql instance, plug in the string
+  // add indexes to speed up searches with a slightly slower write
+  Indexes {
+    owner
+  }
+}
 
-// Create tablename (
-// _id serial primary key,
-// text varchar Not Null
-// created_at timestamp default current_timestamp,
-// )
+// always declare fk in the many table
+Table entries as E {
+  id serial [pk]
+  account_id int [Ref: > A.id] // many to one
+  // foreign keys can be nullable in postgres,
+  // and can be useful
+  amount bigint [not null, note: 'can be negative or positive']
+  created_at timestamp [not null, default: `now()`]
 
-// export it
+  Indexes {
+    account_id // probably most common search
+  }
+}
 
-// use it inside controllers
+// records all transfers between accounts
 
-module.exports = {
-  query: (text, params, cb) => {
-    console.log('Executed query:', text);
-    return pool.query(text, params, cb);
-  },
-};
+Table transfers as T {
+  id serial [pk]
+  from_account_id int [Ref: > A.id]
+  to_account_id int [Ref: > A.id]
+  amount bigint [not null, note: 'must be positive']
+  created_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    from_account_id
+    to_account_id
+    // a composite type to specify only transfers between two specific types
+    (from_account_id, to_account_id)
+  }
+}
 ```
+
+- diff between varchar and text
+  - varchar requires an upper bound for string length
