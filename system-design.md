@@ -561,13 +561,14 @@ Reasons for:
 - data lakes / data warehouses often use OLAP systems with a star schema like snowflake
   or lsm + ss table like HBase to store data for fast reads.
 - To search OVER those dbs, we need a search engine
-- Most popular search engines include Elastic Search and Solr (based on Apache Lucene
-  ) as well as Apache Splunk
+- Most popular search engines include Elastic Search, Solr, and Apache Splunk (all based on Apache Lucene
+  ).
 - Lucene uses LSM + SS table and strings are tokenized. Also possible to
   search for numbers and geolocations. Lucene engine is open source and
   is for single nodes.
-- ElasticSearch is a service that takes the lucene engine over a distributed
-  cluster
+- Generally, the main use case for hdfs (mapReduce) is distributed batch
+  processing and the main use case for Lucene is string searches. Those frameworks
+  (`ES, Splunk`) allows Lucene to be used in a distributed system
 
 #### data warehouse
 
@@ -1318,9 +1319,11 @@ Update
 
 - blob stores like S3 scale. you pay for what you need
 - object store is faster because there is no concurrency guarantees
-- you need a distributed file system if you need to run batch/stream jobs
 - if there is no need to run jobs, use object stores over DFSs
 - CDN can be put up behind blob stores to distribute file closer to the end user
+- you need a distributed file system if you need to run batch/stream jobs
+- generally, mapReduce (HDFS) use case is mainly for distributed batch processing. This
+  is not possible on a blob storage like S3.
 
 ## Getting info to client from server
 
