@@ -71,6 +71,13 @@
      to its users of any Linux distrubution
    - Ubuntu is widely used for cloud deployments
 
+4. Alpine (not really)
+   - not a "family", but is one of the few distros that is not based on GNU
+   - is very lightweight, making it a popular choice for container images where
+     there needs to be linux binaries to run
+   - other popular conatiner images include centOS, and `bookworm` and `bullseye`
+     from the Debian family
+
 ## Kernel
 
 - the term `operating system` is commonly used in 2 ways
