@@ -42,6 +42,7 @@
 - Each container is instantiated from a container image.
 - If everyone in an app's ecosystem is using a container instantiated from the
   same image, they're all guaranteed to be using the same dependencies.
+- each container image has the bare essential binaries for the os like `Alpine`
 
 ### Layering
 
@@ -67,9 +68,9 @@ EXPOSE 3000
 ## general workflow
 
 - Make dockerfile
-- run `docker build` -> make docker image (read-only)
+- run `docker build` -> make a single docker image (read-only) based on `DockerFile`
 - run `docker run` -> make actual docker container (read-write) on top layer, with underlying read-only info based on image
-- `docker compose` -> orchestrates the starting and stopping of containers
+- `docker compose` -> start multiple containers at once based on `compose.yaml` file
 
 Linked to Docker Hub, which is often then connected to Travis CI, and AWS
 
@@ -99,11 +100,14 @@ Linked to Docker Hub, which is often then connected to Travis CI, and AWS
 
 - Containers are runtime environments. Usually run only a single main process
   in one Docker container.
-- One container provides one service in your project.
+- One container provides one service in your project. If you only need one
+  container, `Docker build` suffices
 - It is not unusual to have multiple containers running each process that rely
   on each other.
 - Rather than manually coordinating the creation of these containers at run
-  time, we can use docker-compose to coordinate them using a `YAML` file.
+  time, we can use the `docker-compose` file to coordinate them using a `YAML` file.
+- use `Docker compose` to run the instructions in `compose.yaml` file to run
+  and coordinate multiple containers and dependencies
 
 ## YAML - "YAML Ain't Markup Language"
 

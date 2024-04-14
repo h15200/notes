@@ -31,9 +31,7 @@ Table account as A {
 // always declare fk in the many table
 Table entries as E {
   id serial [pk]
-  account_id int [Ref: > A.id] // many to one
-  // foreign keys can be nullable in postgres,
-  // and can be useful
+  account_id int [not null, Ref: > A.id] // many to one
   amount bigint [not null, note: 'can be negative or positive']
   created_at timestamp [not null, default: `now()`]
 
@@ -46,8 +44,8 @@ Table entries as E {
 
 Table transfers as T {
   id serial [pk]
-  from_account_id int [Ref: > A.id]
-  to_account_id int [Ref: > A.id]
+  from_account_id int [not null, Ref: > A.id]
+  to_account_id int [not null, Ref: > A.id]
   amount bigint [not null, note: 'must be positive']
   created_at timestamp [not null, default: `now()`]
 
