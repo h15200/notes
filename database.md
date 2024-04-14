@@ -186,3 +186,7 @@ The user_id is the FOREIGN key for Houses that links to Users.
 ### Sharding
 
 - A SINGLE database can be sharded to multiple servers to distribute load
+
+## schema migration
+
+- whenever a schema changes in a db (even nosql objects), you need to a `migration`

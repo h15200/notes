@@ -34,6 +34,16 @@
 - k8s is used for containers to talk to each other
 - `helm` is used to easily create k8s applications
 
+## Why is it used?
+
+- in production, the main use case is to deploy services to a machine inside
+  a container so that the hardware of the machine itself doesn't matter and it
+  will always yield a consistent result
+- use case in development is to have the exact same environment for all devs
+  and to omit unnecessary installs on the host machine (postgres, various
+  language frameworks, tools, etc..). When you stop a container, the dependencies
+  will all get deleted
+
 ## Container Images
 
 - Templates for containers. Can be kept in a dockerhub repo and shared freely
@@ -53,7 +63,7 @@
 ## Dockerfile
 
 - To define a docker image, we create a text file called Dockerfile, and execute with `docker build`
-  How to add a new layer to an existing image inside a dockerfile
+  How to add a new layer to an existing image inside a Dockerfile
 
 ```
 FROM node:10.15
@@ -67,7 +77,8 @@ EXPOSE 3000
 
 ## general workflow
 
-- Make dockerfile
+- make an app that works locally
+- create docker files (.dockerignore, Dockerfile, compose.yaml) running `docker init`
 - run `docker build` -> make a single docker image (read-only) based on `DockerFile`
 - run `docker run` -> make actual docker container (read-write) on top layer, with underlying read-only info based on image
 - `docker compose` -> start multiple containers at once based on `compose.yaml` file
@@ -88,20 +99,48 @@ Linked to Docker Hub, which is often then connected to Travis CI, and AWS
 
 ## Volumes
 
+- by default, docker containers are isolated from the host filesystem. When
+  you delete a container, all dependencies will get deleted
+- if you want to persist container data, `volumes` are used
 - A docker container has underlying read only image info as well as write
   level changes.
-- Volumes are Docker's mechanism for sharing changes on the read-write level
-  of a container, which lives on the `host file system`.
 - Docker host file system will take the dockerfile image, build the container,
   then put the info from the volume on TOP to get the latest version of the
   docker container.
+- a docker `volume` points to a location in the host filesystem
+  - this is set in the compose.yaml file
+- now data will persist even when you delete and restart a container
 
-## docker-compose
+### bind mounts
 
+- if you want your local machine system changes to also reflect in the container,
+  you also use volumes for that
+  - inside compose.yaml
+- once configured, any changes you make to the app on your local system are
+  reflected in the container
+
+## entities
+
+- .dockerignore
+- `Dockerfile` the actual commands that are run in the cli in the container
+- `compose.yaml` the config for each service when building the image with Dockerfile
+
+## docker commands
+
+- `docker ps` (processes) to check on running containers
+- `docker images` to see all available images
+- `docker exec` to run a command inside the running instance (ctrl-d to stop)
+- `docker compose up -d` (run multiple images/services and run container in
+  detached mode)
+  - `detached mdoe` runs a container in the background. useful for servers
+    and databases
+  - `docker compose watch` is useful for local development when changes
+    in the app that the docker image is based on is changing
+- `docker init` to initialize and auto-generate a Dockerfile
 - Containers are runtime environments. Usually run only a single main process
   in one Docker container.
 - One container provides one service in your project. If you only need one
-  container, `Docker build` suffices
+  container, `docker build` suffices
 - It is not unusual to have multiple containers running each process that rely
   on each other.
 - Rather than manually coordinating the creation of these containers at run
