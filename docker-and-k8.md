@@ -32,7 +32,10 @@
 - Docker is an easy way to work with containers
 - `Dockerhub` is like github, for containers
 - k8s is used for containers to talk to each other
-- `helm` is used to easily create k8s applications
+- `helm` is used to easily create k8s applications. works like a package 
+manager 
+    - yaml files are used to define helm workflows, and variables can be used
+    with `{{}}` syntax 
 
 ## Why is it used?
 
