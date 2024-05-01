@@ -311,4 +311,14 @@ const originalRefreshDemoSession = requireActual('../hooks').useRefreshDemoSessi
     mocked(useRefreshDemoSession).mockImplementationOnce(()=> "some other functionality")
 ```
 
+## mocking an object with properties (not methods)
+// don't use normal imported mock
 
+// for example, in a describe block
+  beforeEach(() => {
+    const { analytics } = require('somePath');
+    analytics.isReady = true; // mock a property
+    analytics.getId = () => 'abc-123-456'; // mock a method
+  });
+
+// then inside each test block, require each time and mutate the object
