@@ -2,6 +2,20 @@
 
 - good basic resource is `tour.golang.org`
 
+## gotcha's 
+
+- no while loop, put the `i++` logic inside the brackets. if so, make comment like:
+```
+// add second semi colon for blank condition
+for i := 0; ; {
+        // we need more granular control over i inside loop
+
+        // some break statement in a condition
+    }
+```
+
+- inner funcs must not be named and must be anonymous (eg closures)
+
 ## general syntax
 
 - NO SEMIs after statements (but often used inline in conditionals and for loops after var declarations)
