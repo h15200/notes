@@ -48,6 +48,8 @@ val, ok := someInterface.(string); if ok {
 
 ```
 
+- structs are defined at package scope mostly because methods must be declared
+at package scope, so any in-function structs can't have additional methods
 ## general syntax
 
 - NO SEMIs after statements (but often used inline in conditionals and for loops after var declarations)
