@@ -16,6 +16,38 @@ for i := 0; ; {
 
 - inner funcs must not be named and must be anonymous (eg closures)
 
+- type checking interfaces with `myInterface.(type)` will only work inside a switch statement
+like so:
+```
+// any here is same as interface{}
+func reflectSwitch(thing any) {
+	switch thing.(type) {
+
+	case string:
+		fmt.Println("this is a string and the val is", thing)
+	case int:
+		fmt.Println("this is an int and the val is", thing)
+	case []int:
+		fmt.Println("this is a slice of ints and the val is", thing)
+	default:
+		fmt.Println("this is neither a string, number nor a slice of ints and the val is", thing)
+	}
+}
+
+
+for example, this will not work 
+    fmt.Printf("type of interface is %v", myInterface.(type))
+
+```
+
+- checking an interface for a specific concrete type WILL work anywhere 
+```
+val, ok := someInterface.(string); if ok {
+    fmt.Println("this is a string", val)
+    }
+
+```
+
 ## general syntax
 
 - NO SEMIs after statements (but often used inline in conditionals and for loops after var declarations)
