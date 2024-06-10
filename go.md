@@ -2,6 +2,25 @@
 
 - good basic resource is `tour.golang.org`
 
+## Gotchas
+
+- for range looping over strings == runes (int32)
+- for range with index over strings == bytes (uint8)
+- no while loops
+
+- no truthy/falsey except with booleans
+
+```
+if val, ok := myMap[nonExistentKey]; ok! {
+    // this is fine
+    }
+```
+
+- empty slices, maps are nil, but for slices you can append and for maps you
+  can assign k/v pairs
+
+- inner functions (closures) can NOT be named. must be anonymous
+
 ## general syntax
 
 - NO SEMIs after statements (but often used inline in conditionals and for loops after var declarations)
