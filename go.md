@@ -2,6 +2,7 @@
 
 - good basic resource is `tour.golang.org`
 
+<<<<<<< HEAD
 ## Gotchas
 
 - for range looping over strings == runes (int32)
@@ -21,6 +22,56 @@ if val, ok := myMap[nonExistentKey]; ok! {
 
 - inner functions (closures) can NOT be named. must be anonymous
 
+=======
+## gotcha's 
+
+- no while loop, put the `i++` logic inside the brackets. if so, make comment like:
+```
+// add second semi colon for blank condition
+for i := 0; ; {
+        // we need more granular control over i inside loop
+
+        // some break statement in a condition
+    }
+```
+
+- inner funcs must not be named and must be anonymous (eg closures)
+
+- type checking interfaces with `myInterface.(type)` will only work inside a switch statement
+like so:
+```
+// any here is same as interface{}
+func reflectSwitch(thing any) {
+	switch thing.(type) {
+
+	case string:
+		fmt.Println("this is a string and the val is", thing)
+	case int:
+		fmt.Println("this is an int and the val is", thing)
+	case []int:
+		fmt.Println("this is a slice of ints and the val is", thing)
+	default:
+		fmt.Println("this is neither a string, number nor a slice of ints and the val is", thing)
+	}
+}
+
+
+for example, this will not work 
+    fmt.Printf("type of interface is %v", myInterface.(type))
+
+```
+
+- checking an interface for a specific concrete type WILL work anywhere 
+```
+val, ok := someInterface.(string); if ok {
+    fmt.Println("this is a string", val)
+    }
+
+```
+
+- structs are defined at package scope mostly because methods must be declared
+at package scope, so any in-function structs can't have additional methods
+>>>>>>> 846f53caa6e034690493e980caa147c8e65d1e89
 ## general syntax
 
 - NO SEMIs after statements (but often used inline in conditionals and for loops after var declarations)
