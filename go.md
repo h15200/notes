@@ -2,30 +2,27 @@
 
 - good basic resource is `tour.golang.org`
 
-<<<<<<< HEAD
-## Gotchas
+## gotcha's
 
 - for range looping over strings == runes (int32)
 - for range with index over strings == bytes (uint8)
-- no while loops
 
-- no truthy/falsey except with booleans
+  - no while loops
+  - no truthy/falsey except with booleans
 
-```
-if val, ok := myMap[nonExistentKey]; ok! {
-    // this is fine
-    }
-```
+  ```
+  if val, ok := myMap[nonExistentKey]; ok! {
+      // this is fine
+  }
+  ```
 
 - empty slices, maps are nil, but for slices you can append and for maps you
   can assign k/v pairs
 
 - inner functions (closures) can NOT be named. must be anonymous
 
-=======
-## gotcha's 
-
 - no while loop, put the `i++` logic inside the brackets. if so, make comment like:
+
 ```
 // add second semi colon for blank condition
 for i := 0; ; {
@@ -38,7 +35,11 @@ for i := 0; ; {
 - inner funcs must not be named and must be anonymous (eg closures)
 
 - type checking interfaces with `myInterface.(type)` will only work inside a switch statement
-like so:
+  like so:
+
+- method receivers are loose between value and pointer values
+- function inputs are strict between value and pointer
+
 ```
 // any here is same as interface{}
 func reflectSwitch(thing any) {
@@ -56,12 +57,13 @@ func reflectSwitch(thing any) {
 }
 
 
-for example, this will not work 
+for example, this will not work
     fmt.Printf("type of interface is %v", myInterface.(type))
 
 ```
 
-- checking an interface for a specific concrete type WILL work anywhere 
+- checking an interface for a specific concrete type WILL work anywhere
+
 ```
 val, ok := someInterface.(string); if ok {
     fmt.Println("this is a string", val)
@@ -70,8 +72,8 @@ val, ok := someInterface.(string); if ok {
 ```
 
 - structs are defined at package scope mostly because methods must be declared
-at package scope, so any in-function structs can't have additional methods
->>>>>>> 846f53caa6e034690493e980caa147c8e65d1e89
+  at package scope, so any in-function structs can't have additional methods
+
 ## general syntax
 
 - NO SEMIs after statements (but often used inline in conditionals and for loops after var declarations)
