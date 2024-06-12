@@ -32,8 +32,16 @@ for i := 0; ; {
     }
 ```
 
-- inner funcs must not be named and must be anonymous (eg closures)
+- inner funcs must not be named and must be anonymous (eg closures) OR assigned via `:=`
 
+```
+func outer() {
+
+        func inner() // this is a syntax error 
+        return func () {} // this is ok
+        inner := func() {} // this is ok
+    }
+```
 - type checking interfaces with `myInterface.(type)` will only work inside a switch statement
   like so:
 
@@ -72,7 +80,10 @@ val, ok := someInterface.(string); if ok {
 ```
 
 - structs are defined at package scope mostly because methods must be declared
-  at package scope, so any in-function structs can't have additional methods
+at package scope, so any in-function structs can't have additional methods
+
+- package level declarations are all compiled before main()
+
 
 ## general syntax
 
