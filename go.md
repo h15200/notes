@@ -1257,7 +1257,8 @@ func BenchmarkSomeFunc(b *testing.B) {
 ## Generics in Go
 
 - `generics` is shorthand for parametric polymorphism
-- we have a `type parameter` on a type or function
+- we have a `type parameter` on a type or function, which is not statically
+  typed like usual
 
 ```
 type MyType[T any] struct {
@@ -1315,7 +1316,60 @@ func main() {
 
 ```
 
+- generics are useful for creating new data structures
+
+```
+// List represents a singly-linked list that holds values of any type
+
+type List[T any] struct {
+	next *List[T]
+	val  T
+}
+
+func main() {
+    // note that [int] is needed to instantiate the ds
+	ll := &List[int]{ // all nodes must be a pointer
+		next: nil,
+		val: 0,
+	}
+	ll.next = &List[int]{
+		next: nil,
+		val: 1,
+	}
+
+	// loop through ll and log
+	curr := ll
+	for curr != nil {
+		fmt.Printf("Current Linked List Node Val: %v,  Next:%v\n", curr.val, curr.next)
+		curr = curr.next
+	}
+}
+
+```
+
+### Keyword 'Comparable' and other parameters for generics
+
 - it's also possible to limit the surface area to avoid using any by creating custom types
+
+- `comparable` means all types where values can be compared, like `strings`, `ints`,
+  `arrays`
+
+```
+func GetIndex[T comparable](s []T, x T) int {
+	for i, v := range s {
+		// v and x are type T, which has the comparable
+		// constraint, so we can use == here.
+		if v == x {
+			return i
+		}
+	}
+	return -1
+}
+
+```
+
+- here we are accepting type [T fmt.Stringer], meaning any T type which
+  has a `String()` method has defined in the fmt package
 
 ```
 package main
