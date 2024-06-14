@@ -812,11 +812,12 @@ quad trees are trees that have 0 or 4 children used to do location searches used
   - faster reads with penalty to writes as we are adding a new data structure
   - indexing uses extra memory to keep track of a way to handle sorting in
     non-primary keys
-  - 2 main types of indexing data structures `b-tree` and `Log Structured Merge` (LSM)
+  - 2 main types of indexing data structures (aka storage engines)`page-oriented` (like b-tree) and `Log Structured Merge` (LSM)
     - as an exception, `hash maps` can be used to index very small amount of data
       a hash index gets extremely slow if it spills outside RAM and requires disk. often,
       not realistic. Ranged queries also are very slow in a hash index.
-  - standard is `b-tree` (mySql, postgres) where reads are optimized over writes.
+  - standard engine for relational dbs is `b-tree`, a specific
+    implementation of `page-oriented` engines used by (mySql, postgres) where reads are optimized over writes.
     There is an in-memory Page Cache and a disk B-Tree component. A write-ahead log
     keeps track of all operations and writes to disk
     and good for sorting data (useful in structured data)

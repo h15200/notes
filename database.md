@@ -11,11 +11,39 @@ NoSQL = Non relational
 
 ## Database types
 
-- Tables - SQL
+- RDBMS (SQL)
+  - suitable when data is related to each other with simple many-to-many relationships
+  - generally the first pick as a first source of truth db
 - NoSql
+  - anything that's not SQL
+  - K/V Store, Document Store, Column orientated store, Graph Store
+  - document dbs are good when there are no relationships but the data is
+    in a tree like structure
+  - graph dbs are good when everything is related and has numerous m-t-m relationships
   - key-value db (uses a simple schema of k:v)
   - document model is a subset of key-value, but allows for more
     complex, nested data and a flexible schema
+
+### Database Engine Types
+
+another way to categorizing dbs
+
+- generally, 2 main categories
+
+1. log-structured storage engines (generally for nosql)
+
+   - uses an append-only log structure to add data
+   - `Sorted String Tables` (SS Tables) are used to sort all keys into various
+     segments. Keys are compacted periodically to keep it in memory. Snapshots
+     of the tables are saved to disk periodically for durability. data is appended
+     and compacted
+   - writes are generally fast, but reads are slower than page-oriented storage
+
+2. page-oriented storage engines (for ex, B-tree and generally for sql)
+   - used in most RDBMS
+   - a `page` is a reference tree that holds data
+   - data is not appended but is updated (mutated)
+   - generally faster reads than Log structured merge
 
 ### History
 

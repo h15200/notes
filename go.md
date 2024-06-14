@@ -23,25 +23,24 @@
 
 - no while loop, put the `i++` logic inside the brackets. if so, make comment like:
 
-```
 // add second semi colon for blank condition
 for i := 0; ; {
-        // we need more granular control over i inside loop
+// we need more granular control over i inside loop
 
         // some break statement in a condition
     }
-```
 
 - inner funcs must not be named and must be anonymous (eg closures) OR assigned via `:=`
 
 ```
-func outer() {
+  funct outer() {
 
-        func inner() // this is a syntax error 
-        return func () {} // this is ok
-        inner := func() {} // this is ok
-    }
+          funct inner() {} // this is a syntax error
+          return funct () {} // this is ok
+          inner := funct() {} // this is ok
+      }
 ```
+
 - type checking interfaces with `myInterface.(type)` will only work inside a switch statement
   like so:
 
@@ -49,41 +48,40 @@ func outer() {
 - function inputs are strict between value and pointer
 
 ```
+
 // any here is same as interface{}
 func reflectSwitch(thing any) {
-	switch thing.(type) {
+switch thing.(type) {
 
-	case string:
-		fmt.Println("this is a string and the val is", thing)
-	case int:
-		fmt.Println("this is an int and the val is", thing)
-	case []int:
-		fmt.Println("this is a slice of ints and the val is", thing)
-	default:
-		fmt.Println("this is neither a string, number nor a slice of ints and the val is", thing)
-	}
+    case string:
+    	fmt.Println("this is a string and the val is", thing)
+    case int:
+    	fmt.Println("this is an int and the val is", thing)
+    case []int:
+    	fmt.Println("this is a slice of ints and the val is", thing)
+    default:
+    	fmt.Println("this is neither a string, number nor a slice of ints and the val is", thing)
+    }
+
 }
 
-
 for example, this will not work
-    fmt.Printf("type of interface is %v", myInterface.(type))
+fmt.Printf("type of interface is %v", myInterface.(type))
 
 ```
 
 - checking an interface for a specific concrete type WILL work anywhere
 
 ```
+
 val, ok := someInterface.(string); if ok {
-    fmt.Println("this is a string", val)
-    }
+fmt.Println("this is a string", val)
+}
 
 ```
 
-- structs are defined at package scope mostly because methods must be declared
-at package scope, so any in-function structs can't have additional methods
-
-- package level declarations are all compiled before main()
-
+- structs are mostly defined at package scope because methods must be declared
+  at package scope as a named func. As a result, function scoped structs can't have methods attached to them
 
 ## general syntax
 
@@ -106,10 +104,12 @@ go doc [packageName.funcName]
 - also, if you need to mutate the original, you can't use the 2nd arg
 
 ```
+
 s := []string{"hi", "bye"}
 for i, word := range s {
-        // word is a copy! to mutate original, use s[i] instead
-    }
+// word is a copy! to mutate original, use s[i] instead
+}
+
 ```
 
 - remember that both the index and item in a range loop will reuse the pointer
@@ -117,10 +117,10 @@ for i, word := range s {
 ```
 
 func ex2() {
-    // a slice of arrays
+// a slice of arrays
 items := [][2]byte{
-           {1, 2}, {3, 4}, {5, 6},
-       }
+{1, 2}, {3, 4}, {5, 6},
+}
 
 items_2 := [][]byte{} // a slice of slices
 
@@ -134,18 +134,28 @@ items_2 := [][]byte{} // a slice of slices
              fmt.Println(items_2) // {5,6},{5,6},{5,6}
 
 // the way to fix this is to make a copy
-items_3 := [][]byte{}
-         for _, item := range items {
-            itemCopy := item   // since item is array, this is a value copy
-            items_3 = append(items_3, itemCopy[:]) // convert array to slice with [:]
-         }
+items*3 := [][]byte{}
+for *, item := range items {
+itemCopy := item // since item is array, this is a value copy
+items_3 = append(items_3, itemCopy[:]) // convert array to slice with [:]
+}
 
          fmt.Println(items_3)
+
 }
 
 ```
 
-## types
+## data types
+
+### 4 categories
+
+1. basic types - int, float, bool
+2. aggregate type - arrays, structs (passed in by value, is `comparable` by equality)
+3. reference type - maps, slices, channels, functions, and pointers (passed by ref)
+4. interface type - interfaces
+
+### syntax
 
 - int int8 (-125 ish to +125) int16 int32 int64
 - uint uint8 (0 to 255) uint16 uint32 uint64 uintptr
@@ -164,15 +174,30 @@ items_3 := [][]byte{}
 - float32 float64
 - complex64 complex128 (square roots, imaginary nums)
 
+### 4 keywords to start a line
+
+1. const
+   - used in both package and function scope
+   - the most rare out of the 4. used for static data that doesn't change
+2. var
+   - used for package level variables
+   - used when the `:=` syntax within a function needs to be recast `var f mySpecificInt = 5` // will default to int otherwise
+3. func
+   - used to declare functions and methods in package scope if named
+   - if not named, also used to declare inner functions in function scope
+4. type
+   - used to declare all other data categories in package scope only
+   - includes all custom types backed by any concrete type
+
 ## strings are utf-8 encoded to include unicode characters
 
 - length of string is length of bytes!
 - unicode chars use multiple bytes
 
 ```
+
 s := "あ"
 fmt.Println(len(s)) // 3 since 3 bytes
-
 
 ```
 
@@ -197,7 +222,8 @@ new_string := s + ", world" // this is a copied value`
 
   - any of these however can be passed in by reference is using a pointer as an arg`&array`
 
-  ```
+```
+
          func do(*a [3]int) {
                  *(a)[3] = 5 // since we are dereferencing the pointer and getting
                  the original, the original array also mutates
@@ -205,7 +231,8 @@ new_string := s + ", world" // this is a copied value`
        arr := [3]int{1,2,3}
        do(&arr) // although arrays are usually passed in by value, this will allow
        to pass by reference
-  ```
+
+```
 
 - all other complex types `slice`, `chan`, `map` etc.. are passed in by ref
 
@@ -217,9 +244,11 @@ new_string := s + ", world" // this is a copied value`
 - when declaring a func, always use `*` as ref to pointers
 
 ```
-  func doSomething(n *int) {
-  // n is a pointer
-  }
+
+func doSomething(n \*int) {
+// n is a pointer
+}
+
 ```
 
 - when passing IN a pointer, always use the `&` operator in the invocation `doSomething(&myNum) // pointer to myNum is passed in as arg`
@@ -320,7 +349,7 @@ convention to capitalize const but only inside functions. Otherwise, it will sig
 ```
 
 const (
-_ = iota
+\_ = iota
 blueCar // this is 1
 greeCar // this is 2
 redCar // 3
@@ -332,11 +361,12 @@ redCar // 3
 - often used with bitwise operators
 
 ```
+
 Flagup Flags = 1 << iota // iota is 1
-FlagBroadcast   // 2
-FlagLoopback         // 4
-FlagPointToPoint       // 8
-FlagMulticast     // 16
+FlagBroadcast // 2
+FlagLoopback // 4
+FlagPointToPoint // 8
+FlagMulticast // 16
 
 // makes it easy to combine Flagup | FlagLoopback with bits
 
@@ -345,14 +375,16 @@ FlagMulticast     // 16
 - possible to ignore values with underscore
 
 ```
+
 const (
-_            = iota // ignore 0
-KiB ByteSize = 1 << (10 * iota) // sets the pattern starting here at iota = 1
+\_ = iota // ignore 0
+KiB ByteSize = 1 << (10 \* iota) // sets the pattern starting here at iota = 1
 GiB
 TiB
 PiB
 EiB
 )
+
 ```
 
 ## scoping
@@ -497,9 +529,10 @@ fmt.Println("non defer a", a)
 
 func do(name string, nums ...int) int {
 
-   // nums is a slice of ints
+// nums is a slice of ints
 
 }
+
 ```
 
 #### multiple defer - stack
@@ -519,8 +552,8 @@ fmt.Println("counting")
 
 }
 
-
 // prints DONE 9 8 7 6 ... to 0
+
 ```
 
 "Generated" will print right after the return of either scenario
@@ -580,6 +613,7 @@ fmt.Println("counting")
 - `s:= []int{1,2,3,4}   someFunc(s...)`
 
 ```
+
 s := []string{"a", "b", "c"}
 s = append(s, s) // does not work because you can't add a slice as a string (in this case)
 s = append(s, s...) // now s is {"a", "b", "c", "a", "b", "c"}
@@ -805,16 +839,18 @@ Writer
 - a method can be stored to be used later. this will capture the receiver in a closure
 
 ```
+
 func (p Person) Do(word string) string {
-        return something using p.Name and input word
-    }
+return something using p.Name and input word
+}
 
 func main {
-        p := Person{Name: "Kai"}
-        DoLater = p.Do
+p := Person{Name: "Kai"}
+DoLater = p.Do
 
         // if you use it later, you have access to person p from within that DoLater
     }
+
 ```
 
 - when using this technique, it's important to note if the method takes in a value
@@ -963,33 +999,36 @@ dwff.Dog.Age // NO!
    - often happens with web server logic since go http library uses concurrency
      and paralellism (with multi core machines0)
 
-   ```
-   // example of race condition
+```
 
-   var someInt = 0
-   func handler(w http.ResponseWriter, req *http.Request) {
-       // for every request, increment
-       someInt++  // this is UNSAFE because a server may take requests at
-       // the same time in parallel. int will probably be LOWER than
-       // total number of requests
+// example of race condition
+
+var someInt = 0
+func handler(w http.ResponseWriter, req \*http.Request) {
+// for every request, increment
+someInt++ // this is UNSAFE because a server may take requests at
+// the same time in parallel. int will probably be LOWER than
+// total number of requests
 
        }
-   ```
+
+```
 
 2. deadlocks when no goroutine can make progress
 
-   - goroutines are blocked on empty channels
-   - goroutines are blocked waiting on a mutext that never unlocks
-   - goroutines are prevented from running
-   - some deadlocks will be detected automatically, but not all
-   - often happens in unbuffered channels with no actions or forgetting
-     to unlock a mutex
+- goroutines are blocked on empty channels
+- goroutines are blocked waiting on a mutext that never unlocks
+- goroutines are prevented from running
+- some deadlocks will be detected automatically, but not all
+- often happens in unbuffered channels with no actions or forgetting
+  to unlock a mutex
 
-   ```
-   // deadlock ex 1
+```
 
-   func main() {
-           ch := make(chan bool)
+// deadlock ex 1
+
+func main() {
+ch := make(chan bool)
 
            go func(ok bool) {
                // this never runs, so nothing is sent to ch
@@ -1003,9 +1042,11 @@ dwff.Dog.Age // NO!
 
     // this will never run since there is no data on the channel
        <-ch   // since there is no sending, there is no receiving
-   ```
 
 ```
+
+```
+
 // deadlock ex 2
 
 func main() {
@@ -1039,9 +1080,10 @@ var m sync.Mutex
 - typically a leaking socket will cause this
 
 ```
+
 // ex of goroutine leak
-func finishReq(timeout time.Duration) *obj {
-        ch := make(chan obj)
+func finishReq(timeout time.Duration) \*obj {
+ch := make(chan obj)
 
         go func() {
             ... // some kind of work that takes a long time
@@ -1059,6 +1101,7 @@ func finishReq(timeout time.Duration) *obj {
             // not reach case res := <-ch, but the go func will still run since
             it's able to write to the buffer, even if that info is never used
     }
+
 ```
 
 4. channel errors
@@ -1073,21 +1116,21 @@ func finishReq(timeout time.Duration) *obj {
 - goroutine closure capture over a reference that mutates
 
 ```
+
 // BAD example
 for i := 0; i < 10; i++ {
-        go func() {
-            fmt.Println(i) // i uses the same pointer on every loop, so this is a mutating value
-            // the goroutine is closing over i, which keeps changing. not good
-            // in this example, all goroutines will print the LAST idx of the loop
-
+go func() {
+fmt.Println(i) // i uses the same pointer on every loop, so this is a mutating value
+// the goroutine is closing over i, which keeps changing. not good
+// in this example, all goroutines will print the LAST idx of the loop
 
             }()
     }
 
 // GOOD example
 for j := 0; < 10 ; j++ {
-        go func(j int) {
-            // stuff with j is ok here since it's the value at that moment
+go func(j int) {
+// stuff with j is ok here since it's the value at that moment
 
             }(j)
     }
@@ -1124,7 +1167,6 @@ for j := 0; < 10 ; j++ {
   }
 
   // SOLUTION - when using multiple mutex, always use them in the SAME ORDER!
-
   ```
 
 - misuse of WaitGroup
@@ -1362,8 +1404,8 @@ func main() {
 
 - it's also possible to limit the surface area to avoid using any by creating custom types
 
-- `comparable` means all types where values can be compared, like `strings`, `ints`,
-  `arrays`
+- `comparable` means all types where values can be compared (basic types OR aggregate types) like `strings`, `ints`,
+  `arrays`, and `structs` but NOT reference types (slices, maps, funcs, pointers, chans)
 
 ```
 func GetIndex[T comparable](s []T, x T) int {
