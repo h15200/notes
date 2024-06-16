@@ -19,11 +19,12 @@ AWS prodives a globally distributed IaaS (infrastructure as a service) that prov
     - a relational db like RDS
       - Aurora serverless has auto scaling for SQL if you know you will grow
     - start with monolithic app if you're not sure
-  - users > 1,000 - add ALB and some extra instances of servers and db to scale
+  - users > 1,000 - add ALB and some extra instances of servers to scale horizontally
     - nodes in different availability zones for fault tolerance
     - add new new nodes of db, read replicas of db
   - users > 10,000
     - add read replicas in dbs
+      - think about replication methods and trade-offs
     - add Cloudfront and serve static content on the edge
       - or, the more modern way would to be use a hosted service like
         Amplify which manages the front-end
@@ -33,10 +34,7 @@ AWS prodives a globally distributed IaaS (infrastructure as a service) that prov
     - auto scale with `CloudWatch` that sits after the load balancer which
       automatically adds pools of nodes to services that are being most heavily
       requested (around users > 500,000)
-  - users > 500,000
-    - metrics, logging, observability dashboards
-    - CloudWatch can handle metrics as well with anomaly detection
-    - break up monolithic architecture into soa or microservice architecture
+  - users > 500,000 metrics, logging, observability dashboards CloudWatch can handle metrics as well with anomaly detection break up monolithic architecture into soa or microservice architecture
     - containerizing with ECS, k8s layer with EKS
     - loose coupling with message queues, event driven system
   - users > 1 million
@@ -116,11 +114,11 @@ There are regions available globally. You can even use multiple instances and de
   ec2 instance
 - fully managed options include `RDS` (sql), `Dynamo` (nosql), `Neptune` (graph)
 - `RDS` is compatible with more dbs and has native functions
-    - can replicate multi-AZ within one region
+  - can replicate multi-AZ within one region
 - `Aurora` is MySQL or PostgreSQL compatible and does auto scaling up to 64TB,
   15 read replicas and backups to s3 (within multi zones in 1 region) as
   well as serverless options. Some native functions are not available
-    - Aurora can also replicate instances globally (multi-region)
+  - Aurora can also replicate instances globally (multi-region)
 - Dynamo can be replicated across multiple AZs in the same region
 
 ## ECR (Elastic container registry)

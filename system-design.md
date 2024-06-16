@@ -636,80 +636,115 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 - prevent a single point of failure by replicating a db to a backup in case the main fails.
 - if set up correctly, a main db failure will seamlessly be taken over by the replica until the main is back online again. once it's back, the main will resume as the primary db
-- two ways
+- 3 main leader/follow paradigms
 
-  1. leader-follower replication (single leader)
+1. Single leader replication (Single data center, read heavy system)
 
-  - the majority of db replication is leader-follower, especially if you only
-    have 1 data center. multi-leader should only be used in special circumstances
-    in multi-data center systems
-  - leader usually keeps a `row based log` that describes each row, and
-    the follower reads from it. `CDC` is generally done this way as well
-    The old way was to use the write-ahead log which contained low level byte
-    block data, but that does not work in different db engines
-  - usually there is 1 `synchronous` follower as a backup for fallback, but
-    the other followers are updated `asynchronously`
-  - provides partition toerance, load management, as well as latency (can serve at edge)
-  - if requirement is strongly consistent, the write happens only if all
-    writes to follwers are complete. Realistically, this is not worth it
-    for data centers that are far away because the round trips are too laggy.
-    For that, the compromise is eventually consistency and higher throughput
-  - PRO easy to implement compared to multi-leader
-  - CON the more followers there are, the more latent it becomes
-  - CON you need logic (consensus algo) to promote a follower as a leader (Raft , Pax)
+   - optimizes reads
+   - the majority of db replication is leader-follower, especially if you only
+     have 1 data center. multi-leader should only be used in special circumstances
+     in multi-data center systems
+   - leader usually keeps a `row based log` that describes each row, and
+     the follower reads from it. Row based logs describe each row of a table
+     unlike the older `write-ahead logs` which describe the strict db operations
+     in bytes of block data.
+     Row based logs are easier to port over different software versions.
+     `CDC` is generally done this way as well
+   - usually there is 1 `synchronous` follower as a backup for fallback, but
+     the other followers are updated `asynchronously`
+   - provides partition toerance, load management, as well as latency (can serve at edge)
+   - if requirement is strongly consistent, the write happens only if all
+     writes to follwers are complete. Realistically, this is not worth it
+     for data centers that are far away because the round trips are too laggy.
+     For that, the compromise is eventually consistency and higher throughput
+   - PROS:
+     - easy to implement compared to multi-leader - relatively fast writes if using async (just copy to 1 follower, then assume
+       rest is fine)
+   - CONS
+     - Failover (the leader node going down) is still tricky to reason with as
+       a consensus needs to be built about who the new leader is (Raft, Pax)
+       - generally, when a leader goes down, it persists the state of when it
+         went down in a log. One of the follower nodes become the leader. When
+         the original node comes back up, it catches up to the leader by comparing
+         the logs
+     - if synchronous, the more followers there are, the more latent it becomes
+     - `read from writes` (an update may not reflect
+       until there is logic that dictates that when you update to a leader, you
+       should also read from it so you see the changes)
+     - `monotonic writes` the changes must not appear to be going backwards if
+       using async followers. solve by always reading from the same node
+     - Dependencies ex a comment answer should not propage before commant questions.
+       solve by grouping together dependencies as one unit of change
 
-  2. multi-leader replication
+2. multi-leader replication (multi data centers or heavy write loads or
+   offline write support, or collaborative writes like google docs, calendar apps
+   , figma)
 
-- the exception to the rule, often when you have multiple data centers
-- also, if you absolutely need to optimize for writes
-- each data center can have 1 leader and followers
-- when one data center goes down, the others can continue operating
-- data needs to be synced and merged when multiple writes need to be resolved
-- ex. google calendar is essentially multi-leader as all of your devices
-  are leaders with write access. When you don't have internet access,
-  it is partitioned but the write will happen when you're back online (consistency
-  over availability)
-- will need additional load balancing logic for writes
-- all replicas can write and read and sync with each other
-- conflict resolution strategies:
-  - avoid write conflicts by assigning dbs to regions
-  - last write wins. Cassandra (easy to implement, but issues. offline writes? lost writes)
-  - on-read. store conflicting values and make the client resolve on-read
-  - on-write. merge writes when there is a conflict on the 2nd write
-- how to detect concurrency
-  - need to use version vectors to detect missing versions
-- PROS:
-  - fast writes as throughput is more than 1 node like in single node
-  - allows for multi-region, global service
-- CONS:
-  - write conflicts from multiple leaders
+   - the exception to the rule, often when you have multiple data centers,
+     have very high write loads, or need to support offline writes.
+   - SOME nodes can read and write. Most can only read. Classic example is in a
+     multi datacenter system, each data center has 1 leader.
+   - eliminates cross-datacenter network calls. In theory if the client connects
+     to the leader in one data center, the followers will get updated via the
+     local data center network
+   - also, if you absolutely need to optimize for writes
+   - each data center can have 1 leader and followers
+   - when one data center goes down, the others can continue operating
+   - data needs to be synced and merged when multiple writes need to be resolved
+   - ex. google calendar is essentially multi-leader as all of your devices
+     are leaders with write access. When you don't have internet access,
+     it is partitioned but the write will happen when you're back online (consistency
+     over availability)
+   - will need additional load balancing logic for writes to decide which data center
+     leader will process the write
+   - For BOTH multi-leader AND leader-less replication, the writes need to resolve
+     conflicts, which is the biggest CON of non single-leader replication!
+   - how to detect concurrency
+     - need to use version vectors to detect missing versions
+   - PROS (applies to both multi leader and leader-less):
+     - fast writes as throughput is more than 1 node like in single node
+     - allows for multi-region, global service
+     - if one data center goes down, the others keep going
+   - CONS (applies to both multi leader and leader-less):
+     - write conflicts from multiple leaders
+     - main ways to deal
+       - avoid write conflicts by assigning certain sets of data to one data center
+       - last write wins. Cassandra (easy to implement, but issues. offline writes? lost writes)
+       - on-read. store conflicting values and make the client resolve on-read
+       - on-write. merge writes when there is a conflict on the 2nd write
 
-3. Leader-less replication
+3. Leader-less replication (Cassandra, Dynamo, Riak)
 
-- send write/reads to all nodes in parallel
-- when a certain number of nodes respond with success, the client is told it's a success
-- strategies to repair failed writes
-  1. anti-entropy
-  - a background process to look at all nodes, and get most updated data (version info) and
-    propagate to other nodes
-  2. read repair (more common)
-  - repair on read. read in parallel from all nodes and find the most updated
-    node with a quorum
-  - quorum can be found by setting the number of total replica nodes as an odd number like 7. Then,
-    set the number of threshold writes W to (n + 1) / 2 = 4.
-  - first, send write operations to all 7 nodes. If you get a success from at least 4,
-    consider it a success
-  - now if you READ from any 4 nodes (Read R should be same as W), you are
-    guaranteed that at least 1 node will have the most updated writes. Use
-    that to read-repair the other nodes that missed writes. repair as you read
-  - this quorum is not consistent because if the client does NOT receive success
-    in situations where W - 1 nodes successfully wrote, those writes are still
-    existing and need to be rolled back eventually
-  - write conflicts still exist if two write calls reach a node in different ordering.
-    must have some kind of conflict resolution
-- pros and cons
-  - PROS like multi-leader, this is only viable in a multi data center, multi region setup
-  - CONS still need conflict resolution, not consistent, slow reads when using read-repair
+   - send write/reads to all nodes in parallel
+   - when a certain number of nodes respond with success, the client is told it's a success
+   - the biggest difference between this and multi leader is that when a node dies,
+     it just gets ignored. There is no failover, since we continue writing to the other
+     ones.
+   - to avoid stale data, READ operations are sent to multiple nodes in parallel
+     to compare the version number and read from the newest data
+
+   - strategies to repair failed writes
+     1. anti-entropy
+     - a background process to look at all nodes, and get most updated data (version info) and
+       propagate to other nodes
+     2. read repair (more common)
+     - repair on read. read in parallel from all nodes and find the most updated
+       node with a quorum
+     - quorum can be found by setting the number of total replica nodes as an odd number like 7. Then,
+       set the number of threshold writes W to (n + 1) / 2 = 4.
+     - first, send write operations to all 7 nodes. If you get a success from at least 4,
+       consider it a success
+     - now if you READ from any 4 nodes (Read R should be same as W), you are
+       guaranteed that at least 1 node will have the most updated writes. Use
+       that to read-repair the other nodes that missed writes. repair as you read
+     - this quorum is not consistent because if the client does NOT receive success
+       in situations where W - 1 nodes successfully wrote, those writes are still
+       existing and need to be rolled back eventually
+     - write conflicts still exist if two write calls reach a node in different ordering.
+       must have some kind of conflict resolution
+   - pros and cons
+     - PROS like multi-leader, this is only viable in a multi data center, multi region setup
+     - CONS still need conflict resolution, not consistent, slow reads when using read-repair
 
 #### Federation / Partitioning
 
@@ -819,531 +854,4 @@ quad trees are trees that have 0 or 4 children used to do location searches used
   - standard engine for relational dbs is `b-tree`, a specific
     implementation of `page-oriented` engines used by (mySql, postgres) where reads are optimized over writes.
     There is an in-memory Page Cache and a disk B-Tree component. A write-ahead log
-    keeps track of all operations and writes to disk
-    and good for sorting data (useful in structured data)
-  - `LSM` has faster writes since it only writes to a buffer and scales better but bad at sorting
-    (most Nosql dbs use LSM)
-- using optimized SQL commands
-
-### Leader Election
-
-- the same idea of threads and locks but in a distributed system
-- used when only 1 of the replicated nodes should be responsible fo something
-
-  - for example if you have a subscription service like Netflix, when using a 3rd party service like paypal to process payments, you don't want that 3rd party service to have direct access to your UsersDb.
-
-  - another example is replicated dbs. Only the main active one should be in charge of writing so data is consistent
-
-- Usually there is a service that sits between your db and the 3rd party service that has access to your db and checks the status of `payments` or something, and communicates with the payment service. When you have important logic like payment, you want passive redundancies of this middle service so that only one "leader" takes care of the logic and the others are on standby.
-
-- The logic of multiple machines agreeing on a leader can be very complicated. The act of sharing this state of knowing who the leader is done with a `consensus algorithm`, specifically like `Paxos` & `Raft`
-
-- example of apps that use a consensus algo under the hood - `zookeeper`, `Etcd` (EtsyDee) are both strongly consistent and highly available key-value storage that's often used to implement leader election
-
-#### Apache Zookeeper (leader follower model) in detail
-
-- basically a namespace with a bunch of nodes that it keeps track of
-- used in db read-replication as well as message queues (rabbitMQ) and Kafka
-- when you have replication, you need consensus.
-- also used for service discovery
-- In a zookeeper service, the same set of data is held in multiple machines
-- one machine is the leader.
-- clients connect to any instance of those nodes to get data
-- reads can be done from any node, leader or follower
-- writes must go through leader
-- uses distributed locks, so read consistency is guaranteed
-
-### Consistency, Availability, CAP Theorem
-
-- availability is measured by `9s`. Five 9s means there are outages of seconds over a year
-- in reality, most major cloud vendors promise `99.95%`, which is about 20 minutes of down time a month
-- Strong Consistency (aka `Linearizability`) means data is rarely stale. Eventual consistency means the data will sync over a period of time (seconds or minutes) when the network traffic is low.
-- CAP theorem (Consistency, Availability, Partition)
-
-  - in the event of a `Network Partition (server failure, network failure)` a system must prioritize either `consistency` (pause user operations until network is back up) or `availability` (continue allowing users to make API calls, but data is not consistent)
-  - For example, if the "likes" service that tracks the number of likes is the issue, probably ok to prioritize `availability` and keep allowing users continue
-  - for something like a bank statement, that's not the case
-
-- real life examples:
-  - weak consistency
-    - Tech: Memcache
-    - examples: Voice app, real time video game, video chat
-  - eventual consistency
-    - tech: Amazon S3, Amazon SimpleDB, SMTP (email protocol)
-    - examples: social media likes, DNS
-  - strong consistency (linearizability)
-    - tech: RDBMS, file systems
-    - examples: bank transactions
-
-### Consistency models
-
-1. Strictly Consistent (locks all other threads during reads and writes). Distributed
-   systems are rarely strictly consistent
-2. Sequentially Consistent. Don't care about reads, but writes stall system and stays consistent.
-   Works well when there are more reads than writes
-3. FIFO (PRAM) Consistency - both reads and writes are not locked, ordering within one system
-   is good, but not other systems
-4. Eventual Consistency - no ordering. On write, update the cache eventually
-
-### Peer-to-peer networks
-
-- used often in file distribution systems
-- built with tcp/ip
-- when big data needs to be transferred to many clients or peers
-
-```
-         one machine with stuff
-                  |
-      1,000 peers who needs the stuff
-```
-
-- transferring the big chunk to each peer will take a very long time
-- sharding the info into several servers will divide the time by the number of servers, but it's still extra resources
-
-- Solution: Keep using that one machine, but divide the data into 1,000 pieces and send those 1/1000 data to each peer. Then, each peer will share with each other in parallel (ex. peer 1 <-> peer 2 while peer3 <-> peer4 etc.. )
-
-- implementation: Each peer needs to know the order of what peer to talk to via `gossip protocol` or `epidemic protocol` where the peers talk amongst themselves to figure out what peers to talk to each other based on current data fragments. Under the hood there is a distributed hash table that tracks the progress of each peer and its data fragment.
-
-- ex. `Kraken` used by uber
-
-### Polling (continuous req-res loop at an interval) and Streaming (event driven)
-
-- when a client needs to request data that is continuously being updated like
-  the weather or the status or something, the standard request model is not optimal
-- to see regularly updated pieces of data, `polling` or `streaming` can be used
-- `streaming` is also called `pushing`. The opposite of this, the traditional
-  http req-res model is `pulling` because the client initiates contact with a
-  req to pull data.
-
-- `Polling` the client simply sends a request based on a set interval.
-  ex. client checks the status every 5 seconds. This could work for something
-  that has regular changes, but not great for specific event change updates like
-  a text message as data will be stale between the interval `n`. This can be
-  mitigated by lowering the poll interval but it comes with extra load on the server.
-
-- `Streaming (Http streaming)` - client makes a req to server, then the server
-  sends back data indefinitely. After the initial req, the server proactively
-  continues sending data on event changes
-
-- Two ways of implementing HTTP streaming. Chunked and Server-Sent-Events.
-
-  - the server sends data as "Chunked" meaning incomplete and indefinitely keeps
-    sending data back to client
-
-  - Can stream over simple http.
-  - not good for bidirectional communication
-
-- One is not necessarily better than the other. If the data needs instantaneous
-  updating, use streaming. If the data only needs to be updated at an interval,
-  use polling. Implementation of polling is a lot easier
-
-- web sockets use TCP connections
-
-- both of these concepts work in a simple setup, but a publish/subscribe
-  pattern will be needed with persistent data in a large scale distributed system
-
-- XMPP is a peer-to-peer protocol unlike the usual client-server model.
-  It can be used for chat as well as an alternative to web sockets, but is
-  slower and more secure.
-- Websocket (faster, TCP, less secure). XMPP (peer-to-peer, slower, more secure)
-
-- pub/sub and streaming are the same "category" of techniques as the client
-  signs up to a topic. Polling is not, as it's just a repeated http request
-
-- `long polling` keeps the connection alive so that some parsing steps can be
-  skipped over after the initial req. it is a technique used to make polling
-  more efficient
-
-### in the context of network types
-
-- polling uses req-res communication, but at a fixed interval
-- streaming doesn't require a request, but is event based. Event driven communication includes Streaming, WebHooks, WebSockets.
-
-### Webhooks
-
-- you register a server with an event (typically a single event) and a callback URL
-- when the event gets updated, send POST request to callback URL
-- good for specific events. Multiple events can be noisy and server will have to handle a lot of traffic
-
-### WebSockets
-
-- Client and Server handshakes initially (http), then switches to a bidirectional TCP.
-- is low latency communication and less overhead compared to http since you're not dealing with headers.
-- hard to scale and not secure
-
-### PubSub Model
-
-- very similar to message queues, except the message can be received by MULTIPLE subscribers
-
-- an extension of the concept of streaming. Streaming works with a simple connection, but what if we need a large scale distributed system (micro services system) where the data message needs to be persisted in the event of outages.
-
-- a pubsub model consists of 4 entities
-
-  - Publisher - servers that emit messages to topics
-  - Topic - where the messages are stored based on channels of specific information
-  - Subscriber - listens to specific topics for messages
-  - Message - the set of operations transferred from publishers -> topics which will also go from topics -> subscribers
-
-- unlike the streaming websocket model, the publishers and subscribers don't know and don't care about each other. The topic is the storage of the operations and handles receiving data from publisher and sending data to subscribers
-
-- PubSub models will often come with powerful guarantees like `at-least-once-delivery`, `persistent storage`, `ordering` of messages. Note that it's impossible to guarantee `ONLY-once-delivery` and the same message could be sent multiple times if a connection is dropped because of the way message receipts work. ex. - topic 1 sends a message to subscriber1. subscriber1 gets the data but the network is disconnected right before it sends a "received" receipt, so when the network is back, it receives message1 again as a duplicate
-
-- Keeping the above concept of the possibility of getting the same operation message multiple times, it's important to set up PubSub models with `Idempotent Operations` where the outcome is the same whether an operation is done once or multiple times.
-
-- Popular solutions `Apache Kafka`, `Google Cloud Pub/Sub`
-
-### CDN or CDA
-
-- content delivery network is a group of servers around the world that can lower latency, add redundancies and fault-tolerance when delivering static data
-
-- sits in the DNS layer to route calls to PHYSICALLY different location servers. This is conceptually similar to a load balancer, but is different as load balancers usually distributes network calls to individual severs that are all close together in location.
-
-### Rate limiting
-
-- DoS (Denial of Service) attacks involve spamming a server with requests to damage or take down the service.
-- this can be thwarted by Rate Limiting which returns an error code `429` "Too many requests" on a request based on parameters like ip address / user, number of requests per minute, region. There are 2 main implementations
-
-  - token bucket system where each unique IP address may have x tokens that
-    gets used per request. At a certain time interval, tokens fill back up.
-    When tokens run out, error 429
-  - sliding window system where each unique IP address has n requests available
-    per time window. It refreshes after 1-n seconds
-
-- DDoS (DISTRIBUTED DoS) attacks are done from multiple client sources, and is harder to prevent with a simple rate limiting on ip address / user. In a distributed system, the rate limiting will need to be checked against another entity that connects to ALL replicas of the server like a redis server
-- Implementation can be done with a key-value in memory store like `redis`. The server gets a request, then asks redis "hey are we doing ok with rate limiting?" before responding
-
-## Online vs Offline systems
-
-- Online systems or `services` wait for a request and try to handle them quickly.
-  - low latency and availability is prioritized
-  - ex. web servers, dbs, caches
-- Offline systems or `batch processing` systems process lots of data
-  - high throughput is prioritized
-  - `mapReduce` is a classic example of an offline system. Was the original method
-  - `spark` uses DataFlow Engines which is an upgrade to mapReduce. This is
-    currently the popular implementations of batch processing
-  - message queues are also offline
-- streaming systems are between the two
-
-### MapReduce
-
-- https://youtu.be/sGuGBkH79iI?si=T2Y0gEMikXRNNS6u
-
-- processing data set over multiple machines (as a result of horizontal scaling) is challenging
-- is a way to get derived data
-- a framework that allows processing of very large data in a distributed system quickly
-  2 main steps:
-
-map - take the dataset and map to key-value pairs, then shuffle them to organize these pairs such that the pairs of the same key are routed to the same machine - example. if there were 10 documents, each word might have all the documents where it appears "the": [1,4,5]
-
-reduce - reduce the shuffled key-value pair and transform them into more meaningful data. - all the mapper servers pool info into reducer machines. one reducer will be in charge of tallying all "the": occurences
-
-- the results are all stored in a `distributed file system`, an abstraction over a cluster of machines that allows
-  them to act like one large file system.
-  implementations include `Google File System` and `Hadoop Distributed File System`.
-  Files are split into chunks of a certain moderate size < Gb and those chunks are sharded across a cluster of machines.
-
-- MapReduce algos have fault tolerance by using Idempotent Operations in both the Map and Reduce steps to shield against outages
-- common tasks including sorting, word count, grep
-- for every mapReduce task, you already know the volume of data you're working with since it's an `offline` system. There
-  are no uncertainties like users making requests from a UI. You don't have to add a server for a spike or worry
-  about consistent hashing!
-  - the predecessor to `Dataflow Engines` like apache `Spark` and `Flink`
-
-### Dataflow Engine
-
-- another type of batch processing
-- examples of Dataflow Engines include `Spark` and `Flink`
-- improvement to map reduce
-
-- what's the issue with mapReduce?
-
-  - inefficient for jobs that require many mapReduce calls/iterations (page rank)
-  - tons of disk I/O due to materializing intermediate state to HDFS (Hadoop Distributed File System)
-
-- uses `Resilient Distributed Datasets` where in memory data structure is used
-- majority of data is kept in memory and is faster than mapReduce
-- comes at a cost of using more RAM
-- one more possible compromise is that it has slightly worse fault tolerance than
-  MapReduce as it does not keep all intermediary state, but the general
-  increase in performance is often worth these tradeoffs. As a result,
-  mapReduce is no longer used for large scale computation in modern tech stacks
-
-#### Flink
-
-- in addition to being a batch processor like `Spark`, it also has stream
-  processing capabilities
-- stream processing is a hybrid `online` and `offline` system
-- flink itself is not a message broker but runs on them as consumers on a cluster
-  of message queues like Kafka
-- each flink instance has its own kv store to persist stateful changes
-- deals with fault tolerance by periodically replicating in-node local data to durable
-  storage such as S3 or HDFS
-
-### Security http and https
-
-- an IP (internet protocol) packet is the base level of network communication
-- TCP (transmission control protocol) is a protocol that sits on top of IP to ensure delivery in order (early email would send fragmented) by establishing a handshake and keeping the connection open. Websockets use TCP
-- Http (hyper text transfer protocol) sits on top of TCP and has additional info with a Head and Body
-
-Http can be intercepted by a malicious actor in a `man-in-the-middle- attack`.
-
-- `SSL` (secure sockets layer) is the older framework that http can sit on top of to ensure a secure connection. The modern version of this is `TLS` (transport layer security) and http that sits on top of `TLS` is called `https`
-
-- While `SSL` is not used often anymore, the `SSL certificate` is still a part of the TLS flow.
-
-- a `https` (s stands for security) protocol sits on top of`tls`, which means the protocol will encrypt the message to avoid `man-in-the middle` attacks using either a `symmetric` (1 key) or `asymmetric` (2 keys) encryption along with an `SSL` certificate. Tls handshakes are similar to tcp handshakes, but it has a strict encryption / decryption step.
-
-- `AES` (advanced encryption standard) is a widely used symmetric key encryption algorithm and is considered the gold standard of encryption.
-
-### Common points
-
-- storing static data
-- if the data is small (5 pictures for a dating site), then you have the choice
-  of storing in a Distributed File System (pics are saved to machines directly)
-  where the pros are faster, cheaper, easier to implement. Cons are not secure or consistent
-- a blob store like S3 is NOT ACID compliant, but it's more secure and persistent
-  and can store bigger data.
-- If the static data is large (songs, videos) or is sensitive, then a blob store is probably better
-- Both distributed file systems and blob storage will be governed by a service
-  that has its own table with userId, imageId, and a reference to the DFS/blob table with an image URL.
-- auth / gateway service
-- in most systems with a user that requires a profile via email/password, always
-  make the point to send that info as a hashed token (instead of the password itself)
-  and that the client will always connect to gateway service that takes care of auth.
-  If authenticated, the gateway will then forward the request to the correct
-  microservice. Then it will also forward the response back to the client.
-
-### blob db vs distributed file system
-
-- Blob storage is the SAME as object store (S3), but they are different from K-V stores/db (Redis), also different from Block Storage (AWS EBS) and different from DFS (AWS EFS)
-
-  - Blob storage is useful for unstructured data (metadata, images)
-  - DFS is useful when you need a hierarchy (., ..) and a tree structure and dynamic sizing
-  - Block Storage is useful when the data is uniform since it divides each block into equal size
-
-- a blob store can be relational or non-relational key-value pair
-  - if it's relational, it is ACID compliant.
-  - use a blob store if the info is unstructured and sensitive
-- a distributed file system is usually cheaper and faster. should be first choice
-  - you still need a db to map the imageId or dataId to FileUrl
-
-### newSql (sql backed, but with a twist) `Google Spanner`, `aws aurora`, `voltDB`
-
-- Google Spanner uses `TrueTime` to sync their clocks, which solves the issue of
-  having logical clocks (version vectors, etc.. that takes up time)
-- provides ACID transactions (is relational), linearizability (strong consistency)
-  where replicas are consistent. Best of both sql and nosql while maintaining
-  good performance
-- 2 phase locking does not require locks on reading. how?
-- since they have trueTime, they use a reliable timestamp to order operations and
-  only read from a lower timestamp (a completed transaction)
-- TrueTime computes a min and max time for operations and returns a very
-  good prediction
-- to use TrueTime, it must synchronize in google data centers, so it can't
-  be used in other dbs.
-
-- `aurora` is another newSql db which claims a 35x boost to performance compared
-  to traditional sql cloud solutions (memory page cache + b-tree disk).
-- Aurora decouples the cache and disk on two different servers and they are
-  both replicated/scaled independently.
-- allows for multiple region
-
-- `VoltDB`
-- traditionally, sql db use two phase locking to implement transaction
-  serializability
-- VoltDB uses single threaded execution and data is stored in-memory instead on disk
-- ideally, you want to use one partition, but the fact that it's only in-memory
-  usually means you need sharding for large data. Generally, not a good idea
-  if your data is large
-- removing locks allows for much higher performance
-
-### Api Design
-
-- distinct from systems design. it is not a subset of system design, but a sibling of it
-- apis are important for all companies, but some like Stripe will have an entire business which is selling access to one api.
-- designing api is important as it becomes extremely hard to edit / remove an api once it is used by services and users.
-- large companies will require a rigorous review process before creating a new api.
-
-The final product of "design Stripe Api" should look like a proto file like this:
-
-```
-# Entity Definitions:
-
-## User
-- id: uuid
-- name: string
-- email: string
-
-## User
-CreateUser(user: User) returns User
-GetSingleUser(uuid) returns User
-ListUsers(uuid[]) returns User[]
-UpdateUser(uuid, updatedUser:User) returns User
-DeleteUser(uuid) returns deleted User
-
-## Card
-Create
-Get
-Update
-Delete
-
-## Charge
-Create
-Get
-Update
-
-
-```
-
-## testing resiliency
-
-- some companies like uber will use a tool like `hailstorm` that randomly shuts down a microservice and logs what happens to find weaknesses
-
-- distributed systems can be so large and complex that it's possible to lose track of all service dependencies. Ex.. an owner of a microservice may not be completely clear on what othe
-
-## classic examples
-
-- chat app
-
-  - remember that group chat is just the service messaging each individual.
-  - usually a TLS bidirectional protocol like websockets
-
-- design a collaborative editing text platform (google docs)
-
-  - high level: all clients with authz has write permission, and will perform
-    both read/writes. Write conflict resolution is crucial
-  - `commutative` is an algebraic property that means ordering doesn't matter
-  - ex. adding something to a set, or incrementing a counter is commutative
-  - low level problem: Array writes (which represent strings) are not `commutative`
-
-  ```
-  'car'
-
-  user 1 adds 's' to index 3 -> 'cars'
-  user 2 adds 'big ' to index 0 -> 'big car'
-
-  if user 1 changes take effect before user 2, 'big cars'
-      but if not, 'bigscar' (because index 3 is on the whitespace)
-
-  depending on ordering, the final string is different!
-
-  we can get either 'hellooo'
-  ```
-
-  - solution 1 `Operational Transform`
-    - a function that converts ordered operations into a proper array
-      such that each local copy converges in the way it's supposed to
-    - Operational Transform requires total ordering, meaning it must use
-      a singler leader write algorithm or a consensus algorithm to determine
-      which writes came first, slowing down the process. This is used by
-      google docs
-  - solution 2 `Conflict Free Replicated Data Types`, (CRDT)
-    - data structure that each write/read replica can hold locally that
-      holds state of historical changes that all converge to the same value.
-    - removes the need for write bottlenecks
-    - typically, CRDTs work well with commutative operations, but it can also
-      be modified to work with arrays (text) by using sets and splitting insertion
-      indices
-  - both solutions are very complicated to implement
-
-- design twitter news feed
-
-  - celebrities vs non-celebrities have opposite solutions
-  - normal people should send all changes to a user cache which propagates
-    the news feed before the user is on the page
-  - with celebrities, it's better if that info is pulled from the db cache
-    each time a user visits the news feed
-
-- design dropbox
-  - when data exceeds a reasonable mount (in the PBs), use somebody else's
-    solution like s3 which scales infinitely
-  - storage in chunks so that each file change doesn't require entire file
-    uploads to s3
-
-## deep dive
-
-### cassandra vs Hbase
-
-- similarities
-
-  - Both are wide column, meaning it's good for analytics and column based reads
-  - both are noSql using LSM as indexing method, so relatively fast writes
-    compared to sql b-trees
-  - both scale relatively well because sharding is easier without joins
-  - both have eventual consistency
-
-- Differences
-
-  - HBase uses a distributed file system to implement (hadoop). It also
-    has a single leader replication strategy while Cassandra has multi leader
-  - Cassandra writes are faster since multi leader, but for conflict resolution
-    they use a simple last-write-wins, which is not reliable because of timestamps
-  - HBase single leader means more throughput on writes, but consistent
-  - Cassandra is better for customer facing apps that require fast writes, but
-    Hbase is better for Data Lakes since it has faster reads and batch job
-    processing (mapReduce, or Data Flow engline like Spark)
-
-### cassandra vs riak
-
-- cassandra is a wide-column and riak is key-value, but similar in that
-  they both use multi-leader replication and writes
-- Riak uses CRDT (conflict-free replication data types) to resolve conflicts,
-  which are similar to version vectors. Cassandra uses a simple last-write-wins.
-  Riak is more reliable since it's not dependent on faulty server timestamps,
-  but it doesn't do well with analytics since it's just a key-value store
-
-## mongoDB
-
-- noSql document store, but capable of transactions. Sort of in-between two
-  worlds. Uses b-tree despite it being a noSql, allowing for slower writes but
-  fast reads.
-- Easy to use for fast mvps
-- uses denormalized data, so again, fast reads but slow writes
-
-## Riak vs Redis vs Memcached
-
-- Riak is a key-value store on disk. Not in-memory
-  - uses multi/no leader replication with conflict resolution so writes are
-    a bit slow but consistent
-- Memcached is a very simple in memory key-value store which does not have any
-  replication measures or failure handling. It does have paritions with consistent
-  hash ring, but there are no handling of faults.
-- Redis builds on top of basic features in Memcached.
-  - has two modes. (Single Node) and (Cluster)
-  - In single mode, has transactions and range queries
-  - In cluster mode uses single leader replication with automatic failover.
-    if the write node fails, another will be chosen via gossip protocol. Note
-    that if a leader fails before writing, some writes could fail
-
-### Object (blob) store vs HDFS
-
-- blob stores like S3 scale. you pay for what you need
-- object store is faster because there is no concurrency guarantees
-- if there is no need to run jobs, use object stores over DFSs
-- CDN can be put up behind blob stores to distribute file closer to the end user
-- you need a distributed file system if you need to run batch/stream jobs
-- generally, mapReduce (HDFS) use case is mainly for distributed batch processing. This
-  is not possible on a blob storage like S3.
-
-## Getting info to client from server
-
-1. Short polling (pull)
-   - just make a new request to server every n seconds
-   - not efficient
-2. Long polling (pull)
-   - use a regular http connection at an interval
-   - connect/disconnect every call cost resources
-   - easy to implement, more stress on server
-   - still need to resend headers every time
-   - check the status of provisioning a resource that is async
-3. Websockets (pull)
-   - TCP connection which stays open. can allow for 50k connections at a time
-   - less resource intensive on server, but more on client
-   - used for chat apps. maybe overkill for infrequent updates
-4. Server sent events (push)
-   - Unlike polling, the server uses a persistent HTTP connection and sends
-     a unidirectional message to the client
-   - newsfeed updates, stock tickers
-   - on the browser, a limit of 6 concurrent connections. this limit does not
-     exist with websockets
+    keeps
