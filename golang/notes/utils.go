@@ -41,3 +41,21 @@ func FormatRuneWithQ(r rune) {
 	fmt.Printf("\nRune type as %%q is: %q\n", r)
 	fmt.Println("It adds quotes around the rune")
 }
+
+// everything in go is passed by value, but slices are a head which points
+// to subsets of a backing array
+func BadSlicePop(s []int) {
+	s = s[:len(s)-1]
+	// this doesn't do anything because the head is the same
+	// s[0] = 123 WOULD change the slice
+}
+
+func RemoveIndex(s []int, i int) []int {
+	// returning a new slice
+	// [1,2,3,4,5], where we remove index 2
+	// take [3,4,5] as destination, and [4,5] as source and copy -> [4,5,4], then pop
+	copy(s[i:], s[i+1:])
+	s = s[:len(s)-1]
+	return s
+
+}
