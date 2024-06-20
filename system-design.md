@@ -746,48 +746,35 @@ quad trees are trees that have 0 or 4 children used to do location searches used
      - PROS like multi-leader, this is only viable in a multi data center, multi region setup
      - CONS still need conflict resolution, not consistent, slow reads when using read-repair
 
-#### Federation / Partitioning
+#### Federation / Functional Partitioning
 
-- also called `functional partitioning`
-- instead of using one huge db, smaller dbs are in charge of a piece of the whole data
-- eg a separate db per topic. Different from sharding where each db still has
-  a subset of the entire data
-- example might be separating audio into the actual audio (to some blob storage like s3)
-  and metadata (a document storage db)
-- Multiple nodes are used for partitions. Each partition has its own follower and
-  usually some read replicas.
-  - one node can be Leader of partition 1 and Follower of partitions 2 and 3
-  - `hash partitioning` or consistent hashing where the key is hashes of data is used to evenly
-    distribute load so there are no skews / hot spots
-    - this still doesn't have for ex. if the same hashed key is used to read/write
-      like in celebrity instagrams. For that, have some logic like if followers
-      exceed a certain point, add 2 random strings to the hash so that reads
-      and writes on the celebrity are partitioned and not concentrated in 1 partition
-  - mongo and cassandra uses `md5`, not an especially strong cryptographic hash
-    algo since it's just used to search for keys
-- CONS adds additional logic, data is not as organized, hard to figure out where
-  to get the appropritate data, may not work with certain business logic
+- When each node has a part of the row data
+- ex Audio
+  - one db holds metadata
+  - one db holds url to s3 bucket
+- this is generally easy when the data allows you to do it
 
-#### Partitioning (horizontal scaling) Data partitioning over multiple databases
+#### Partitioning (horizontal scaling)
 
-- each database still has the whole data, but only a subset of it
-  - eg for all users, one db will be in charge of lastName A-D, then E-H etc..
+- each database still has whole rows, but not all of the records
+- generally, much harder to do on an RDBMS. Often used in document stores
+- often used in conjunction with replication as one node can be Leader of partition 1 and Follower of partitions 2 and 3
+- 2 Main ways
 
-`Partitioning` or `sharding` will decrease latency, increase throughput and can be done in 2 ways:
-
-- Horizontal partitioning separates (users a-j, j-z) into smaller shards (or partitions) of the same columns
-
-  - can be done in RDBMS and no-SQL, but much easier with noSQL
-    - 2 methods of horizontal partitioning:
-    1. Range of keys
-    - ex. "A-D" in last names goes to one shard, then "E-K"
-    - PROS easy to implement
-    - CONS could have uneven data, can have hot spots
-    2. By Range of Hash of keys
-    - hash a last name, then take a range of those hashes
-    - PROS even data
-    - CONS can't do range queries since lastnames are now random, still can
-      have hot spots
+  1. Using a range of keys per machine (lastname a-g, g-m etc..)
+     - PRO
+       - easy to do range queries
+       - easy to know which node holds the key
+     - CONS
+       - will have skews, or hot spots (busy nodes) and may defeat the purpose of
+         paritioning
+  2. Using a hash of keys `hash partitioning`. The hashing algo can be easy
+     like `md5`, which is used in `mongoDB` and `Cassandra`
+     - PROS
+       - balanced load
+     - CONS
+       - need to query every machine for range queries as keys are not ordered
+       - adds additional logic.
 
 - secondary indexing
 
@@ -809,15 +796,6 @@ quad trees are trees that have 0 or 4 children used to do location searches used
       so no need to go through every partition
     - CONS slow on write
 
-- Vertical partitioning separates columns (categories) into shards (or partitions) for ex when a column is rarely used, it is stored elsewhere.
-
-  - don't confuse vertical partitioning with vertical scaling. Both horizontal and vertical partitioning is a form of horizontal
-    scaline since it requires multiple machines rather than upgrading one machine
-
-- when sharding, just like in servers and load balancers, must take into account hot spots and aim for an even distribution by using a good hashing function that guarantees uniformity.
-- consistent hashing strategy is necessary to keep cache misses to a minimum when
-  instances go down
-
 - Pros and Cons
 
   - Pros: avoids failures
@@ -832,7 +810,7 @@ quad trees are trees that have 0 or 4 children used to do location searches used
 
 #### Denormalization vs Normalization
 
-- Normalized data
+- Normalized data (SQL)
   - no duplicated data (optimal space)
   - needs more time to read via joins, but faster writes
   - used mostly in RDBMS
@@ -855,3 +833,33 @@ quad trees are trees that have 0 or 4 children used to do location searches used
     implementation of `page-oriented` engines used by (mySql, postgres) where reads are optimized over writes.
     There is an in-memory Page Cache and a disk B-Tree component. A write-ahead log
     keeps
+
+### ACID in depth
+
+- `Atomocity` the ability to abort the whole transaction if something goes wrong
+- `Consistency` is expecting a deterministic result when querying for the same thing
+- `Isolation` the hardest to solve. Concurrent requests don't step on each
+  others toes. Different levels implemented by different systems
+- `Durability` when a node dies, does it have a backup when it comes back
+
+- Generally, the most interesting problem is in `Isolation`
+
+#### Isolation
+
+- the more isolation, the more expensive throughputj
+
+- Two main tiers. Note that these are not set at the DB level, but can usually
+  be toggled in the config of a db.
+  - Not Serializable (weak isolation, but still counts as isolation in ACID)
+    1. No dirty reads or writes
+       - does a basic job, but certain states can still cause weird data
+    2. Snapshot Isolation
+       - better than the above, but worse than total serializability
+  - Serializable
+    - queries are done as if they are done in order. concurrent reads and writes
+      don't change the behavior and acts as if each operation was done in order
+    - resource intense. trade-off of throughput vs true serializability
+    - uses either `two phase locking` for reads and writes, or `Searializable
+Snapshot Isolation`, which is an updated version of the non-serializable
+      `snapshot isolation`. Two phase locking is a slightly older tech which is
+      more resource intense, but is still used by many dbs
