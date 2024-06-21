@@ -855,11 +855,33 @@ quad trees are trees that have 0 or 4 children used to do location searches used
        - does a basic job, but certain states can still cause weird data
     2. Snapshot Isolation
        - better than the above, but worse than total serializability
-  - Serializable
-    - queries are done as if they are done in order. concurrent reads and writes
-      don't change the behavior and acts as if each operation was done in order
-    - resource intense. trade-off of throughput vs true serializability
-    - uses either `two phase locking` for reads and writes, or `Searializable
+  - Serializable - queries are done as if they are done in order. concurrent reads and writes
+    don't change the behavior and acts as if each operation was done in order - resource intense. trade-off of throughput vs true serializability - uses either `two phase locking` for reads and writes, or `Searializable
 Snapshot Isolation`, which is an updated version of the non-serializable
-      `snapshot isolation`. Two phase locking is a slightly older tech which is
-      more resource intense, but is still used by many dbs
+    `snapshot isolation`. Two phase locking is a slightly older tech which is
+    more resource intense, but is still used by many dbs
+
+### Consistency (as in Linearizability) in depth
+
+- `consistency` is a bad word in systems design. it can mmean any of the following:
+
+  - consistency in ACID means internal rules within a node or row must apply
+    to all
+  - in CAP, it means how accurate data is across multiple nodes and if
+    a distributed system acts as if it was one node. better word for this is
+    `linearizability`
+
+- `Serializability` vs `Linearizability` similar concepts, but different parts of system
+  - Serial as in ACID (Isolation) The ability for concurrent transactions
+    to not put the system in a bad state.
+  - Linear as in CAP (Consistency). The ability for multiple nodes to act
+    as if it were one node (data is same between all nodes)
+- `Linearizable` system == `Strong Consistency`
+  - a truly linearizable system must be using single-leader replication
+    without async copying to followers WITH a consensus protocol.
+    is slow and is not `available` follower breakage would down system until
+    it is repaired and updated) but acts as if it were on one node
+  - a consensus protocol (zookeeper, etcd) is a system with controller node that keeps
+    track of all node health
+  - multi-leader or leaderless (anything with more than 1 writer) is not
+    truly linearizable because of write conflicts
