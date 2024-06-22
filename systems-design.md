@@ -1,17 +1,15 @@
-# System(s) Design
+# Systems Design
 
-Big picture ideas with no code.
-Frequent interview questions, but no clear, ONE answer.
+## quick facts
 
-Can be broken down to 3 main categories.
+- most servers can handle about 10,000 - 100,000 qps depending on type
+- generally RDBMS as a System of Records (Source of Truth, OLTP) is recommended
+- when a db reaches 10s of Terrabytes, then a NoSql option becomes a priority
+  even if the data is relational
 
-1. scoping
-2. sketching
-3. identifying bottlenecks
-
-## fact sheet
-
-Reading 1MB fastest to slowest:
+- if a network fails, let the protocol (tcp) handle it
+- if a node fails, be able to explain what happens and how it's handled
+  Reading 1MB fastest to slowest:
 
 - RAM (.25ms)
 - SSD (1ms)
@@ -29,49 +27,26 @@ so sending 1GB over the network would take 10 seconds
 - five 9s: 5 minutes
 - most major cloud services offer 99.95% so just under 4 9s
 
-## Scoping the problem
+## Steps
 
-1. Understand the question
+1. Scope the problem
+2. Capacity Planning
 
-Ask questions to understand the constraints and use cases
-
-- Who are our users and what are their needs?
-- what is the exact scope of the problem?
-- what are non-functional requirements?
-- what are our stretch goals?
-
-ex. "designing twitter"
-
-questions might be
-
-- 'how many total users do we expect? how many active users a day?'
-- 'can users tweet and follow others?'
-- 'should we also design to create and display user's timeline?'
-- 'will tweets contain photos and videos?'
-- 'should I design the front end as well as the back end?'
-
-2. Get a rough estimate of scale
-
-- what scale is expected from the system (number of users, daily active users, number of new tweets, how many followers per user on average)
-- how much storage would we need? (photos, videos)
-- what network bandwidth usage are we expecting? Crucial in deciding how would we manage traffic and balance load between servers
-
-## Capacity Planning
-
-1. Throughput/load estimation (for example, servers handling write operations in social media)
-
+   - Throughput/load estimation (for example, servers handling write operations in social media)
    - rps / qps (request or query per second) is the main metric
    - Ask for average daily users, and possibly guess the rest
    - for ex. for social media, try 100 million users who
+
      - suppose 5 writes on average = 500 million a day
      - get average qps by dividing 500 million by (24 \* 3600 ~ 100,000) = 5000
      - 5,000 qps for AVERAGE, but for peak, you might multiple by 3 = 15,000 qps
      - one service might handle 1,000 second, so you'll need some redundancy, load balancer etc..
 
-2. Storage estimation
+   - Storage estimation
 
    - how much data to keep eg 5 years
    - multiply daily _ 30 _ 12 \* 5
+
      - byte 1
      - kb 1 x 10 ^ 3
      - megabyte 1 x 10 ^ 6 (million)
@@ -79,34 +54,19 @@ questions might be
      - tera 1 x 10 ^ 12 (trillion)
      - peta 1 x 10 ^ 15 (quadrillion)
 
-3. Bandwith estimation (how much data is being processed per second)
+   - Bandwith estimation (how much data is being processed per second)
+
    - take the value form #1 (rps) and multiple by how much data is processed
      per query
 
-## Sketching up an abstract design
+3. Define your data model
 
-Illustrate the building blocks of the system and the relationships between them
+4. Define your API
 
-3. Mock out a basic UI (if front end is required)
-   Very rough sketch
-
-Consider what will be required for your user(s) to complete a single transaction, from initiation to feedback. what UI elements are required?
-
-4. Define your data model
-
-- choose a database, as well as block storage for things like photos and videos
-- define the data model early to clarify how data will flow among different components
-- sql vs no sql
-
-5. Define your API
-
-- define what APIs are expected from the system.
-  postTweet(userId, tweetData, userLocation, timeStamp)
-
-6. High Level Design
+5. High Level Design (draw.io)
    Draw a block diagram with 5-6 boxes representing core components (client, load balancer, servers, CDN, database)
 
-7. Detailed Design
+6. Detailed Design
    Dig deeper into these high level components.
    Take trade offs, pros and cons of each decision
    ex.
@@ -117,36 +77,7 @@ Consider what will be required for your user(s) to complete a single transaction
 - How much and at which layer should we introduce caches to speed things up?
 - What components need better load balancing?
 
-## Identifying and addressing the bottlenecks
-
-apply fundamental principles of scalable system design
-
-8. Try to discuss as many bottlenecks as possible and different approaches to mitigate
-
-- is there any single point of failure in our system?
-- Do we have enough replicas of the data if we lose a few servers?
-- do we have enough copies of different services running, such that a few failures will not cause a total system shutdown?
-- how are we monitoring the performance of our service? Do we get alerts whenever critical components fail?
-
-## network failure
-
-- when the network is down, let network protocols (ip/tcp) handle the errors.
-- if individual nodes fail, see below
-
-## types of node failures
-
-- fail stop (a crash)
-
-  - solution 1 restart and load last good state (more latency)
-  - solution 2 replicate state and fail over to another node (expensive)
-
-- byzantine failure (all node failures that do NOT crash)
-  - best bet is to add some code so that this turns into a proper fail stop
-  - better assertions
-
-## Main tools
-
-### Microservice architecture
+## Monolith vs Microservice architecture
 
 - the previous was called "service oriented architecture" where multiple
   services existed, but were coupled with shared resources
@@ -156,7 +87,7 @@ apply fundamental principles of scalable system design
 - Microservice is a single business unit where each service is a self contained
   set of logic
 
-#### Pros and Cons
+### Pros and Cons
 
 Monolithic architecture
 
@@ -185,8 +116,6 @@ CONS
 2. Needs a good architect
 
    Ways to reason about which service to use..
-
-If there are only 2 microservices, it's a sign you should just use a monolithic structure.
 
 - Microservice Registry
   - a database that keeps track of all instances of each service. This can
@@ -226,7 +155,7 @@ If there are only 2 microservices, it's a sign you should just use a monolithic 
 - `ftp` (file transfer protocol)
   - based on TCP and is faster than `http` as it is a "pure" tcp protocol with no additional headers
 
-## web server vs application server
+### web server vs application server
 
 - a web server serves static data
 - an application server serves dynamic data, often from dbs. In modern architecture,
@@ -415,9 +344,35 @@ Hybrid solution: use write-through for sensitive information. Use write-back for
 ex challenge "we've got a distributed system and we want to manage request calls"
 solution:
 
+## Storage systems
+
+Systems can be broadly separated by usage and urgency
+
+- By usage
+  1. Systems of Record (OLTP)
+     - the "source of truth" db
+     - normalized
+     - comes from user input, for example
+  2. Derived Data System
+     - data that was replicated from a source of truth
+     - denormalized by nature
+     - often optimized for an OLAP system
+- By urgency
+  1. Servers
+     - Online system
+     - the objective is to respond to the request as soon as possible
+     - response time is the key metric
+  2. Batch processing systems
+     - Offline system
+     - a job is run on a schedule. there is no user waiting for the result
+     - key metric is throughput
+  3. Stream processing system
+     - hybrid system
+     - like batch, but the job is done immediately after and piped
+
 ### Message Queue / Brokers
 
-- an offline system which allows for asyncronous work
+- an example of an offline system which allows for asyncronous, scheudled jobs
 - partition tolerant as it usually has replicas and some consensus algorithm
   system. for example, `RabbitMQ` uses `Zookeeper` nodes to ensure data is intact
 - a message queue is used by a service to just say "ok we got the request, but we won't try to do it now and will instead put it on a todo list". This ensures that the server doesn't get overloaded and the requests are never lost, for the price of delayed processing
@@ -885,3 +840,17 @@ Snapshot Isolation`, which is an updated version of the non-serializable
     track of all node health
   - multi-leader or leaderless (anything with more than 1 writer) is not
     truly linearizable because of write conflicts
+
+#### Systems for consensus (Etcd, zookeeper)
+
+- a consensus protocol is necessary for certain things to function in a distributed
+  systems with multiple nodes
+- a controller node needs to keep track of multiple nodes
+- the main use cases of a consensus protocol include
+  1. Membership (are all nodes healthy? which node died?)
+  2. Leader Election for failover (which follower has the most recent data that
+     needs to be promoted as the new leader)
+  3. (Optionally) used in service discovery in gateway services to locate
+     IPs of virtual machines which is dynamic. May not need a consensus algo,
+     but it's often used since the controller node is aware of all leader nodes
+     and can easily locate them
