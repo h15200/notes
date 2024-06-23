@@ -151,8 +151,42 @@ an ANTI-pattern is something that does NOT work. ex. - using vanilla js AND reac
 
 ### Behavioral patterns
 
-1. Mediator Pattern
+1. `Strategy Pattern`
 
-2. Observer Pattern
+   - mainly to preserve "classes should be open for extensions but closed for modification"
+   - a class should not have conditional logic that may need to be changed in the future
+   - easier to modify without touching the actual class
+   - easy to test
+   - allows injecting objects at runtime by swapping implementation
+   - similar to `dependency injection` but unlike DI, it is used to do
+     different things depending on the runtime condition. In DI, you do a similar
+     thing with a different implementation
+   - in `Go`, this is just built in to the language. use an interface, Announcer
+     which is any type that has the Announce() method.
+   - to test the function that uses this logic, we just just pass in a mock
+     Announcer and not test every condition
+   - used for formatting, linting, payment methods, coupon discounts
+
+   ```
+   this is bad
+   class Announce {
+           if conditionA, announce A
+           if conditionB, announce B
+
+       }
+
+   this is strategy pattern
+   class Announce {
+           // take in an object, Announcer
+           announcer.Shout()
+       }
+
+     // to add a new type, we just need to create a new type of object
+     with its own implementation of the announce method
+   ```
+
+2. Mediator Pattern
+
+3. Observer Pattern
 
 - subscription model
