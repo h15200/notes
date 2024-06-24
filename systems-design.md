@@ -370,6 +370,33 @@ Systems can be broadly separated by usage and urgency
      - hybrid system
      - like batch, but the job is done immediately after and piped
 
+### Batch processing, HDFS, MapReduce, and Dataflow Engine
+
+UNIX Commands
+
+- the best example of a single node batch processing system is Unix commands
+- it uses memory effficiently by trying to use in-memory, but switching to
+  disk when necessary
+- the interface is simple with stdin / stdout / files with a great piping system
+- very efficient way to search for strings, process data, then output to a file
+- BUT it only works on 1 node
+
+A distributed batch processing system is like Unix for many nodes.
+
+- usually within one data center with many connected nodes with a daemon process
+  that allows to peek into each other's files
+- Uses a distributed file system as the input
+- a DFS can store files of any encoding, so it is "raw" data, called a `Data Lake`
+- like unix commands, does not mutate the input
+- MapReduce can be run as a batch process on an HDFS to clean up the data, then
+  send to a Data Store (`ETL`)
+- fault tolerant and all distributed nodes act as if they were one node like Unix commands
+- Dataflow Engines like `Spark, Flink` do a better job than MapReduce
+
+```
+OLTP db -> HDFS (raw data lake) -> Batch Process (MapReduce, Spark, etc..) -> Data Warehouse OLAP (cleaned up data)
+```
+
 ### Message Queue / Brokers
 
 - an example of an offline system which allows for asyncronous, scheudled jobs
