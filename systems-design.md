@@ -77,6 +77,78 @@ so sending 1GB over the network would take 10 seconds
 - How much and at which layer should we introduce caches to speed things up?
 - What components need better load balancing?
 
+## Data Models and Query Languages
+
+The relational model (Relational Data Base Management Systems) became the dominant
+system as they were generalalized and scaled well beyond their original scope
+
+### Databases (relational, non-relational)
+
+- On Line Transactional Process or `OLTP system` requires fast updates. `RDBMS` is the choice
+  - streaming
+  - data needs to be in the Gigabytes but not larger
+- On Line Analytics Process or `OLAP system` needs optimized reads and inserts,
+  but can have slow updates since it doesn't usually need to be a live system
+  - batch processing
+  - data can be in the Terrabytes or Petabytes
+- note that technically, data warehousing is just the storage, and `OLAP` is
+  one way to process that data.
+  - Columnar like `Hbase`, `BigQuery`, `Snowflake`, `Redshift`
+    - note that Columnar dbs can be SQL OR Nosql. `BigQuery`, `Redshift`, and `Snowflake`
+      are SQL colmnar dbs. `Hbase` is noSql.
+  - you can also use SQL to extract data from noSql dbs. The querying method
+    is decoupled from the db type.
+
+Reasons for:
+
+#### Relational db (sql)
+
+- generally, most companies will want an RDBMS as the primary source of truth until they scale
+  to the point where it just can't scale.
+  - The first millions of users still won't break your SQL db
+  - Breaking point is around the need of > 5TB a year
+  - other exceptions include metadata-driven data sets (document store),
+    massive amounts of ingestion of data in the thousands per second,
+    super low-latency applications
+- ACID compliant. data is structured and unchanging, strong consistency
+- A relational database that supports SQL (most of them) has the power of running SQL directly without having to load the data in memory.
+- `serializability` is the term to describe the Isolation level (AC[I]D) properties.
+  each read/write
+  is ordered and transactional. usually done via `2 phase locking`
+
+- sql systems use `write-ahead logs` to keep track of all modofications in disk
+  before changing the table. This allows for full recovery after power outages
+
+#### Trasactions and ACID
+
+- abstraction used that provide ACID properties. a single command will either
+  all succeed, or all fail without any side effects
+
+- "I" isolation is hard to implement. How do you have concurrent writes
+  without race conditions
+  - Actual serial execution
+    - idea is to implement all queries on a single thread. simple to implement
+    - only possible if it's an in-memory database
+    - usually not practical to run large queries on a single thread
+  - Two Phase Locking
+    - each object has a lock and only available one query at a time
+    - most frequent implementation in most dbs
+    - poor performance when unnecessary locking happens, along with frequent deadlocks
+  - Serializable Snapshot Isolation
+    - Optimistic control where you assume there are no concurrency issues
+    - rolled back only when a bug is detected
+
+#### Non relational db (no sal)
+
+- BASE (basically available, soft state, eventual consistency)
+- is essentially a hash table. constant time operations
+- has less structure and less querying power
+- makes the most of cloud computing and storage for horizontal scaling.
+
+- key-value store dbs (the majority of non-relational dbs) are used often to cache
+- examples DynamoDb, Redis (in-memory storage only, often used for rate-limiting), Etcd (used for leader election), ZooKeeper (used for leader election)
+- some may offer strong consistency, but since no sql dbs are not ACID compliant, some may only offer eventual consistency (usually with a trade-off of having faster performance)
+
 ## Monolith vs Microservice architecture
 
 - the previous was called "service oriented architecture" where multiple
@@ -370,7 +442,15 @@ Systems can be broadly separated by usage and urgency
      - hybrid system
      - like batch, but the job is done immediately after and piped
 
-### Batch processing, HDFS, MapReduce, and Dataflow Engine
+## Batch processing, HDFS, MapReduce, and Dataflow Engine
+
+In the simplest terms:
+A system where the input is some `distributed file system` and the output is
+`derived data`
+
+- high level workflow:
+  `OLTP db -> HDFS (raw data lake) -> Batch Process (MapReduce, Spark, etc..) -> Data Warehouse OLAP (cleaned up data)
+`
 
 UNIX Commands
 
@@ -393,106 +473,79 @@ A distributed batch processing system is like Unix for many nodes.
 - fault tolerant and all distributed nodes act as if they were one node like Unix commands
 - Dataflow Engines like `Spark, Flink` do a better job than MapReduce
 
-```
-OLTP db -> HDFS (raw data lake) -> Batch Process (MapReduce, Spark, etc..) -> Data Warehouse OLAP (cleaned up data)
-```
+- because DFS and batch processing has opened a world of unformatted raw data,
+  there is a lot of tech around having a common standard for OLAP work
 
-### Message Queue / Brokers
-
-- an example of an offline system which allows for asyncronous, scheudled jobs
-- partition tolerant as it usually has replicas and some consensus algorithm
-  system. for example, `RabbitMQ` uses `Zookeeper` nodes to ensure data is intact
-- a message queue is used by a service to just say "ok we got the request, but we won't try to do it now and will instead put it on a todo list". This ensures that the server doesn't get overloaded and the requests are never lost, for the price of delayed processing
-- The notifier is the `producer` and the services doing the actual work is `consumer`. The consumer takes a task from the queue and works on it when it's ready.
-- a COMBINATION of services that include having a NOTIFIER (producer) that keeps track of which servers (consumers) are healthy (heartbeat sent to notifier). You can have a message queue with one consumer, or multiple consumers but there is only one producer.
-- The notifier (or producer) also has access to a db that keeps a queue of asynchronous tasks to persist tasks. Once it's in a queue, that message or task won't be lost
-- very similar to load balancing (with health server heartbeat checks on all services (consumers) that are doing the "work") but the main difference being message queues are ASYNCHRONOUS for time consuming tasks and load balancing is SYNCHRONOUS
-- the consumer and producer can be in the same service where the work is being handled, or separate where multiple other services have access
-- a variety of ways that this can be handled. For example, you can just tell the client "ok we did it!" while in reality it's happening a little after
-- queues are used to effectively manage requests in a large-scale distributed system to allow us to decouple our processes and distribute/throttle processing load.
-- The notifier also acts as a load balancer to distribute requests.
-- ex. `RabbitMQ`, `kafka` (although Kafka is more `streaming`, which is a hybrid online/offline system with more features)
-
-#### Methods of storing message queue
-
-- if it's stored in memory, a server outage will not keep that info
-
-- solution: store the queue in a database, each server sends a NOTIFIER a heartbeat every 10 seconds. If a server dies, the notifier consults the db and reroutes unfinished tasks to another server.
-  - most message queue solutions have fault tolerance by storing the queue in a db
-
-### Databases (relational, non-relational)
-
-- On Line Transactional Process or `OLTP system` requires fast updates. `RDBMS` is the choice
-  - streaming
-  - data needs to be in the Gigabytes but not larger
-- On Line Analytics Process or `OLAP system` needs optimized reads and inserts,
-  but can have slow updates since it doesn't usually need to be a live system
-  - batch processing
-  - data can be in the Terrabytes or Petabytes
-- note that technically, data warehousing is just the storage, and `OLAP` is
-  one way to process that data.
-  - Columnar like `Hbase`, `BigQuery`, `Snowflake`, `Redshift`
-    - note that Columnar dbs can be SQL OR Nosql. `BigQuery`, `Redshift`, and `Snowflake`
-      are SQL colmnar dbs. `Hbase` is noSql.
-  - you can also use SQL to extract data from noSql dbs. The querying method
-    is decoupled from the db type.
-
-Reasons for:
-
-#### Relational db (sql)
-
-- generally, most companies will want an RDBMS as the primary source of truth until they scale
-  to the point where it just can't scale.
-  - The first millions of users still won't break your SQL db
-  - Breaking point is around the need of > 5TB a year
-  - other exceptions include metadata-driven data sets (document store),
-    massive amounts of ingestion of data in the thousands per second,
-    super low-latency applications
-- ACID compliant. data is structured and unchanging, strong consistency
-- A relational database that supports SQL (most of them) has the power of running SQL directly without having to load the data in memory.
-- `serializability` is another term to describe the ACID properties. each read/write
-  is ordered and transactional. usually done via `2 phase locking`
-
-- sql systems use `write-ahead logs` to keep track of all modofications in disk
-  before changing the table. This allows for full recovery after power outages
-
-#### Trasactions and ACID
-
-- abstraction used that provide ACID properties. a single command will either
-  all succeed, or all fail without any side effects
-
-- "I" isolation is hard to implement. How do you have concurrent writes
-  without race conditions
-  - Actual serial execution
-    - idea is to implement all queries on a single thread. simple to implement
-    - only possible if it's an in-memory database
-    - usually not practical to run large queries on a single thread
-  - Two Phase Locking
-    - each object has a lock and only available one query at a time
-    - most frequent implementation in most dbs
-    - poor performance when unnecessary locking happens, along with frequent deadlocks
-  - Serializable Snapshot Isolation
-    - Optimistic control where you assume there are no concurrency issues
-    - rolled back only when a bug is detected
-
-#### Non relational db (no sal)
-
-- BASE (basically available, soft state, eventual consistency)
-- is essentially a hash table. constant time operations
-- has less structure and less querying power
-- makes the most of cloud computing and storage for horizontal scaling.
-
-- key-value store dbs (the majority of non-relational dbs) are used often to cache
-- examples DynamoDb, Redis (in-memory storage only, often used for rate-limiting), Etcd (used for leader election), ZooKeeper (used for leader election)
-- some may offer strong consistency, but since no sql dbs are not ACID compliant, some may only offer eventual consistency (usually with a trade-off of having faster performance)
-
-#### Parquet file format
+### Parquet file format
 
 - Apache Parquet is a column oriented data file FORMAT.
 - used for OLAP and has highly efficient data compression / decompression
 - supports complex data types
+- also see `apache iceberg`
 
-#### Types of nosql dbs
+## Stream Processing
+
+- when message are unbounded, it is a `stream` of data. Unlike a batch system,
+  this is not a purely `offline` system. somewhere between `online` and `offline`
+  as messages are read, but it can be asynchronous depending on the situation
+- aliases include `pub sub model`, `producer-consumer model`
+- related terms include `webhook`, `message queue`, `message broker`, `kafka`, `flink`
+
+- stream systems can be differentiated by 2 categories
+
+1. What happens when consumers can't keep with messages being produced?
+   a. Drop Messages
+   b. Tell producers to stop messages
+   c. Buffer messages in queue until traffic is cleared
+
+2. What happens when nodes die?
+   a. messages are lost
+   b. messages are recovered
+
+### Simple stream processing systems without any intermediary nodes
+
+#### Protocol level stream processing
+
+- it is possible to use UDP at the application level and have a direct
+  notification system without any intermediary nodes as the simplest streaming system
+- will drop messages when consumers aren't ready, and messages are lost and the
+  application will need to handle those situations
+- not good for important messages
+
+#### Using http or rpc
+
+- it's possible for a server to listen for an event and directly send a push
+  notificaiton to the client. this is what `webhooks` are
+- again, it is for simple sparse events. won't handle consumers that aren't
+  ready or lost nodes very well
+
+### Robust solutions using intermediary nodes
+
+- usually a system of intermediary nodes are required to ensure durability
+  and scaling of large quantities of events
+- abstracts the logic from the application layer
+
+#### Message Queue / Brokers
+
+- ensures some scaling
+- a message broker is a hybrid `database server` and a traditional server that
+  is optimized for handling streams as traditional dbs are optimized for retrieval/mutations.
+- it may use in-memory buffers or disk writes to handle for busy consumers
+  - if only in-memory, a broker outage will lose messages, but most will
+    have some kind of disk persistence
+- messages are DELETED after the consumer is done processing them, so it deals
+  with relatively a small pool of streams at any given point
+- partition tolerant as it usually has replicas and some consensus algorithm
+  system. for example, `RabbitMQ` uses `Zookeeper` nodes to ensure data is intact
+  - like a distributed database system, a controller monitor health, handles
+    failovers, distributing work to the right nodes, etc.. to ensure durability
+
+#### kakfa
+
+- main difference from message brokers is that it does not delete messages even
+  after consumers process them, allowing for `replayability`
+
+## Types of nosql dbs
 
 1. k-v store (in-memory ones like `redis`, `memcached`, or non-in-memory like `Riak`)
 
