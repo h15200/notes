@@ -385,7 +385,7 @@ A distributed batch processing system is like Unix for many nodes.
 
 - usually within one data center with many connected nodes with a daemon process
   that allows to peek into each other's files
-- Uses a distributed file system as the input
+- Uses a distributed file system as the input (or object storage like `S3`)
 - a DFS can store files of any encoding, so it is "raw" data, called a `Data Lake`
 - like unix commands, does not mutate the input
 - MapReduce can be run as a batch process on an HDFS to clean up the data, then
