@@ -525,7 +525,7 @@ A distributed batch processing system is like Unix for many nodes.
   and scaling of large quantities of events
 - abstracts the logic from the application layer
 
-#### Message Queue / Brokers
+#### Non-log based Message Queue aka AMQ (Advanced Message Queue Protocol) systems
 
 - ensures some scaling
 - a message broker is a hybrid `database server` and a traditional server that
@@ -539,11 +539,31 @@ A distributed batch processing system is like Unix for many nodes.
   system. for example, `RabbitMQ` uses `Zookeeper` nodes to ensure data is intact
   - like a distributed database system, a controller monitor health, handles
     failovers, distributing work to the right nodes, etc.. to ensure durability
+- since messages are deleted from memory once it's processed, the input is
+  mutated. Is not repeatable like batch processing or log-based Message queues (see below)
 
-#### kakfa
+Consumer strategies
 
+#### Log based message queue sytems (kakfa, aws kinesis)
+
+- has partitions per topic
+- broker appends data to a log and saves to disk. messages are not lost
+- monotonic offset allows for ordering of messages
 - main difference from message brokers is that it does not delete messages even
-  after consumers process them, allowing for `replayability`
+  after consumers process them, and stores it on disk, allowing for `replayability`
+  from the consumer side by changing the offset
+- read-only and does not mutate
+
+- when there are multiple consumers, there are two strategies
+
+1. `load balance` to one consumer
+2. `fan out` to all consumers
+
+When using a log based approach, you generally fan out to all consumers in
+a partition. An AMQP system usually opts for load balancing, so if you don't
+need ordering of messages, a log based queue may not be needed
+
+- often used for `Change Data Capture` for near real time logging
 
 ## Types of nosql dbs
 
