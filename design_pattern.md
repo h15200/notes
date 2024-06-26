@@ -103,16 +103,19 @@ an ANTI-pattern is something that does NOT work. ex. - using vanilla js AND reac
 - the individual members of an aggregate itself also is a type of the root
   interface
 
-2.  Adapter Pattern
+2.  `Adapter Pattern`
 
-- heart of the structural pattern
+- takes two incompatible interfaces and creates a translator between so that
+  the origin and target interfaces don't need to be modified
 
-3. Decorator
+3. `Decorator Pattern`
 
-- extneds an object's behavior dynamically. The ability to add behavior at runtime is accomplished with an object which 'wraps itself' around another
+- augments an object's behavior at runtime
 - ex react-redux connect
+- similar to `Strategy Pattern`, but here it always `augments` and in strategy
+  it `changes` the implementation
 
-4. Proxy Pattern
+4. `Proxy Pattern`
 
 - A check is a proxy for cash. A representation of something.
 - Same pattern with objects
@@ -140,11 +143,32 @@ an ANTI-pattern is something that does NOT work. ex. - using vanilla js AND reac
 
 ### Creational Patterns
 
-1.  Abstract Factory Pattern
+1. `Builder Pattern`
+
+   - a class that holds various interfaces to add "parts" to itself. builder
+     methods adds the feature, then returns itself
+   - possibly easier to parse than `factory` patterns
+
+   ```
+   // make new builder
+   myBugerBuilder = new(BugerBuilder).addTopping("tomatoes").addSauce().build()
+   // chain the ingredients, then terminate with a method like build()
+
+   ```
+
+2. `Factory Pattern`
+
+   - a method to create an object
+
+3. `Abstract Factory Pattern`
+   - an object or class to create a new factory
+
+Differences:
 
 - Use a factory to make multiple instances of whatever type you are making.
+- Use abstract factory for different types of factories
 
-2. Singleton Pattern
+3. Singleton Pattern
 
 - everything points to ONE instance of an object.
 - ex. postgres pool object is a singleton model so multiple connections are not made, also config files are made so that only 1 of a type can be made OR multiple ones will be combined into one.
@@ -185,8 +209,5 @@ an ANTI-pattern is something that does NOT work. ex. - using vanilla js AND reac
      with its own implementation of the announce method
    ```
 
-2. Mediator Pattern
-
-3. Observer Pattern
-
-- subscription model
+2. `Observer Pattern`
+   - event driven, pub sub model
