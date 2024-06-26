@@ -41,6 +41,16 @@ for i := 0; ; {
       }
 ```
 
+- to make a recursive func inside an anynomous function, the function
+  must first be declared with a var, then assigned with `=`
+
+  ```
+  var recurse func(int, int) int
+  recurse = func(x, y int) int {
+          // now you can call recurse from here
+      }
+  ```
+
 - type checking interfaces with `myInterface.(type)` will only work inside a switch statement
   like so:
 
