@@ -4,6 +4,20 @@
 
 ## gotcha's
 
+- stylistically usually better for slices/maps/structs that don't need pointers
+  (if not using mutex or waitgroup etc..) to pass by value, then mutate as necessary
+  and return the input.
+
+  - pointers should be used when it's absolutely necessary only (or above 64 bytes)
+  - whatever you pick (copy vs pointer), stick to the same type so
+    there's no broken link (example API chains)
+
+- for most use cases for reference types, just pass in value until you need
+  the pointer
+
+- as an exception, a map of structs are almost always map of pointers to structs because of
+  limitation of structs as values.
+
 - for range looping over strings == runes (int32)
 - for range with index over strings == bytes (uint8)
 

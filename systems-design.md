@@ -619,8 +619,8 @@ need ordering of messages, a log based queue may not be needed
 - Most popular search engines include Elastic Search, Solr, and Apache Splunk (all based on Apache Lucene
   ).
 - Lucene uses LSM + SS table and strings are tokenized. Also possible to
-  search for numbers and geolocations. Lucene engine is open source and
-  is for single nodes.
+  search for numbers and geolocations (geohash). Lucene engine is open source and
+  is for single nodes. ElasticSearch, Solr is the distributed version of Lucene
 - Generally, the main use case for hdfs (mapReduce) is distributed batch
   processing and the main use case for Lucene is string searches. Those frameworks
   (`ES, Splunk`) allows Lucene to be used in a distributed system
@@ -954,3 +954,10 @@ Snapshot Isolation`, which is an updated version of the non-serializable
      IPs of virtual machines which is dynamic. May not need a consensus algo,
      but it's often used since the controller node is aware of all leader nodes
      and can easily locate them
+
+#### GeoHash
+
+- services like Yelp, Uber
+- splits the world into squares, then hashes
+- each additional append to the hash zooms in on more sub-squares
+- usually used via ElasticSearch, but sometimes with Postgres
