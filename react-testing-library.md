@@ -22,12 +22,13 @@
 - use when there should be only one element
 
 - getAllBy returns an array of all matching nodes, but throws and error if none are found
-    - ```
-      const { getAllByText } = render(<Something />);
-      // there should be three nodes "A", "B", and "C" so idx 2 should exist
-      const thirdInstance = getAllByText('Test Text Rendered')[2];
-      expect(thirdInstance).toBeInTheDocument();
-      ```
+
+  - ```
+    const { getAllByText } = render(<Something />);
+    // there should be three nodes "A", "B", and "C" so idx 2 should exist
+    const thirdInstance = getAllByText('Test Text Rendered')[2];
+    expect(thirdInstance).toBeInTheDocument();
+    ```
 
 - there are different types of getBy queries. In order of what should be used:
 
@@ -102,7 +103,7 @@ the most common way is,label ele BEFORE input ele, htmlFor attribute set to the 
 
 - method 1 input can be queried by `const inputEle = screen.getByLabelText(/first-name/i);`
 
-- using `screen.getByRoles("textbox", {name: /something/i})` the "name" here will refer to  aria labels
+- using `screen.getByRoles("textbox", {name: /something/i})` the "name" here will refer to aria labels
 
 ### example
 
@@ -226,6 +227,16 @@ afterEach(() => {
 - Tooltip hover state testing
 - Use async func
 - Use `await act(async() => {await fireEvent.mouseOver(getBySomething()}`, then expect getBy after that. If you are missing `async` in the callback, you'll get a console.error
+
+- if you keep getting "must wrap in act()", try these two things:
+
+  - await act(() => {
+    // the thing that is causing state changes
+    })
+  - await waitFor(() => {
+    // all of the expect statements after the async hook
+    })
+
 - Ex. (TutorialCard-test.js)`it('will render tooltip', async () => {
   const { getByText, getByTestId } = renderWithReduxRouter(
   <TutorialCard moduleName={KSQL_GETTING_STARTED} />
@@ -242,21 +253,22 @@ useSelector stuff can be put into state in a beforeEach
 Look at StreamDesignerAnnouncement-test.js, ClusterUpgradeCta-test.js
 
 ### blabla refers to a value, but is being used as a type here error
+
 - extension must be jsx or tsx (not js/ts) to render a react component with <ThisFormat /> in a render call
 
 ### testing form dropdowns
 
 - huge pain. usually not worth the effort of trying out `userEvent`, or `getRoleBy('combobox', ...)`
 - as an alternative, just check if the submit button is disabled or enabled based
-on input
-    - note that `ele.isEnabled()` only checks the generic `disabled` attr, and
-    some libraries use `aria-disabled` instead. Inspect the button first, then
-    use ele.toHaveAttribute("aria-disabled", "false") or something like that
+  on input - note that `ele.isEnabled()` only checks the generic `disabled` attr, and
+  some libraries use `aria-disabled` instead. Inspect the button first, then
+  use ele.toHaveAttribute("aria-disabled", "false") or something like that
 
 ## Mocking window.location
 
 - use Object.defineProperty() or jest.SpyInstance
 - probably easier to use Object
+
 ```
 describe('getIsDemoDomain', () => {
   it('should return true ', () => {
@@ -287,12 +299,12 @@ describe('getIsDemoDomain', () => {
 - use `waitFor()` and `async` to wait for promise
 
 - when mocking default exports, no need to mock with `default: () => whatever`. Just
-import in the mock and return a function
-
+  import in the mock and return a function
 
 ## Mocking something only sometimes, and using the original other times
 
 - import mocked version like:
+
 ```
 import {useRefreshDemoSession} from '../hooks'
 jest.mock('../hooks', () => ({
@@ -302,7 +314,9 @@ jest.mock('../hooks', () => ({
 
 const originalRefreshDemoSession = requireActual('../hooks').useRefreshDemoSession
 ```
+
 - within each test, reassign to the original
+
 ```
     // use original, not a mock
     mocked(useRefreshDemoSession).mockImplementOnce(originalRefreshDemoSession)
@@ -312,13 +326,14 @@ const originalRefreshDemoSession = requireActual('../hooks').useRefreshDemoSessi
 ```
 
 ## mocking an object with properties (not methods)
+
 // don't use normal imported mock
 
 // for example, in a describe block
-  beforeEach(() => {
-    const { analytics } = require('somePath');
-    analytics.isReady = true; // mock a property
-    analytics.getId = () => 'abc-123-456'; // mock a method
-  });
+beforeEach(() => {
+const { analytics } = require('somePath');
+analytics.isReady = true; // mock a property
+analytics.getId = () => 'abc-123-456'; // mock a method
+});
 
 // then inside each test block, require each time and mutate the object
