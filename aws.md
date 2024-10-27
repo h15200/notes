@@ -128,7 +128,13 @@ used for static file serving
 
 ## IAM
 
-Amazon's tool to control account level security. This allows you to control who can access what in your AWS account.
+- Amazon's tool to control account level security. This allows you to control who can access what in your AWS account.
+- generally best practice to never use the root user until you have to. Create a new IAM account and log in to the IAM, not root
+- users and roles
+  - IAM users are people who work in AWS regularly. they are granted the least permissions to do their tasks
+  - Roles are short term delegation of permissions to people who need temporary access. They only assume some permissions.
+- Permission boundaries are set so that users can't create a new IAM user with more permissions than they have
+- condition permissions can be used to restrict users from certain IP addresses
 
 ## Route 53
 
