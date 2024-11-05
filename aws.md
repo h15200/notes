@@ -75,16 +75,61 @@ and some allow for global out of the box
 The workhorse of aws. basic servers
 
 - Instances: virtual computing environments
+- Generally, windows or linux. There is a dedicated Mac hardware instance but it's expensive
 - Amazon Machine Images: preconfigured templates for your instances
 - Instance types: various CPU configurations, memory, storage, networking capacity
 - regions and zones: multiple physical locations for your resources
 - Kay pairs: provide secure login information with SSH
 - Security groups: Firewall that enables you to specify the protocols, ports, and IP ranges that can reach your instances
-
-### Elastic IP
-
-- public ip addresses get rotated over time, so always best to link an elastic
-  ip to EC2 instances so it's static
+- IP address types
+  - public IP address
+    - IP address is lost every time the instance is stopped and restarted, though it retains a private ip address. Can not be moved between instances
+  - private IP address
+    - retained between start/stops
+    - mapped via the OS and the elastic network
+  - Elastic IP address
+    - static public IP address
+    - you are charged if not used
+    - associated with private IP address
+    - Can be moved between instances and Elastic Network Adapters
+- Instances can be launched into specific Subnet types within an availability zone
+  - public
+    - a public subnet within a VPC can comminicate to the internet through the `Internet Gateway` and the public IP is also accessible from the internet
+  - private
+    - won't have any internet connectivity by default
+    - only private IPs are available
+    - best practice whenever possible, EVEN if it is public facing because we can add a load balancer to it later
+    - still possible to reach out to the internet via a `NAT gateway` on a separate route table. Instead of going straight to the Internet Gateway, the outbound traffic goes out via NAT gateway (not inbound)
+- Instance types (determines hardware profile and cost)
+- AMI (Amazon Machine Image) determines the OS. ex. Windows + Microsoft SQL
+  - generally, SSH (secure shell) to connect to linux and RDP (remote desktop protocol) to connect to windows instances
+- User Data defines the script to run when the instance runs for the first time
+- Metadata service allows users to get data about the instance
+- both `User Data` and `Metadata` version can be set when the instance is created under "Details"
+- to give an ec2 instance acess (for example, to an s3 bucket), there are two ways:
+  - configure AWS CLI with access key of an IAM user. access key is stored as plain text in the instance itself and it's a long term credential, so this is not recommeded
+    - if you go to the instance inside `.aws/credentials`, the access key and pw is there in plain text which would compromise anything that the IAM user has access to
+  - (best practice) use IAM role with s3 permissions. The instance can then assume this role without storing any long term credentials anywhere
+    - create a role with the necessary permission policies
+    - go to the instance -> action -> modify IAM role -> select the newly created policy
+  - note that both of these things are using AWS `sts` (security token service) but for IAM roles, the tokens are short-lived and done in the background
+- `Placement Groups`
+  - a `cluster` is a bunch of nodes that are physically close in proximity (same AZ, maybe even same rack or adjacent rack) to ensure high performance, tightly coupled workloads and low inter-instance latency
+  - a `partition` spreads resources so nodes are not sharing underlying hardware. ex. 2 instances in one AZ, another 2 in another AZ. each `partiion` is on a different aws rack
+  - `spread` every `instance` is on a different AWS rack. No 2 instances are on the same rack. Used for small number of highly critical instances that always need to be available
+- `Network Interface Types` (aka Network Adaptors). EC2 usually chooses a subnet (private or public) to connect via network interface outside the AZ of the instance. Multiple interfaces can exist (ex 1 for public, 1 for private subnet)
+  but they must be in the same AZ
+  - `ENI - Elastic Network Interface`
+    - the default option for when you don't have high performance requirements
+  - `ENA - Elastic Network Adaptor`
+    - higher bandwith and lower inter-instance latency
+  - `EFA - Elastic Fiber Adaptor`
+    - for tightly coupled, high compute applications (ML)
+- IP Addresses
+  - public IP addresses are dynamic and change when instances are restarted
+  - private ID addresses stay with the instance. When you reach out to a public network, the Internet Gateway performs NAT (network address translation) and changes the source to the public IP
+  - elastic IPs is static. This can be associated with network interfaces so that it will stay the same. Can be moved between instances and Elastic Network Adaptors
+- private subnets and `Bastion hosts`
 
 ## AMI (amazon machine images & instances)
 
