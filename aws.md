@@ -129,7 +129,10 @@ The workhorse of aws. basic servers
   - public IP addresses are dynamic and change when instances are restarted
   - private ID addresses stay with the instance. When you reach out to a public network, the Internet Gateway performs NAT (network address translation) and changes the source to the public IP
   - elastic IPs is static. This can be associated with network interfaces so that it will stay the same. Can be moved between instances and Elastic Network Adaptors
-- private subnets and `Bastion hosts`
+- private subnets and `Bastion hosts` are common use cases for private ec2 instances
+- a `NAT gateway` is different from an Internet Gateway. It's just for outbound traffic from a private subnet
+  - The NAT gateway always needs to be in the `public` subnet on behalf of the private subnet. It's the same as Bastian hosts, but going the other direction.
+  - the public subnet uses an elastic ip address to translate the public IP to keep it protected
 
 ## AMI (amazon machine images & instances)
 
@@ -249,12 +252,46 @@ used for static file serving
 ## VPC
 
 - Virtual Private Clouds provided high security
+- in terms of scope, it can span across MULTIPLE AZs, so Region -> VPC -> AZs. however, subnets within a VPC must be contained to 1 az
 - only subnets within the same VPC can communicate with each other
 - as an exception, a `NAT Gateway` (Network Address Translation) can be
   opened from a service within a VPC to reach outside. This connection can
   only be initiated from the secure, VPC side
 - created in one region
   - subnets available in multi-az
+
+## Subnet Routing table, CIDR, and Bastion Hosts
+
+- the network within a VPC
+- CIDR block (Classless Inter Domain Routing) is a group of IP addresses that share a network prefix and number of bits
+- A public subnet route table might look like:
+
+```
+Destination          Target
+172.31.0.0/16        Local          // the "172...." is the CIDR block, and all addresses within this block will be routed LOCALLY via the VPC router
+0.0.0.0/0            igw-id        // 0.0.0.0/0 means ANYTHING else. The outside world. The target is igw = "internet gate way" or the outside world
+```
+
+- a `private` subnet does not have a non-vsc block for the outside world. No public ips are configured on purpose. Both the private and public subnets do share the CIDR block
+- if you want to connect to the private subnet from your laptop, it is not possible to do it directly. Instead, you need to first connect to
+  the public subnet via the public IGW and then that public subnet needs to communciate to the private subnet via the VPC router. In this case, that public subnet
+  is called the `Bastion Host` (aka `Jump Host`)
+- in AWS, we would
+  1. create a private subnet
+  2. create a new route table for that subnet
+  3. create a private EC2 instance on that new private subnet with key pair
+  4. create a public EC2 instance with key pair on the public subnet in the same AZ as the private subnet as the Bastion host
+  5. make copy of key pair PEM file and set to `chmod 600` so only you have access
+  6. `ssh -i <pemFIle> user@<privateSubnetAddress>` will get you access to the private subnet. To check, `ping google.com` and nothing should return. cancel out and see 0 data received
+- this process in reverse is used if the private subnet needs outside access for library downloads
+  - put a Nat gateway on the public subnet
+  - put that Nat gateway address in the private subnet route table
+  - Nat Instances was the older way of doing this, which was essentially an Ec2 instance where the source/destination check is disabled. This is rarely used as NAT gateways are fully managed by AWS.
+- `Nitro Instances` and `Nitro Enclaves`
+  - underlying platform for next gen EC2 instances
+  - eliminiates performance penalties for virtual instances
+  - Nitro hardware is broken down into specific types so optimize every aspect of an instance separately
+  - `Nitro Enclaves` provides more security with isolated environments, encryption, and more network restrictions
 
 ### VPC Peering, VPC Private Linking to connect to other cloud networks
 
@@ -266,3 +303,7 @@ used for static file serving
 
 - manage hosted service that can serve front-end without the trouble of
   managing S3 + Cloudfront
+
+```
+
+```
