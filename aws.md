@@ -123,16 +123,76 @@ The workhorse of aws. basic servers
     - the default option for when you don't have high performance requirements
   - `ENA - Elastic Network Adaptor`
     - higher bandwith and lower inter-instance latency
-  - `EFA - Elastic Fiber Adaptor`
-    - for tightly coupled, high compute applications (ML)
+  - `EFA - Elastic Fabric Adaptor`
+    - for tightly coupled, high compute applications (ML). Often used along with `cluster` placement group in single AZ
 - IP Addresses
   - public IP addresses are dynamic and change when instances are restarted
   - private ID addresses stay with the instance. When you reach out to a public network, the Internet Gateway performs NAT (network address translation) and changes the source to the public IP
   - elastic IPs is static. This can be associated with network interfaces so that it will stay the same. Can be moved between instances and Elastic Network Adaptors
 - private subnets and `Bastion hosts` are common use cases for private ec2 instances
 - a `NAT gateway` is different from an Internet Gateway. It's just for outbound traffic from a private subnet
+
   - The NAT gateway always needs to be in the `public` subnet on behalf of the private subnet. It's the same as Bastian hosts, but going the other direction.
   - the public subnet uses an elastic ip address to translate the public IP to keep it protected
+
+  ## Subnet Routing table, CIDR, and Bastion Hosts
+
+- the network within a VPC
+- CIDR block (Classless Inter Domain Routing) is a group of IP addresses that share a network prefix and number of bits
+- A public subnet route table might look like:
+
+```
+Destination          Target
+172.31.0.0/16        Local          // the "172...." is the CIDR block, and all addresses within this block will be routed LOCALLY via the VPC router
+0.0.0.0/0            igw-id        // 0.0.0.0/0 means ANYTHING else. The outside world. The target is igw = "internet gate way" or the outside world
+```
+
+- a `private` subnet does not have a non-vsc block for the outside world. No public ips are configured on purpose. Both the private and public subnets do share the CIDR block
+- if you want to connect to the private subnet from your laptop, it is not possible to do it directly. Instead, you need to first connect to
+  the public subnet via the public IGW and then that public subnet needs to communciate to the private subnet via the VPC router. In this case, that public subnet
+  is called the `Bastion Host` (aka `Jump Host`)
+- in AWS, we would
+  1. create a private subnet
+  2. create a new route table for that subnet
+  3. create a private EC2 instance on that new private subnet with key pair
+  4. create a public EC2 instance with key pair on the public subnet in the same AZ as the private subnet as the Bastion host
+  5. make copy of key pair PEM file and set to `chmod 600` so only you have access
+  6. `ssh -i <pemFIle> user@<privateSubnetAddress>` will get you access to the private subnet. To check, `ping google.com` and nothing should return. cancel out and see 0 data received
+- this process in reverse is used if the private subnet needs outside access for library downloads
+  - put a Nat gateway on the public subnet
+  - put that Nat gateway address in the private subnet route table
+  - Nat Instances was the older way of doing this, which was essentially an Ec2 instance where the source/destination check is disabled. This is rarely used as NAT gateways are fully managed by AWS.
+- `Nitro Instances` and `Nitro Enclaves`
+  - underlying platform for next gen EC2 instances
+  - eliminiates performance penalties for virtual instances
+  - Nitro hardware is broken down into specific types so optimize every aspect of an instance separately
+  - `Nitro Enclaves` provides more security with isolated environments, encryption, and more network restrictions
+- Pricing and use cases
+  - `On demand` No interruptions to service, but billed by time. Good for several hours of uninterrupted work
+  - `Reserved` Committed with discount. Can set time schedule. 1 or 3 year committment
+  - `Spot Instances` Compute heavy but can be interrupted
+  - `Dedicated instances` Isolated instance with more control. Enterprise with sensitive data
+  - `Dedicated hosts` Isolated instances and hardware control. ex. Database with per socket licensing
+- Summary
+  - EC2 allows virtual instances in the cloud
+  - user has full control of OS layer
+  - key pairs are used to securely connect
+  - storage is either Amazon EBS (persistent) or Instance store (non-persistent)
+  - Amazon Machine Image (AMI) provides config required to launch an instance. includes:
+    - template for the root volume
+    - launch permissions
+    - AMI's are region scoped. You can only launch AMI from the region where it's stored
+  - benefits include:
+    - elastic computing to launch thousands of instances
+    - control of full root/admin ccess
+    - flexible choice of types, OS, software
+    - reliable and available
+    - secure and fully integrated with VPC
+    - inexpensive with choices
+  - communicates to the outside world via NAT GW or IGW via public subnets.
+  - Public IP addresses change when an instance stop/starts, so not usable as a static address
+  - Elastic IP addresses are used as a public IP to be static
+  - Place groups `cluster` same rack (AI), `partition` some in same az, some in others, `spread` every single instance in different rack (mission critical with highest availability)
 
 ## AMI (amazon machine images & instances)
 
@@ -259,39 +319,6 @@ used for static file serving
   only be initiated from the secure, VPC side
 - created in one region
   - subnets available in multi-az
-
-## Subnet Routing table, CIDR, and Bastion Hosts
-
-- the network within a VPC
-- CIDR block (Classless Inter Domain Routing) is a group of IP addresses that share a network prefix and number of bits
-- A public subnet route table might look like:
-
-```
-Destination          Target
-172.31.0.0/16        Local          // the "172...." is the CIDR block, and all addresses within this block will be routed LOCALLY via the VPC router
-0.0.0.0/0            igw-id        // 0.0.0.0/0 means ANYTHING else. The outside world. The target is igw = "internet gate way" or the outside world
-```
-
-- a `private` subnet does not have a non-vsc block for the outside world. No public ips are configured on purpose. Both the private and public subnets do share the CIDR block
-- if you want to connect to the private subnet from your laptop, it is not possible to do it directly. Instead, you need to first connect to
-  the public subnet via the public IGW and then that public subnet needs to communciate to the private subnet via the VPC router. In this case, that public subnet
-  is called the `Bastion Host` (aka `Jump Host`)
-- in AWS, we would
-  1. create a private subnet
-  2. create a new route table for that subnet
-  3. create a private EC2 instance on that new private subnet with key pair
-  4. create a public EC2 instance with key pair on the public subnet in the same AZ as the private subnet as the Bastion host
-  5. make copy of key pair PEM file and set to `chmod 600` so only you have access
-  6. `ssh -i <pemFIle> user@<privateSubnetAddress>` will get you access to the private subnet. To check, `ping google.com` and nothing should return. cancel out and see 0 data received
-- this process in reverse is used if the private subnet needs outside access for library downloads
-  - put a Nat gateway on the public subnet
-  - put that Nat gateway address in the private subnet route table
-  - Nat Instances was the older way of doing this, which was essentially an Ec2 instance where the source/destination check is disabled. This is rarely used as NAT gateways are fully managed by AWS.
-- `Nitro Instances` and `Nitro Enclaves`
-  - underlying platform for next gen EC2 instances
-  - eliminiates performance penalties for virtual instances
-  - Nitro hardware is broken down into specific types so optimize every aspect of an instance separately
-  - `Nitro Enclaves` provides more security with isolated environments, encryption, and more network restrictions
 
 ### VPC Peering, VPC Private Linking to connect to other cloud networks
 
