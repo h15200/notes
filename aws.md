@@ -135,7 +135,7 @@ The workhorse of aws. basic servers
   - The NAT gateway always needs to be in the `public` subnet on behalf of the private subnet. It's the same as Bastian hosts, but going the other direction.
   - the public subnet uses an elastic ip address to translate the public IP to keep it protected
 
-  ## Subnet Routing table, CIDR, and Bastion Hosts
+  ### Subnet Routing table, CIDR, and Bastion Hosts
 
 - the network within a VPC
 - CIDR block (Classless Inter Domain Routing) is a group of IP addresses that share a network prefix and number of bits
@@ -193,6 +193,21 @@ Destination          Target
   - Public IP addresses change when an instance stop/starts, so not usable as a static address
   - Elastic IP addresses are used as a public IP to be static
   - Place groups `cluster` same rack (AI), `partition` some in same az, some in others, `spread` every single instance in different rack (mission critical with highest availability)
+
+## ELB (Elastic load balancing) / auto scaling
+
+- ASG (auto scaling groups) allow a minimum number of instances
+- Autoscaling works with EC2, ECS, EKS by launching/terminating instances and integrates with services such as `CloudWatch`
+  - works within VPC, so possible to auto scale over multiple AZs
+  - all instances send CPU health to CloudWatch at an interval (5 or 1 minute). CloudWatch notifies auto scale and if an instannce hits a number like > 80% of capacity,
+    it adds a new instance
+  - also adds a new node if one fails to ensure availability
+  - scaling policy can be run by metrics, or on a schedule to account for peak hours
+- elastic LB ensures that the traffic is distributed evenly within those instanaces with high avilability
+  - note that per instance redundancy is taken care of AWS. For example, there's no need to implement RAID1 disk mirroring
+    to have a backup CPU disk or having 2 network interface cards.
+  - the high level load balancing that should be implemented by the user is in anticipation of an instance failing or an entire az failing. the combination
+    of cross-AZ ASGs and load balancing should take care of those scenarios
 
 ## AMI (amazon machine images & instances)
 
