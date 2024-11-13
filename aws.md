@@ -203,11 +203,21 @@ Destination          Target
     it adds a new instance
   - also adds a new node if one fails to ensure availability
   - scaling policy can be run by metrics, or on a schedule to account for peak hours
+  - types of auto scaling:
+    - simple scaling (the default). the next 2 choices are preferrable
+    - step scaling. configure how many instances to launch if the CPU usage is over by x amount
+    - scheduled scaling. add a spike schedule
 - elastic LB ensures that the traffic is distributed evenly within those instanaces with high avilability
+  - works alongside auto scaler to distribute evenly. health checks notify the ASG to terminate/instantiate instances as necessary
   - note that per instance redundancy is taken care of AWS. For example, there's no need to implement RAID1 disk mirroring
     to have a backup CPU disk or having 2 network interface cards.
   - the high level load balancing that should be implemented by the user is in anticipation of an instance failing or an entire az failing. the combination
     of cross-AZ ASGs and load balancing should take care of those scenarios
+  - specific types of Elastic Load balancers:
+    - Application Load Balancer (L7) operates at the request level and has access to http headers so can have path, host, query param based routing. use for http(s) apps.
+    - Network Load Balancer (L4) operates at the network protocol level, so only has access to IP address but is very high performing and offers low latency. tcp or udp apps
+    - Gateway Load Balancer has a very different use case from the above two. sits in front of virtual appliances such as firewalls and operates at L3 (packets)
+    - `target groups` must be set to tell the load balancer where to send the traffic (EC2, IP address, Lambda Function, etc..)
 
 ## AMI (amazon machine images & instances)
 
@@ -275,31 +285,12 @@ used for static file serving
 
 - a WAF (Web application firewall) used to protect against DDoS (Distributed Denial of Service)
 
-## LBs
-
-- regional, multi-az
-- ELB (elastic Load Balancer) was used at L4 (network) and L7(application) previously,
-  but now is named "Classic Load Balancer"
-
-- NLB (Network Load balancer) is the new and improved product at layer 3
-- ALB (Application Load balancer) is the new and improved product at layer 7
-- typically, start with an ALB as it has more features like health checks,
-  monitoring/logging, count-based routing, http2
-
-- Nginx still has features that are not supported in ALB such as caching in the LB,
-  supporting UDP and TCP so it is often useful to have an nginx proxy AFTER ALB
-
 ## Elasticache
 
 - managed in-memory cache nodes that uses either `Memcached` or `Redis`
 - scale from one to many nodes
 - self healing, muti-AZ deployments
 - fast data stores are used to rate limit requests
-
-## CloudWatch for auto scale
-
-- sits in after loadbalancer and automatically increase nodes in servers
-  where needed (not the db layer, just web servers)
 
 ## Elastic Search (Kibana)
 
