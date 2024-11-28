@@ -2,6 +2,7 @@
 
 ## quick facts
 
+- draw.io
 - most servers can handle about 10,000 - 100,000 qps depending on type
 - generally RDBMS as a System of Records (Source of Truth, OLTP) is recommended
 - when a db reaches 10s of Terrabytes, then a NoSql option becomes a priority

@@ -218,6 +218,14 @@ Destination          Target
     - Network Load Balancer (L4) operates at the network protocol level, so only has access to IP address but is very high performing and offers low latency. tcp or udp apps
     - Gateway Load Balancer has a very different use case from the above two. sits in front of virtual appliances such as firewalls and operates at L3 (packets)
     - `target groups` must be set to tell the load balancer where to send the traffic (EC2, IP address, Lambda Function, etc..)
+  - `secure listeners`
+    - if `ALB`
+      - used to assign SSL, TLS certs to the load balancer
+      - for ALB, the SSL is used between the user and the LB, but not between the LB and the application. This is usually ok as that part is already within the VPC
+      - is is also possible to have end to end encryption if you use another cert for LB <-> Instances
+    - if `NLB`
+      - possible to have full encryption from user all the way to the instance
+      - a public cert must be used
 
 ## AMI (amazon machine images & instances)
 
