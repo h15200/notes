@@ -337,3 +337,26 @@ analytics.getId = () => 'abc-123-456'; // mock a method
 });
 
 // then inside each test block, require each time and mutate the object
+
+## mocking top imports but changing default values later in a large object
+
+- this is especially helpful when a mocked function returns a big config since the only other alternative to use spyOn and type up all props again
+
+```
+const mockIsTrue = jest.fn()
+jest.mock('somePath', () => ({
+  ...requireActual stuff
+  getConfig: jest.fn(() => {
+    // TONS OF CONFING
+    returnBoolFunc: mockIsTrue
+  })
+}))
+
+
+// more stuff
+
+it.('something', () => {
+mockIsTrue.mockReturn(false); // now getConfig will return false
+})
+
+```
