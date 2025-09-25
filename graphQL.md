@@ -166,3 +166,9 @@ Query Variables:
   }
 
 ```
+
+## GraphQL Common architecture
+
+1. In a single monolith single db system, you can just have the graphQL server sit on top of that single db and make corresponding requests to the db.
+2. For microservices, graphQL server is an `aggregator` where it acts as a gateway and connects to various services and dbs.
+3. For 1 and 2, all client types (web, mobile) go through the same single graphQL server. If you want granularity, you can have multiple graphQL servers that correspond to each client type. This pattern is called `Backend-for-Froend` or "graphQL as `BFF`".
