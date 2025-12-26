@@ -137,7 +137,7 @@ use `if not my_list` instead of `if not len(list)`
 
 - `while all(i is None for i in my_list):`
 
-## try/except
+## try/except/raise
 
 - throw exceptions with try/except
 
@@ -321,6 +321,10 @@ my_socket.connect((<hostString>, <portNumber>))
 
 ```
 
+## dir
+
+- dir() lists all keys of a dict
+
 ## strings
 
 - in python 3, all internal strings are `unicode`
@@ -396,3 +400,52 @@ def compare(a, b) -> int:
 
 - to plug it in, use `sorted` with the 2nd arg being `key=cmp_to_key(custom_func)`
   `new_list = sorted(nums, key=cmp_to_key(compare))`
+
+## keyword arguments (aka named arguments)
+
+- generally, better to use kwargs for readability.
+- a built-in feature, so no need to change the original fn definition
+
+```
+def print_stuff(name: str, age: int) -> None:
+  print(f'my name is {name} and my age is {age}')
+
+print_stuff("Patti", 36) // prints "my name is Patti and my age is 36"
+print_stuff(name="Patti", age=36) // also prints the same
+```
+
+### `*args`, `**kwargs`
+
+- takes in variable length args, both as tuple or as a dict.
+- at the invocation of the func, it is "packed"
+- same syntax is used in the function definition to "unpack"
+
+## decorators
+
+- a way to wrap shared functionality.
+- syntax is `@decorator_code`, which then applies the next defined function as the argument
+
+```
+# this is often defined in a library
+def print_hi_decorator(base_fn) -> None:
+  def enhanced_fn():
+    print('hi')
+    base_fn()
+  return enhanced_fn
+
+
+@print_hi_decorator
+def do_nothing() -> None:
+  return
+
+
+do_nothing()
+# although the function "do_nothing" is called, in reality it is the enhanced version of this function
+# with the added functionality.
+# prints "hi"
+
+```
+
+### often used in class methods @classmethod, @staticmethod
+
+- can decorate methods to be classmethods (takes in cls as first arg instead of self) to allow them to be called on the class itself, not an instance of a class allows to modify the state of the class itself without creating an instance
