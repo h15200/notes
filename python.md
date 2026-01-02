@@ -449,3 +449,32 @@ do_nothing()
 ### often used in class methods @classmethod, @staticmethod
 
 - can decorate methods to be classmethods (takes in cls as first arg instead of self) to allow them to be called on the class itself, not an instance of a class allows to modify the state of the class itself without creating an instance
+
+### @property, @<property>.setter
+
+- in python, you create getter methods with `@property` decorator
+
+```
+class Person:
+  def __init__(self, age):
+    self.age = age
+
+  @property
+  def age(self):
+    """Getter"""
+    return self.age
+
+  # now one can call person.age WITHOUT parens
+
+
+  @age.setter
+  def age(self, value):
+    # note that the same method name can be used if decorated like this
+    if value < 0:
+          raise ValueError("Age can't be negative")
+    self.age = value
+
+
+```
+
+- this allows derived properties where it's computed on fetch which is helpful for expensive operations
