@@ -450,6 +450,42 @@ do_nothing()
 
 - can decorate methods to be classmethods (takes in cls as first arg instead of self) to allow them to be called on the class itself, not an instance of a class allows to modify the state of the class itself without creating an instance
 
+### gotcha on class variables vs instance variables and mutability
+
+- when using a class variable (declared above **init**), the behavior will change
+  based on data type (primitive vs not)
+
+```
+class Animal:
+  idx = 0
+  stack = []
+  def __init__(self):
+    pass
+```
+
+- here, idx is an `int`, meaning it's a primitive.
+  for primitive data, the class property is `immutable`, meaning it will reset on instantiation every time.
+- the `stack` is also a class property (not an instance property) but it is not a primitive,
+  so it will be `mutable`, meaning it will be SHARED for all instances!
+
+```
+cat = Animal()
+# some logic to append to stack
+dog = Animal()
+# will have the cat instance logic and stack may already be filled with data!
+```
+
+to prevent this, reset all non-primitive values. Also not a bad idea to reset even the primitive ones to be safe:
+
+```
+class Animal:
+  idx = 0
+  stack = []
+  def __init__(self):
+    self.idx = 0
+    self.stack = []
+```
+
 ### @property, @<property>.setter
 
 - in python, you create getter methods with `@property` decorator
