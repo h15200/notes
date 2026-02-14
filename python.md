@@ -514,3 +514,44 @@ class Person:
 ```
 
 - this allows derived properties where it's computed on fetch which is helpful for expensive operations
+
+## dict comprehension
+
+- short hand to create dicts. very convenient paired with some other map with method .items()
+
+```
+# basic logic. note that it is wrapped in curly braces, which is also true for returning sets
+new_dict = {key_variable: value_valuable for <evluation of those 2 variables}
+
+ex. 1 (create dict from loop)
+squares = {x: x**2 for x in range(1, 6)}
+
+ex. 2 (create dict from 2 lists of same size)
+keys = ['a', 'b', 'c']
+values = [1, 2, 3]
+combined_dict = {k: v for k, v in zip(keys, values)}
+
+ex. 3 (create dict from another dict with condition)
+original = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+evens = {k: v for k, v in original.items() if v % 2 == 0}
+# in this case the if statement applies to the addition of key AND value. The else means you don't add anything to dict
+
+
+```
+
+## set comprehension
+
+- similarly to dict comprehension, we use curly braces but with only 1 set of logic
+
+```
+{expression for item in iterable [if condition]}
+
+# ex. we want to make a set of keys based on a dict
+pet_ages = {
+    "mina": 5,
+    "kai": 2,
+    "lady": 3
+}
+
+my_set_of_under_5_pets = {val for key, val in pet_ages.items() if val < 5 }
+```
