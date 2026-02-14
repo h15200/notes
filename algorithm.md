@@ -114,7 +114,10 @@ Insertion/Deletion is specific to the circumstance and there is no general blank
   - use a temp to store the merged version and keep comparing to the next range.
     After loop, merge the temp one more time
 - create a matrix with nested list comprehension
-  - matrix = [[0 for _ in range(COL)] for i in range(ROW)]
+  ```
+  ROW, COL = 5, 4     # 5 rows, 4 cols
+  matrix = [["init_val" for _ in range(COL)] for _ in range(ROW)]
+  ```
 - Calculator
   - use reusable nums trick like a visited set with _= 10, += trick.
     On each new sign, compute the OLD sign by adding, adding -(num),
