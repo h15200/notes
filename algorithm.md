@@ -186,6 +186,69 @@ Insertion/Deletion is specific to the circumstance and there is no general blank
   - with variations, keep updating the best val when condition met and move
     direction. else, the other way without updating
 
+#### Construct tree from level ordered values with BFS (generally much easier than iterative DFS below)
+
+- used in Serialize and Deserialize Binary tree
+- when serializing, make sure to also push "None" nodes
+- when deserializing, use a simple pointer that increments every time left and right is assigned. the queue should
+  only contain the latest node
+
+```
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+
+        :type root: TreeNode
+        :rtype: str
+        """
+        if not root:
+            return ""
+        # level ordered nodes from left to right
+        q = deque([root])
+        res_l: List[str] = []
+        while q:
+            node = q.pop()
+            if not node:
+                res_l.append("None")
+            else:
+                res_l.append(str(node.val))
+                q.appendleft(node.left)
+                q.appendleft(node.right)
+
+        return ",".join(res_l)
+
+
+
+
+
+
+
+    def deserialize(self, data):
+
+        data = data.split(",")
+        # data is a list of strings including "none" and digits that denote node values
+        root = TreeNode(int(data[0]))
+        q = deque([root])
+        idx = 1
+
+        while q and idx < len(data):
+            node = q.pop()
+            if data[idx] != 'None':
+                node.left = TreeNode(int(data[idx]))
+            idx += 1
+
+            if data[idx] != 'None':
+                node.right = TreeNode(int(data[idx]))
+            idx += 1
+            if node.left:
+                q.appendleft(node.left)
+            if node.right:
+                q.appendleft(node.right)
+
+        return root
+```
+
 #### Iterative DFS
 
 - use a stack and visit twice with a set
