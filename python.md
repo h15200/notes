@@ -384,7 +384,42 @@ class Dog(Animal): # subclass of Animal class
 `heapq.heappush(my_list, val)`
 `heap[0]` to just access the top of the heap without popping
 
-## comparator review
+## comparator for sort() [recommended way]
+
+- sort() takes a key argument which is a function or a lambda
+
+```
+arr = [1,4,6]
+arr.sort(key=<some func or inline lambda)
+
+# if defined as a function, no need to pass in any args or even invoke with"()"
+
+def sorter(list_item):
+  return some_graph[list_item] # sort by increasing order based on a graph
+# i here is the value of list item
+
+arr.sort(key=sorter) # note that there is no invokation "()" nor any args but the function has access to list item
+
+# the lamdba of the same would be:
+arr.sort(key = lambda i: some_graph[i])
+
+```
+
+- if you want to sort based on some parameterA but have another parameter for when the first paraterA is equal, simply use a tuple
+
+```
+def sorter(list_val):
+  return (list_val, some_other_secondary_condition)
+```
+
+- if you want to reverse the order for one of the params, simply use a `-` before the value for ordering
+
+```
+# sort my_list based on value_a (incrementing), but only if it's equal, use value_b (decreasing)
+my_list.sort(key = lambda x: (condition_a, -condition_b))
+```
+
+## comparator review (sorted)
 
 - if plugging in custom compare function, return -1 if it's good as is, and return 1 to reverse order
 
