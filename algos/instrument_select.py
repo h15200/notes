@@ -21,36 +21,34 @@ class Instrument(str, Enum):
     BASS_DRUM = "BASS DRUM"
 
 # Groups defined as static data
-GROUPS = {
+PAID_GROUPS = {
     "HIGH": [Instrument.FLUTE, Instrument.CLARINET, Instrument.VIOLIN, Instrument.VIOLA, Instrument.TRUMPET],
     "MIDDLE": [Instrument.CLARINET, Instrument.TENOR_SAX, Instrument.VIOLA, Instrument.FRENCH_HORN, Instrument.TROMBONE],
     "LOW": [Instrument.CLARINET, Instrument.TENOR_SAX, Instrument.VIOLA, Instrument.CELLO, Instrument.DOUBLE_BASS, Instrument.FRENCH_HORN, Instrument.TROMBONE],
     "DRUMS": [Instrument.SNARE_DRUM, Instrument.BASS_DRUM]
 }
 
-def calculate_permutations() -> int:
+FREE_INSTRUMENTS = [Instrument.VIOLIN, Instrument.TROMBONE, Instrument.CLARINET, Instrument.CELLO]
+FREE_GROUPS = {
+    "HIGH": [Instrument.VIOLIN, Instrument.CLARINET],
+    "MIDDLE": [Instrument.TROMBONE, Instrument.CLARINET],
+    "LOW": [Instrument.TROMBONE, Instrument.CLARINET, Instrument.CELLO]
+}
+
+def calculate_instrumentation_combinations(instruments: list, min_size: int, max_size: int) -> int:
     """
-    Calculates total unique instrument combinations.
-    Since order doesn't matter, this is a combination problem.
-    Constraint: Must have at least one from HIGH, MIDDLE, and LOW.
+    Calculates total unique instrument sets (combinations) based purely on count,
+    without any role constraints (as if there were no HIGH/MIDDLE/LOW logic).
     """
-    all_instruments = list(Instrument)
-    total_valid = 0
-    
-    # Check every possible subset of the 12 instruments (2^12 = 4096)
-    for i in range(1, len(all_instruments) + 1):
-        for combo in combinations(all_instruments, i):
-            has_high = any(ins in GROUPS["HIGH"] for ins in combo)
-            has_mid = any(ins in GROUPS["MIDDLE"] for ins in combo)
-            has_low = any(ins in GROUPS["LOW"] for ins in combo)
-            
-            if has_high and has_mid and has_low:
-                total_valid += 1
-    return total_valid
+    total = 0
+    for i in range(min_size, max_size + 1):
+        import math
+        total += math.comb(len(instruments), i)
+    return total
 
 def pick_from(category: str, shuffled_pools: dict, available: set, final_instrumentation: dict) -> bool:
     """Picks the next available instrument from a category. Returns True if successful."""
-    pool = shuffled_pools[category]
+    pool = shuffled_pools.get(category, [])
     while pool:
         selection = pool.pop()
         if selection in available:
@@ -59,27 +57,34 @@ def pick_from(category: str, shuffled_pools: dict, available: set, final_instrum
             return True
     return False
 
-def generate_ensemble():
-    # Efficiency: Use a set for O(1) availability checks
-    available = set(Instrument)
-    # Track selections by category for cleaner output
-    final_instrumentation = {cat: [] for cat in GROUPS}
+def generate_ensemble(version: str):
+    if version == 'F':
+        instruments = FREE_INSTRUMENTS
+        groups = FREE_GROUPS
+        max_extra = 1
+        print("\n--- Generating FREE Version Ensemble (Max 4 Players) ---")
+    else:
+        instruments = list(Instrument)
+        groups = PAID_GROUPS
+        max_extra = 9
+        print("\n--- Generating PAID Version Ensemble (Max 12 Players) ---")
 
-    # Efficiency: Pre-shuffle groups so we can just use pop() for O(1) selection
+    available = set(instruments)
+    final_instrumentation = {cat: [] for cat in groups}
     random.seed(time.time())
-    shuffled_pools = {cat: random.sample(members, len(members)) for cat, members in GROUPS.items()}
+    shuffled_pools = {cat: random.sample(members, len(members)) for cat, members in groups.items()}
 
-    # 1. Pick 3 starters: one from HIGH, MIDDLE, and LOW to ensure balance
+    # 1. Pick 3 starters
     for cat in ["HIGH", "MIDDLE", "LOW"]:
-        pick_from(cat, shuffled_pools, available, final_instrumentation)
+        if cat in groups:
+            pick_from(cat, shuffled_pools, available, final_instrumentation)
 
-    # 2. Add random number of extra players (0-9)
-    num_to_add = random.randint(0, 9)
-    print(f"--- Seeding logic: Starting with Trio (H/M/L) + {num_to_add} added players ---")
+    # 2. Add random extra players
+    num_to_add = random.randint(0, max_extra)
+    print(f"Seeding logic: Starting with Trio (H/M/L) + {num_to_add} added players")
 
-    cycle = ["DRUMS", "LOW", "HIGH", "MIDDLE"]
+    cycle = [cat for cat in groups]
     for i in range(num_to_add):
-        # Round-robin through groups; if one is empty, continue to the next in the list
         found = False
         for j in range(len(cycle)):
             cat_to_try = cycle[(i + j) % len(cycle)]
@@ -89,17 +94,32 @@ def generate_ensemble():
         if not found:
             break
 
-    # 3. Format and print the final instrumentation
+    # 3. Print the final instrumentation
     output = [f"{cat} [{', '.join(instruments)}]" for cat, instruments in final_instrumentation.items() if instruments]
-    print("\n" + " | ".join(output) + "\n")
+    print(" | ".join(output) + "\n")
 
 if __name__ == "__main__":
-    total_combos = calculate_permutations()
+    paid_instrumentation = calculate_instrumentation_combinations(list(Instrument), 3, 12)
+    free_instrumentation = calculate_instrumentation_combinations(FREE_INSTRUMENTS, 3, 4)
+    
     print("Welcome to Forest Music Seeder")
-    print(f"Total possible unique instrumentations (satisfying H/M/L constraint): {total_combos}")
+    print("To make a valid ensemble, we need at least 1 of High, Middle, and Low parts. Some instruments can play multiple parts. The percussion groups are optional and not necessary. \nWith this in mind..")
+    print("\nFREE VERSION ANALYSIS:")
+    print("- Instruments: Violin, Trombone, Clarinet, Cello")
+    print("- Possible ensemble size: 3 or 4")
+    print(f"- Combination of instrumentation: {free_instrumentation}")
+
+    print("\nPAID VERSION ANALYSIS:")
+    print(f"- Number of instruments: {len(Instrument)}")
+    print("- Possible ensemble size: 3 to 12")
+    print(f"- Combination of instrumentation: {paid_instrumentation}!!! (value proposition!)")
+
     try:
         while True:
-            input("Press Enter to create a new instrumentation (or Ctrl+C to exit)...")
-            generate_ensemble()
+            choice = input("\nRandomize [P]aid version or [F]ree version? (or Ctrl+C to exit): ").strip().upper()
+            if choice in ['P', 'F']:
+                generate_ensemble(choice)
+            else:
+                print("Invalid choice. Please enter 'P' or 'F'.")
     except KeyboardInterrupt:
         print("\nExiting...")
