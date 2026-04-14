@@ -23,16 +23,16 @@ class Instrument(str, Enum):
 # Groups defined as static data
 PAID_GROUPS = {
     "HIGH": [Instrument.FLUTE, Instrument.CLARINET, Instrument.VIOLIN, Instrument.VIOLA, Instrument.TRUMPET],
-    "MIDDLE": [Instrument.CLARINET, Instrument.TENOR_SAX, Instrument.VIOLA, Instrument.FRENCH_HORN, Instrument.TROMBONE],
-    "LOW": [Instrument.CLARINET, Instrument.TENOR_SAX, Instrument.VIOLA, Instrument.CELLO, Instrument.DOUBLE_BASS, Instrument.FRENCH_HORN, Instrument.TROMBONE],
+    "MIDDLE": [Instrument.CLARINET, Instrument.TENOR_SAX, Instrument.VIOLIN, Instrument.VIOLA, Instrument.TRUMPET, Instrument.FRENCH_HORN],
+    "LOW": [ Instrument.TENOR_SAX, Instrument.CELLO, Instrument.DOUBLE_BASS, Instrument.FRENCH_HORN, Instrument.TROMBONE],
     "DRUMS": [Instrument.SNARE_DRUM, Instrument.BASS_DRUM]
 }
 
 FREE_INSTRUMENTS = [Instrument.VIOLIN, Instrument.TROMBONE, Instrument.CLARINET, Instrument.CELLO]
 FREE_GROUPS = {
     "HIGH": [Instrument.VIOLIN, Instrument.CLARINET],
-    "MIDDLE": [Instrument.TROMBONE, Instrument.CLARINET],
-    "LOW": [Instrument.TROMBONE, Instrument.CLARINET, Instrument.CELLO]
+    "MIDDLE": [Instrument.VIOLIN, Instrument.CLARINET],
+    "LOW": [Instrument.TROMBONE, Instrument.CELLO]
 }
 
 def calculate_instrumentation_combinations(instruments: list, min_size: int, max_size: int) -> int:
@@ -83,7 +83,7 @@ def generate_ensemble(version: str):
     num_to_add = random.randint(0, max_extra)
     print(f"Seeding logic: Starting with Trio (H/M/L) + {num_to_add} added players")
 
-    cycle = [cat for cat in groups]
+    cycle = list(groups)
     for i in range(num_to_add):
         found = False
         for j in range(len(cycle)):
