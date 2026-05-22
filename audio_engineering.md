@@ -6,6 +6,8 @@
 
   tdlr; On individual track strip [gain adjustment, EQ, Compressor, Saturation, Reverb], on Stereo out strip [limiter, Loudness metering]
 
+  Make adjustments in plugins on individual strips ONLY, never the stereo plugins
+
   Phase 0: The Setup (Clean Slate on individual strip)
   - Mixer Fader: Click "X" to open mixer, and on the individual track that we're working with, set to 0.0 dB. Remember that fader peak metering INCLUDES all plugins.
   - Plugins: Bypass all plugins initially to monitor the raw signal.
